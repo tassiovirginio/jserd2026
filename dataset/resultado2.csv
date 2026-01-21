@@ -1,0 +1,15 @@
+test_smell;qtd
+Duplicate Assert;378527
+Assertion Roulette;246247
+Unknown Test;16927
+Conditional Test Logic;11605
+Magic Number;427935
+Verbose Test;12414
+Sensitive Equality;7526
+Print Statment Fixture;3795
+Exception Handling;4013
+Sleepy Fixture;2313
+Resource Optimism;3640
+Empty Test;471
+Test Without Description;240
+Ignored Test;285

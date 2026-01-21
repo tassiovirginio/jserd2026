@@ -1,0 +1,15 @@
+"testsmell","media"
+Conditional Test Logic,-2.0306513409961684
+Sleepy Fixture,-1.8288288288288288
+Duplicate Assert,-1.8278010069118527
+Verbose Test,-1.80625
+Exception Handling,-1.7536656891495601
+Sensitive Equality,-1.738938053097345
+Print Statement Fixture,-1.7358490566037736
+Assertion Roulette,-1.6707650273224044
+Magic Number,-1.6510086879693713
+Empty Test,-1.6428571428571428
+Resource Optimism,-1.6206896551724137
+Unknown Test,-1.592496765847348
+Ignored Test,-1.4285714285714286
+Test Without Description,-1.0

@@ -1,0 +1,15 @@
+"testsmell","total_score"
+Magic Number,-22424.0
+Duplicate Assert,-21420.0
+Assertion Roulette,-13453.0
+Unknown Test,-1231.0
+Conditional Test Logic,-1060.0
+Verbose Test,-867.0
+Exception Handling,-598.0
+Sensitive Equality,-393.0
+Resource Optimism,-329.0
+Sleepy Fixture,-203.0
+Print Statement Fixture,-184.0
+Empty Test,-23.0
+Ignored Test,-10.0
+Test Without Description,-2.0
