@@ -1,0 +1,3 @@
+[submodule "latex"]
+	path = latex
+	url = git@github.com:tassiovirginio/JSERD-2025---DNose.git
