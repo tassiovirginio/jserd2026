@@ -47,4 +47,4 @@ run = "latexmk -xelatex -pvc -interaction=nonstopmode main.tex"
 
 [tasks.python-dependencies]
 description = "Instala as dependências do Jython"
-run = "pip install pandas matplotlib seaborn numpy "
+run = "pip install pandas matplotlib seaborn numpy ipython-sql sqlalchemy"
