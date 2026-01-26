@@ -45,6 +45,6 @@ dir = "latex"
 # Usamos -pvc (preview continuous) para monitorar mudanças
 run = "latexmk -xelatex -pvc -interaction=nonstopmode main.tex"
 
-[tasks.jupyter-notebook]
+[tasks.python-dependencies]
 description = "Instala as dependências do Jython"
 run = "pip install pandas matplotlib seaborn numpy "
