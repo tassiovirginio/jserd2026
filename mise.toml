@@ -1,2 +1,44 @@
+[env]
+# O "./latex//" faz o XeLaTeX buscar em:
+# 1. Na pasta ./latex (onde está o sbc2019.cls)
+# 2. Na pasta ./latex/jserd (onde estão seus outros arquivos)
+# 3. Em qualquer outra subpasta dentro de latex/
+TEXINPUTS = ".:./latex//:"
+
 [tools]
 tinytex = "latest"
+
+[tasks.setup]
+description = "Instala as coleções corretas de pacotes"
+# Nomes corrigidos para o tlmgr:
+# - graphicx está no pacote 'graphics'
+# - lmodern está no pacote 'lm'
+# - subcaption está no pacote 'caption' (que você já tem, mas garantimos aqui)
+# - firasans pode exigir a instalação da coleção de fontes se o nome direto falhar
+run = """
+tlmgr install abstract fontspec xetex ifsym fontawesome enumitem \
+              titlesec microtype lm graphics caption fancyhdr \
+              geometry environ trimspaces sectsty natbib hyperref \
+              footmisc etoolbox fira latexmk
+"""
+
+[tasks.build]
+description = "Compilação completa"
+dir = "latex"
+run = [
+  "xelatex -interaction=nonstopmode main.tex",
+  "bibtex main.aux",
+  "xelatex -interaction=nonstopmode main.tex",
+  "xelatex -interaction=nonstopmode main.tex"
+]
+
+[tasks.clean]
+description = "Remove arquivos temporários de compilação"
+run = "rm -f *.aux *.log *.out *.toc *.blg *.bbl"
+
+[tasks.watch]
+description = "Compila automaticamente ao salvar usando latexmk"
+dir = "latex"
+# O latexmk precisa saber do TEXINPUTS para achar o sbc2019.cls e jserd/
+# Usamos -pvc (preview continuous) para monitorar mudanças
+run = "latexmk -xelatex -pvc -interaction=nonstopmode main.tex"
