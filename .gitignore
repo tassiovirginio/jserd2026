@@ -15,3 +15,4 @@ dataset/.ipynb_checkpoints
 *.synctex.gz(busy)
 *.synctex(busy)
 *.synctex
+dataset/testsmells_202601061427.csv

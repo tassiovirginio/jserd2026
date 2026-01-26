@@ -7,6 +7,7 @@ TEXINPUTS = ".:./latex//:"
 
 [tools]
 tinytex = "latest"
+python = "latest"
 
 [tasks.setup]
 description = "Instala as coleções corretas de pacotes"
@@ -43,3 +44,7 @@ dir = "latex"
 # O latexmk precisa saber do TEXINPUTS para achar o sbc2019.cls e jserd/
 # Usamos -pvc (preview continuous) para monitorar mudanças
 run = "latexmk -xelatex -pvc -interaction=nonstopmode main.tex"
+
+[tasks.jupyter-notebook]
+description = "Instala as dependências do Jython"
+run = "pip install pandas matplotlib seaborn numpy "
