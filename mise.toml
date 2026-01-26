@@ -29,7 +29,8 @@ run = [
   "xelatex -interaction=nonstopmode main.tex",
   "bibtex main.aux",
   "xelatex -interaction=nonstopmode main.tex",
-  "xelatex -interaction=nonstopmode main.tex"
+  "xelatex -interaction=nonstopmode main.tex",
+  "xelatex -interaction=nonstopmode main.tex",
 ]
 
 [tasks.clean]
