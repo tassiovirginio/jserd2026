@@ -24,7 +24,7 @@ tlmgr install abstract fontspec xetex ifsym fontawesome enumitem \
 """
 
 [tasks.build]
-description = "Compilação completa"
+description = "Compilação completa da pasta latex"
 dir = "latex"
 run = [
   "xelatex -interaction=nonstopmode main.tex",
