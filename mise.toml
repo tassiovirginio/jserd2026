@@ -34,6 +34,11 @@ run = [
   "xelatex -interaction=nonstopmode main.tex",
 ]
 
+[tasks.build-tectonic]
+description = "Compilação completa da pasta latex com Tectonic"
+dir = "latex"
+run = ["time tectonic main.tex"]
+
 [tasks.clean]
 description = "Remove arquivos temporários de compilação"
 run = "rm -f *.aux *.log *.out *.toc *.blg *.bbl"
