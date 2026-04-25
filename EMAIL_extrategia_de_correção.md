@@ -1,0 +1,5 @@
+Li o email dos revisores, os dois tocam nos mesmos problemas, a diferenças do dataset final, mesmo com o mesmo número de projetos iniciais, explicar como conseguir aumentar o dataset. O  outro ponto é sobre a análise de sentimentos, eles não acharam uma ligação/motivação de um test smells para um sentimento ou virse-versa pelo que entendi, no caso, essa parte esta solta, ou fraca.
+
+- 1º -> vou explicar a diferença desta versão da outra e porque teve o aumento da quantidade de test smells.
+- 2º -> sentimentos: estou pensando em adicionar uma seção explorando os achados somente dos sentimentos, embasado em artigos, e mostrando que foram achados importantes, e que é possível sim retirar sentimentos de análise de commits, que foi o que um dos autores comentou que não era.
+- 3º -> Com base nesta sessão nova, e com base em outros artigos sobre relação/coorelação de sentimentos com outras informações, melhorar essa seção.
