@@ -1,0 +1,18 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "research-hub": {
+      "type": "local",
+      "command": ["rust-research-mcp"],
+      "enabled": true,
+      "environment": {
+        "RUST_LOG": "info"
+      }
+    },
+    "mcp-science": {
+      "type": "local",
+      "command": ["uvx", "mcp-science", "web-fetch"],
+      "enabled": true
+    }
+  }
+}

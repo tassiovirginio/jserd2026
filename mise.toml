@@ -53,3 +53,58 @@ run = "latexmk -xelatex -pvc -interaction=nonstopmode main.tex"
 [tasks.python-dependencies]
 description = "Instala as dependências do Jython"
 run = "pip install pandas matplotlib seaborn numpy ipython-sql sqlalchemy"
+
+
+[tasks.pull-all]
+description = "atualiza todos os projetos de uma vez"
+run = "git submodule update --init --recursive"
+
+
+[tasks.install-tectonic_and-tools]
+description = "Instala o Tectonic via cargo, texlab e rust-research-mcp"
+run = """
+if command -v tectonic &> /dev/null; then
+  echo "✅ Tectonic já está instalado: $(tectonic --version)"
+else
+  echo "📦 Instalando Tectonic via cargo..."
+  cargo install tectonic
+  echo "✅ Tectonic instalado com sucesso!"
+fi
+
+if command -v texlab &> /dev/null; then
+  echo "✅ texlab já está instalado: $(texlab --version)"
+else
+  echo "📦 Instalando texlab via cargo..."
+  cargo install texlab
+  echo "✅ texlab instalado com sucesso!"
+fi
+
+if command -v rust-research-mcp &> /dev/null; then
+  echo "✅ rust-research-mcp já está instalado: $(rust-research-mcp --version)"
+else
+  echo "📦 Instalando rust-research-mcp via cargo..."
+  cargo install rust-research-mcp
+  echo "✅ rust-research-mcp instalado com sucesso!"
+  echo "⚠️ Lembre-se de configurar o rust-research-mcp conforme a documentação."
+  echo "https://github.com/Ladvien/research_hub_mcp"
+fi
+
+if command -v uv &> /dev/null; then
+  echo "✅ uv já está instalado: $(uv --version)"
+else
+  echo "📦 Instalando uv via cargo..."
+  cargo install uv
+  echo "✅ uv instalado com sucesso!"
+fi
+ 
+"""
+
+[tasks.install-vscode-extensions]
+description = "Instala extensões recomendadas do VS Code"
+run = """
+code --install-extension efoerster.texlab
+code --install-extension tomoki1207.pdf
+code --install-extension hverlin.mise-vscode
+code --install-extension GitHub.copilot-chat
+echo "✅ Extensões do VS Code instaladas!"
+"""

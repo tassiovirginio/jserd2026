@@ -1,0 +1,332 @@
+[
+  {
+    "ID": "camara2021use",
+    "doi": null,
+    "url": null,
+    "title": "On the use of test smells for prediction of flaky tests"
+  },
+  {
+    "ID": "calefato2018sentiment",
+    "doi": "10.1007/s10664-017-9546-9",
+    "url": null,
+    "title": "Sentiment Polarity Detection for Software Development"
+  },
+  {
+    "ID": "santana2021understanding",
+    "doi": null,
+    "url": null,
+    "title": "Understanding practitioners’ strategies to handle test smells: a multi-method study"
+  },
+  {
+    "ID": "Assertion_Roulette_and_Eager_Test",
+    "doi": "10.1109/ICSE-SEET58685.2023.00009",
+    "url": "https://doi.org/10.1109/ICSE-SEET58685.2023.00009",
+    "title": "Do the Test Smells Assertion Roulette and Eager Test Impact Students' Troubleshooting and Debugging Capabilities?"
+  },
+  {
+    "ID": "tsDetect2020",
+    "doi": "10.1145/3368089.3417921",
+    "url": "https://doi.org/10.1145/3368089.3417921",
+    "title": "tsDetect: an open source test smells detection tool"
+  },
+  {
+    "ID": "santana2020raide",
+    "doi": null,
+    "url": null,
+    "title": "RAIDE: a tool for Assertion Roulette and Duplicate Assert identification and refactoring"
+  },
+  {
+    "ID": "virginio2020_JNose",
+    "doi": "10.1145/3422392.3422499",
+    "url": "https://doi.org/10.1145/3422392.3422499",
+    "title": "JNose: Java Test Smell Detector"
+  },
+  {
+    "ID": "9796158",
+    "doi": "10.1145/3524842.3529092",
+    "url": null,
+    "title": "2022 IEEE/ACM 19th International Conference on Mining Software Repositories (MSR)"
+  },
+  {
+    "ID": "railana2020",
+    "doi": "10.1145/3422392.3422510",
+    "url": "https://doi.org/10.1145/3422392.3422510",
+    "title": "RAIDE: a tool for Assertion Roulette and Duplicate Assert identification and refactoring"
+  },
+  {
+    "ID": "garousi2018",
+    "doi": null,
+    "url": null,
+    "title": "Smells in software test code: A survey of knowledge in industry and academia"
+  },
+  {
+    "ID": "10.1145/3425174.3425212",
+    "doi": "10.1145/3425174.3425212",
+    "url": "https://doi.org/10.1145/3425174.3425212",
+    "title": "Refactoring Test Smells: A Perspective from Open-Source Developers"
+  },
+  {
+    "ID": "primary_communications",
+    "doi": null,
+    "url": null,
+    "title": "Cellular phones as a primary communications device: What are the implications for a global community?"
+  },
+  {
+    "ID": "bavota2015test",
+    "doi": null,
+    "url": null,
+    "title": "Are test smells really harmful? an empirical study"
+  },
+  {
+    "ID": "jsnose2013",
+    "doi": "10.1109/SCAM.2013.6648192",
+    "url": null,
+    "title": "2013 IEEE 13th International Working Conference on Source Code Analysis and Manipulation (SCAM)"
+  },
+  {
+    "ID": "pynose",
+    "doi": "10.1109/ASE51524.2021.9678615",
+    "url": "https://doi.org/10.1109/ASE51524.2021.9678615",
+    "title": "PyNose: a test smell detector for python"
+  },
+  {
+    "ID": "fernandes2021handling",
+    "doi": null,
+    "url": null,
+    "title": "Handling test smells in python: Results from a mixed-method study"
+  },
+  {
+    "ID": "catalog",
+    "doi": null,
+    "url": null,
+    "title": "The Open Catalog of Test Smells"
+  },
+  {
+    "ID": "ding2022automatic",
+    "doi": null,
+    "url": null,
+    "title": "Automatic identification of high-impact bug report by product and test code quality"
+  },
+  {
+    "ID": "tempy2022",
+    "doi": "10.1145/3555228.3555280",
+    "url": "https://doi.org/10.1145/3555228.3555280",
+    "title": "TEMPY: Test Smell Detector for Python"
+  },
+  {
+    "ID": "pontillo2024machine",
+    "doi": null,
+    "url": null,
+    "title": "Machine learning-based test smell detection"
+  },
+  {
+    "ID": "elvys2023",
+    "doi": "10.1109/ESEM56168.2023.10304800",
+    "url": null,
+    "title": "2023 ACM/IEEE International Symposium on Empirical Software Engineering and Measurement (ESEM)"
+  },
+  {
+    "ID": "luana2024",
+    "doi": "https://doi.org/10.1002/smr.2532",
+    "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/smr.2532",
+    "title": "On the diffusion of test smells and their relationship with test code quality of Java projects"
+  },
+  {
+    "ID": "islam2017sentistrength",
+    "doi": "10.1016/j.jss.2018.08.030",
+    "url": null,
+    "title": "SentiStrength-SE: Exploiting Domain Specificity for Improved Sentiment Analysis in Software Engineering Text"
+  },
+  {
+    "ID": "railana2024",
+    "doi": "https://doi.org/10.1016/j.scico.2023.103013",
+    "url": "https://www.sciencedirect.com/science/article/pii/S0167642323000953",
+    "title": "An empirical evaluation of RAIDE: A semi-automated approach for test smells detection and refactoring"
+  },
+  {
+    "ID": "kim2021secret",
+    "doi": null,
+    "url": null,
+    "title": "The secret life of test smells-an empirical study on test smell evolution and maintenance"
+  },
+  {
+    "ID": "afonso2023automatic",
+    "doi": null,
+    "url": null,
+    "title": "Automatic Generation of Smell-free Unit Tests"
+  },
+  {
+    "ID": "dnose_2025",
+    "doi": "10.5753/sbes.2025.11564",
+    "url": "https://sol.sbc.org.br/index.php/sbes/article/view/37087",
+    "title": " DNose: Dart Test Smell Detector"
+  },
+  {
+    "ID": "steel2021",
+    "doi": null,
+    "url": "https://sol.sbc.org.br/index.php/sast/article/view/18790",
+    "title": "Investigating Test Smells in JavaScript Test Code"
+  },
+  {
+    "ID": "sinha2016",
+    "doi": "10.1145/2901739.2903501",
+    "url": null,
+    "title": "Analyzing Developer Sentiment in Commit Logs"
+  },
+  {
+    "ID": "raman2020",
+    "doi": "10.1145/3377816.3381732",
+    "url": null,
+    "title": "Stress and Burnout in Open Source: Toward Finding, Understanding, and Mitigating Unhealthy Interactions"
+  },
+  {
+    "ID": "peruma2019",
+    "doi": null,
+    "url": null,
+    "title": "On the distribution of test smells in open source Android applications: an exploratory study"
+  },
+  {
+    "ID": "spadini2018",
+    "doi": "10.1109/ICSME.2018.00010",
+    "url": null,
+    "title": "2018 IEEE International Conference on Software Maintenance and Evolution (ICSME)"
+  },
+  {
+    "ID": "ferramentas2021",
+    "doi": "10.1145/3463274.3463335",
+    "url": "https://doi.org/10.1145/3463274.3463335",
+    "title": "Test Smell Detection Tools: A Systematic Mapping Study"
+  },
+  {
+    "ID": "hallgren2012computing",
+    "doi": null,
+    "url": null,
+    "title": "Computing inter-rater reliability for observational data: an overview and tutorial"
+  },
+  {
+    "ID": "railana2022",
+    "doi": "10.5753/cibse.2022.20977",
+    "url": "https://sol.sbc.org.br/index.php/cibse/article/view/20977",
+    "title": " Refactoring Assertion Roulette and Duplicate Assert test smells: a controlled experiment"
+  },
+  {
+    "ID": "zenodo",
+    "doi": "10.5281/zenodo.18436532",
+    "url": "https://doi.org/10.5281/zenodo.18436532",
+    "title": "More than one million test smells"
+  },
+  {
+    "ID": "cbsoft_estendido",
+    "doi": "10.5753/cbsoft_estendido.2022.227655",
+    "url": null,
+    "title": "TestAXE: Automatically Refactoring Test Smells Using JUnit 5 Features"
+  },
+  {
+    "ID": "statista2023",
+    "doi": null,
+    "url": null,
+    "title": "Cross-platform mobile frameworks used by software developers worldwide from 2019 to 2023"
+  },
+  {
+    "ID": "junior2020survey",
+    "doi": null,
+    "url": null,
+    "title": "A survey on test practitioners' awareness of test smells"
+  },
+  {
+    "ID": "10.1145/3387940.3392189",
+    "doi": "10.1145/3387940.3392189",
+    "url": "https://doi.org/10.1145/3387940.3392189",
+    "title": "An Exploratory Study on the Refactoring of Unit Test Files in Android Applications"
+  },
+  {
+    "ID": "ahmed2017senticr",
+    "doi": "10.1109/ASE.2017.8115623",
+    "url": null,
+    "title": "SentiCR: A Customized Sentiment Analysis Tool for Code Review Interactions"
+  },
+  {
+    "ID": "10.5555/3370272.3370293",
+    "doi": null,
+    "url": null,
+    "title": "On the distribution of test smells in open source Android applications: an exploratory study"
+  },
+  {
+    "ID": "10.1145/3474624.3477070",
+    "doi": "10.1145/3474624.3477070",
+    "url": "https://doi.org/10.1145/3474624.3477070",
+    "title": "Smart prediction for refactorings in the software test code"
+  },
+  {
+    "ID": "peruma2021distribution",
+    "doi": null,
+    "url": null,
+    "title": "On the distribution of"
+  },
+  {
+    "ID": "9769994",
+    "doi": "10.1109/TSE.2022.3172654",
+    "url": null,
+    "title": "Refactoring Test Smells With JUnit 5: Why Should Developers Keep Up-to-Date?"
+  },
+  {
+    "ID": "10.1145/3482909.3482915",
+    "doi": "10.1145/3482909.3482915",
+    "url": "https://doi.org/10.1145/3482909.3482915",
+    "title": "Investigating Test Smells in JavaScript Test Code"
+  },
+  {
+    "ID": "campos2021developers",
+    "doi": null,
+    "url": null,
+    "title": "Developers perception on the severity of test smells: an empirical study"
+  },
+  {
+    "ID": "virginio2019influence",
+    "doi": null,
+    "url": null,
+    "title": "On the influence of test smells on test coverage"
+  },
+  {
+    "ID": "miller2019",
+    "doi": "10.1109/ICSE-SEIS.2019.00019",
+    "url": null,
+    "title": "Why Do People Give Up FLOSSing? A Study of Contributor Disengagement in Open Source"
+  },
+  {
+    "ID": "nielsen2011new",
+    "doi": null,
+    "url": null,
+    "title": "A new ANEW: Evaluation of a word list for sentiment analysis in microblogs"
+  },
+  {
+    "ID": "junior2021test",
+    "doi": null,
+    "url": null,
+    "title": "How are test smells treated in the wild? A tale of two empirical studies"
+  },
+  {
+    "ID": "sast2025",
+    "doi": "10.5753/sast.2025.14327",
+    "url": "https://sol.sbc.org.br/index.php/sast/article/view/36886",
+    "title": " On the prevalence of test smells in mobile development"
+  },
+  {
+    "ID": "deursen2001",
+    "doi": null,
+    "url": null,
+    "title": "Refactoring Test Code"
+  },
+  {
+    "ID": "guzman2014",
+    "doi": "10.1145/2597073.2597118",
+    "url": null,
+    "title": "Sentiment Analysis of Commit Comments in GitHub: An Empirical Study"
+  },
+  {
+    "ID": "10006864",
+    "doi": "10.1109/SCAM55253.2022.00013",
+    "url": null,
+    "title": "2022 IEEE 22nd International Working Conference on Source Code Analysis and Manipulation (SCAM)"
+  }
+]
