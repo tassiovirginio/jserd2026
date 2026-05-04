@@ -8,6 +8,7 @@ TEXINPUTS = ".:./latex//:"
 [tools]
 tinytex = "latest"
 python = "latest"
+pipx = "latest"
 
 [tasks.setup]
 description = "Instala as coleções corretas de pacotes"
