@@ -4,7 +4,6 @@ dataset/.ipynb_checkpoints
 *.log
 *.aux
 *.synctex
-*.pdf
 *.xdv
 *.blg
 *.bbl

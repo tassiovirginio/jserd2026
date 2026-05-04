@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+     <!-- disabled google tag temporary -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-0YJD8QMQXL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'G-0YJD8QMQXL');
+    </script> -->
+    
+        <title> On The Relation of Test Smells to Software Code Quality  | TU Delft Repository</title>
+        <link rel=stylesheet href=/static/css/webapp.css type=text/css> <!-- need to remove -->
+        <link rel=stylesheet href=/static/css/global.css?v=20260331-81 type=text/css> <!-- need to remove -->
+        <link rel=stylesheet href=/static/css/layout.css type=text/css>
+        <link rel=stylesheet href=/static/css/MaterialIcon.css type=text/css>
+        <link rel="icon" type="image/png" href="/static/images/favicon.ico">
+        <link rel="stylesheet" href="/static/dist/css/output.css">
+    
+    
+    <meta name="citation_title" content="On The Relation of Test Smells to Software Code Quality" />
+
+    <meta name="citation_publication_date"
+          content="2018" />
+
+
+
+    
+        
+            
+                <meta name="citation_author"
+                      content="None, None">
+            
+                <meta name="citation_author"
+                      content="None, None">
+            
+                <meta name="citation_author"
+                      content="None, None">
+            
+                <meta name="citation_author"
+                      content="None, None">
+            
+                <meta name="citation_author"
+                      content="None, None">
+            
+        
+    
+        
+    
+
+
+    
+    
+        
+            
+        
+    
+    
+    <meta name="citation_pdf_url" content="/file/File_d4ef271e-b50a-4f8c-a329-231c133af975" />
+
+<meta name="citation_abstract" content="Test smells are sub-optimal design choices in the implementation of test code. As reported by recent studies, their presence might not only negatively affect the comprehension of test suites but can also lead to test cases being less effective in finding bugs in production code. Although significant steps toward understanding test smells, there is still a notable absence of studies assessing their association with software quality.&lt;br/&gt;In this paper, we investigate the relationship between the presence of test smells and the change- and defect-proneness of test code, as well as the defect-proneness of the tested production code. To this aim, we collect data on 221 releases of ten software systems and we analyze more than a million test cases to investigate the association of six test smells and their co-occurrence with software quality. Key results of our study include:(i) tests with smells are more change- and defect-prone, (ii) ‘Indirect Testing’, ‘Eager Test’, and ‘Assertion Roulette’ are the most significant smells for change-proneness and, (iii) production code is more defect-prone when tested by smelly tests." />
+
+<meta name="citation_abstract_html_url"
+      content="https://repository.tudelft.nl/record/uuid:4555186f-113c-45c0-8b06-fb106295ae8e" />
+
+</head>
+<body>
+<div class="flex min-h-screen flex-col bg-off-white">
+
+    <!-- Header -->
+    <header class="bg-tu-delft-primary-blue text-white">
+        
+            <div class="xl:w-[1224px] m-auto flex flex-row justify-between px-4 py-2">
+    <div class="flex flex-row space-x-4 justify-between items-center">
+        <div class="w-20 pb-4">
+            <a href="/">
+                <img class="logo"
+                     src="/static/images/logo/tudelft_logo.svg"
+                     alt="TU Delft" />
+            </a>
+        </div>
+        <div class="w-px h-10 bg-white"></div>
+        <div>
+            <a href="https://www.tudelft.nl/library"
+               target="_blank"
+               class="hover:underline font-bold">Library</a>
+        </div>
+    </div>
+    <div class="flex flex-row justify-end z-40">
+        <div class="flex flex-row items-center gap-5 pt-2 whitespace-nowrap">
+            <a class="text-white inline-flex items-center gap-1 whitespace-nowrap" href="/">
+                <span class="material-symbols-outlined text-xl">home</span>
+                (Home) TU Delft Repository
+            </a>
+            <a class="inline-flex items-center gap-1 whitespace-nowrap" href="/login">
+                <span class="material-symbols-outlined text-xl">login</span>
+                Login
+            </a>
+        </div>
+    </div>
+</div>
+        
+    </header>
+
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        
+
+    <div class="flex w-full lg:w-[1000px] xl:w-[1200px] m-auto p-10 pt-12">
+
+        <div class="hidden lg:block flex-1">
+            
+
+<div class="menu record-navigator mt-12">
+    <div class="filter space-y-2">
+        
+    <div>
+        <a href="#title" class="text-gray-500">Title</a>
+    </div>
+
+        
+    <div>
+        <a href="#metadata" class="text-gray-500">Metadata</a>
+    </div>
+
+        
+    <div>
+        <a href="#abstract" class="text-gray-500">Abstract</a>
+    </div>
+
+        
+    <div>
+        <a href="#files" class="text-gray-500">Files</a>
+    </div>
+
+        
+    </div>
+</div>
+        </div>
+
+        <div class="grow lg:grow-0 lg:w-[800px]">
+
+            <!----- Title and Subtitle -------------------------------------------------------->
+            <div id="title">
+                
+                    <h1>On The Relation of Test Smells to Software Code Quality</h1>
+                
+                
+            </div>
+
+            <div class="pt-3 space-x-2">
+
+                <!----- Preview File Button -------------------------------------------------------->
+                
+                    
+
+                    
+                        
+                            
+                        
+                    
+
+                    
+
+                    
+                        <a href="/file/File_d4ef271e-b50a-4f8c-a329-231c133af975?preview=1" target="_blank">
+                            <button class="primary-button"><i class="icon">open_in_new</i>Preview File</button>
+                        </a>
+                    
+                
+            </div>
+
+            <!----- Metadata main and additional info -------------------------------------------------------->
+            <div id="metadata">
+                <div class="text-light-gray text-sm space-y-3 my-4 mb-8">
+    <!-------- Object Type and publication_year-------->
+    <div>
+        Conference Paper
+        (2018)
+    </div>
+    <!-------- Main sections of the metadata -------->
+    
+    
+        
+            <div>
+                
+                    
+                    <div>Author(s)</div>
+                    
+
+    <p>
+        <a href="/person/Person_6e8f0d7e-c717-45d3-8004-585457a37572" class="hover:underline text-link-blue">
+            Davide Spadini
+        </a>
+    
+
+    
+    
+
+
+    (TU Delft - Software Engineering, Software Improvement Group)</p>
+
+    <p>
+        <span class="text-dark-gray/60 cursor-not-allowed" aria-disabled="true" tabindex="-1">
+            Fabio Palomba
+        </span>
+    
+
+    
+    
+
+
+    (Universitat Zurich)</p>
+
+    <p>
+        <a href="/person/Person_5ef6926b-e50c-4dcd-bb3e-821747f29b02" class="hover:underline text-link-blue">
+            Andy Zaidman
+        </a>
+    
+
+    
+    
+
+
+    (TU Delft - Software Engineering)</p>
+
+    <p>
+        <span class="text-dark-gray/60 cursor-not-allowed" aria-disabled="true" tabindex="-1">
+            Magiel Bruntink
+        </span>
+    
+
+    
+    
+
+
+    (Software Improvement Group)</p>
+
+    <p>
+        <span class="text-dark-gray/60 cursor-not-allowed" aria-disabled="true" tabindex="-1">
+            Alberto Bacchelli
+        </span>
+    
+
+    
+    
+
+
+    (Universitat Zurich)</p>
+
+                    
+                
+            </div>
+        
+            <div>
+                
+                    
+
+
+
+    
+    
+        
+    
+
+
+
+    
+    <div></div>
+
+                    <!-- access_conditions -->
+                
+            </div>
+        
+    
+    <!-------- Keywords -------->
+    
+        
+        
+        <div>
+    <div class="keywords">
+        
+            
+    
+    <a class="cursor-pointer" onclick=handleFilterOnChange('code_quality','keyword')>
+        <span>Code quality</span>
+    </a>
+
+        
+            
+    
+    <a class="cursor-pointer" onclick=handleFilterOnChange('automated_testing','keyword')>
+        <span>Automated testing</span>
+    </a>
+
+        
+            
+    
+    <a class="cursor-pointer" onclick=handleFilterOnChange('test_smells','keyword')>
+        <span>Test smells</span>
+    </a>
+
+        
+    </div>
+</div>
+    
+
+    <!-------- Related publication links -------->
+    
+
+    
+        
+            
+                
+                    
+                        
+                    
+                
+            
+        
+    
+
+    
+    
+        
+            
+        
+            
+        
+    
+
+    
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    
+
+    
+        <div>DOI related publication</div>
+        
+            <a class="hover:underline text-link-blue"
+               target="_blank"
+               href="https://doi.org/10.1109/ICSME.2018.00010">https://doi.org/10.1109/ICSME.2018.00010</a>
+            <span class="text-light-gray text-sm ml-2">Final published version</span>
+        
+    
+
+    
+    <!-------- Reference -------->
+    <div class="flex flex-row items-center space-x-2">
+        <div>
+            <div>To reference this document use</div>
+            <a href="https://resolver.tudelft.nl/uuid:4555186f-113c-45c0-8b06-fb106295ae8e"
+               target="_blank"
+               class="hover:underline text-link-blue">https://resolver.tudelft.nl/uuid:4555186f-113c-45c0-8b06-fb106295ae8e</a>
+        </div>
+        <div class="mt-4">
+    <span class="tooltip tooltip-btn-icon" title="Copy URL">
+    <button
+            type="button"
+            class="text-gray-400 bg-white hover:bg-gray-200 border-gray-400 border
+            font-medium rounded-sm text-xs px-0.5 py-px text-center inline-flex items-center"
+            onclick="copyContent('https://resolver.tudelft.nl/uuid:4555186f-113c-45c0-8b06-fb106295ae8e', 'https://resolver.tudelft.nl/uuid:4555186f-113c-45c0-8b06-fb106295ae8e')">
+            <i id="icon-content-to-copy-https://resolver.tudelft.nl/uuid:4555186f-113c-45c0-8b06-fb106295ae8e" class="text-gray-400 text-xs icon-no-style">content_copy</i>
+    </button>
+    </span>
+</div>
+    </div>
+</div>
+
+                
+                    <div class="bg-white border-t-4 border-tu-delft-primary-blue p-4 pl-6 pt-3 text-lg my-4"
+                         onclick="displayFullMetadata()">
+                        <details>
+                            <summary class="flex items-center">
+                                <div class="flex-1 mr-4 pt-3 font-bold"> More Info</div>
+                                <div class="flex-0">
+                                    <div id="btn-more" class="btn-more"> expand_more</div>
+                                </div>
+                            </summary>
+                            
+<div class="space-y-2">
+    
+        <div>
+            <!-- language -->
+            
+                        <!-- other content -->
+                        <div class="text-black font-bold">Publication Year</div>
+                        2018
+                    
+                </div>
+            
+        <div>
+            <!-- language -->
+            
+                
+                
+                    <div class="text-black font-bold">Language</div>
+                    English
+                
+                <!-- access_conditions -->
+            
+                </div>
+            
+        <div>
+            <!-- language -->
+            
+                
+
+
+
+    
+    
+        
+    
+
+
+
+    
+    <div></div>
+
+                <!-- Collections -->
+            
+                </div>
+            
+        <div>
+            <!-- language -->
+            
+                        <!-- other content -->
+                        <div class="text-black font-bold">Pages (from-to)</div>
+                        12-23
+                    
+                </div>
+            
+        <div>
+            <!-- language -->
+            
+                        <!-- other content -->
+                        <div class="text-black font-bold">ISBN (electronic)</div>
+                        978-1-5386-7870-1
+                    
+                </div>
+            
+        <div>
+            <!-- language -->
+            
+                <div class="text-black font-bold">Event</div>
+                
+                    
+                        
+                    
+                </div>
+            
+        <div>
+            <!-- language -->
+            
+                        <!-- other content -->
+                        <div class="text-black font-bold">Downloads counter</div>
+                        397
+                    
+                </div>
+            
+        <div>
+            <!-- language -->
+            
+                <div class="text-black font-bold">Collections</div>
+                
+                    Institutional Repository
+                    
+                
+                <!-- Journal title -->
+            
+                </div>
+            
+            <!-- Reuse Rights is displayed if files has no cc license  -->
+            
+                
+                
+                    
+                
+                
+                    <div>
+                        <div class="text-black font-bold">Reuse Rights</div>
+                        <p>
+                            Other than for strictly personal use, it is not permitted to download, forward or distribute the text
+                            or part of it, without the consent of the author(s) and/or copyright holder(s), unless the work is under an
+                            open content license such as Creative Commons.
+                        </p>
+                    </div>
+                
+            
+        </div>
+                        </details>
+                    </div>
+                
+            </div>
+
+            <!----- Abstract -------------------------------------------------------->
+            
+                <div id="abstract" class="space-y-3 px-20 my-8 mt-10">
+                    <h2>Abstract</h2>
+                    <p>Test smells are sub-optimal design choices in the implementation of test code. As reported by recent studies, their presence might not only negatively affect the comprehension of test suites but can also lead to test cases being less effective in finding bugs in production code. Although significant steps toward understanding test smells, there is still a notable absence of studies assessing their association with software quality.<br/>In this paper, we investigate the relationship between the presence of test smells and the change- and defect-proneness of test code, as well as the defect-proneness of the tested production code. To this aim, we collect data on 221 releases of ten software systems and we analyze more than a million test cases to investigate the association of six test smells and their co-occurrence with software quality. Key results of our study include:(i) tests with smells are more change- and defect-prone, (ii) ‘Indirect Testing’, ‘Eager Test’, and ‘Assertion Roulette’ are the most significant smells for change-proneness and, (iii) production code is more defect-prone when tested by smelly tests.</p>
+                </div>
+            
+
+            <!----- Files -------------------------------------------------------->
+            
+                <div id="files" class="files my-8">
+                    <h2>Files</h2>
+                    <div class="flex flex-col space-y-2 mt-1">
+
+    
+
+    
+
+        
+        
+        
+        
+        
+
+        
+            
+                
+            
+        
+
+        
+            <div class="flex flex-row gap-2 items-center">
+                <div class="grow flex-col">
+                    <a href="/file/File_d4ef271e-b50a-4f8c-a329-231c133af975" download target="_blank">On_the_Relation_of_Test_Smells... (pdf)</a>
+
+                    <div class="flex flex-row space-x-1">
+                        
+                            <div class="small-note-not-italic">
+                                
+                                (pdf | 0.697 Mb)
+                            </div>
+                        
+
+                        
+                            <div class="small-note-not-italic">
+                                - Embargo expired in 04-07-2022
+                            </div>
+                        
+                    </div>
+                </div>
+
+                <div class="text-black">
+                    
+
+
+    <span class="text-xs text-light-gray">
+        License info not available
+    </span>
+
+                </div>
+
+                
+                    <a href="/file/File_d4ef271e-b50a-4f8c-a329-231c133af975" download target="_blank">
+                        <button class="secondary-button"><i class="icon">download</i>Download</button>
+                    </a>
+                
+            </div>
+        
+    
+</div>
+
+                </div>
+            
+
+            
+
+            <!----- No files fallback --------------------------------------------->
+            
+        </div>
+
+        <div class="hidden xl:block flex-1"></div>
+    </div>
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-off-white">
+        
+            <footer class="w-full min-h-[400px] bg-[url('/static/images/logo/torch.svg')] bg-no-repeat bg-[length:270%] bg-[position:13%_75%] flex flex-col justify-between pt-4 sm:pt-16 border-t border-clear-gray">
+    <div class="px-4 py-2">
+        <div class="lg:w-[1000px] flex flex-col sm:flex-row justify-between gap-4 sm:gap-20 m-auto">
+            <!-- Info Column -->
+            <div class="basis-2/4">
+                <p class="text-4.5xl font-light font-roboto">TU Delft Repository</p>
+                <div class="py-4 sm:p-4 sm:pl-3 mt-4">The TU Delft Repository is a digital repository for TU Delft’s research and a
+                    service provided by the
+                    TU Delft Library.
+                </div>
+            </div>
+            <!-- Contact -->
+            <div class="flex flex-row grow gap-20 pb-4 sm:pb-0">
+                <div class="basis-1/2 pt-4">
+                    <div>
+                        <p class="mb-1">Building 21</p>
+                        <p class="mb-1">Prometheusplein 1</p>
+                        <p class="mb-1">2628ZC Delft</p>
+                        <p class="mb-1">
+                            <a href="mailto:library@tudelft.nl" class="hover:underline">
+                                library@tudelft.nl
+                            </a>
+                        </p>
+                        <p class="mb-1">+31 (0)15 27 85678</p>
+                    </div>
+                </div>
+                <!-- Navigation -->
+                <div class="basis-1/2 pt-2">
+                    <h2 class="text-2xl font-roboto mb-4">Navigation</h2>
+                    <nav class="flex flex-col space-y-1.5">
+                        <a class="hover:underline" href="/" title="Home repository">Home</a>
+                        <a class="hover:underline" href="/content-in-the-repository" title="FAQ">About</a>
+                        <a class="hover:underline" href="/search?" title="Search">Search</a>
+                        <a class="hover:underline" href="/upload-content" title="Upload Content">Upload Content</a>
+                        <a class="hover:underline" href="/contact" title="Contact">Contact</a>
+                        <a class="hover:underline" href="/faq" title="FAQ">FAQ</a>
+                    </nav>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="px-4 py-2 bg-darkmode-black">
+        <div class="lg:w-[1000px] flex flex-row justify-between m-auto items-center">
+            <div class="flex flex-row space-x-4 justify-between items-center">
+                <div class="w-20 pb-4">
+                    <a href="/"><img class="logo" src="/static/images/logo/tudelft_logo.svg" alt="TU Delft"></a>
+                </div>
+                <div class="w-px h-10 bg-white "></div>
+                <div>
+                    <a href="https://www.tudelft.nl/library" target="_blank"
+                       class="hover:underline text-white">Library</a>
+                </div>
+            </div>
+            <nav class="flex flex-row space-x-4 text-white">
+                <a class="hover:underline sm:hidden" href="/" title="Home repository">Home</a>
+                <a class="hover:underline hidden sm:inline-block" href="/" title="Home repository">Home (Repository)</a>
+                <a class="hover:underline" href="/record/uuid:f116c1eb-35ca-4ecb-a58f-37ae764280e8" title="Search">Privacy</a>
+                <a class="hover:underline" href="/contact" title="Contact">Contact</a>
+            </nav>
+        </div>
+    </div>
+</footer>
+        
+    </footer>
+
+</div>
+
+<!-- Javascript -->
+
+
+
+<script src="/static/js/common/search/filters.js"></script> <!-- need to remove -->
+<script src="/static/js/common/form/buttons.js"></script> <!-- need to remove -->
+<script src="/static/js/common/search/pagination.js"></script> <!-- need to remove -->
+<script src="/static/js/script.js"></script> <!-- need to remove -->
+</body>
+</html>

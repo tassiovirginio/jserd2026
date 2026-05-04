@@ -1,0 +1,950 @@
+	<!DOCTYPE html>
+<html lang="en-US" xml:lang="en-US">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>
+		On the test smells detection: an empirical study on the JNose Test accuracy
+							| Journal of Software Engineering Research and Development
+			</title>
+
+	
+<link rel="icon" href="https://journals-sol.sbc.org.br/public/journals/1/favicon_en_US.jpg">
+<meta name="generator" content="Open Journal Systems 3.2.1.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
+<meta name="DC.Creator.PersonalName" content="Tássio Virgínio"/>
+<meta name="DC.Creator.PersonalName" content="Luana Martins"/>
+<meta name="DC.Creator.PersonalName" content="Railana Santana"/>
+<meta name="DC.Creator.PersonalName" content="Adriana Cruz"/>
+<meta name="DC.Creator.PersonalName" content="Larissa Rocha"/>
+<meta name="DC.Creator.PersonalName" content="Heitor Costa"/>
+<meta name="DC.Creator.PersonalName" content="Ivan Machado"/>
+<meta name="DC.Date.created" scheme="ISO8601" content="2021-09-08"/>
+<meta name="DC.Date.dateSubmitted" scheme="ISO8601" content="2021-03-01"/>
+<meta name="DC.Date.issued" scheme="ISO8601" content="2021-02-08"/>
+<meta name="DC.Date.modified" scheme="ISO8601" content="2022-03-07"/>
+<meta name="DC.Description" xml:lang="en" content="Several strategies have supported test quality measurement and analysis. For example, code coverage, a widely used one, enables verification of the test case to cover as many source code branches as possible. Another set of affordable strategies to evaluate the test code quality exists, such as test smells analysis. Test smells are poor design choices in test code implementation, and their occurrence might reduce the test suite quality. A practical and largescale test smells identification depends on automated tool support. Otherwise, test smells analysis could become a cost-ineffective strategy. In an earlier study, we proposed the JNose Test, automated tool support to detect test smells and analyze test suite quality from the test smells perspective. This study extends the previous one in two directions: i) we implemented the JNose-Core, an API encompassing the test smells detection rules. Through an extensible architecture, the tool is now capable of accomodating new detection rules or programming languages; and ii) we performed an empirical study to evaluate the JNose Test effectiveness and compare it against the state-of-the-art tool, the tsDetect. Results showed that the JNose-Core precision score ranges from 91% to 100%, and the recall score from 89% to 100%. It also presented a slight improvement in the test smells detection rules compared to the tsDetect for the test smells detection at the class level."/>
+<meta name="DC.Format" scheme="IMT" content="application/pdf"/>
+<meta name="DC.Identifier" content="1893"/>
+<meta name="DC.Identifier.pageNumber" content="8:1 - 8:14"/>
+<meta name="DC.Identifier.DOI" content="10.5753/jserd.2021.1893"/>
+<meta name="DC.Identifier.URI" content="https://journals-sol.sbc.org.br/index.php/jserd/article/view/1893"/>
+<meta name="DC.Language" scheme="ISO639-1" content="en"/>
+<meta name="DC.Rights" content="Copyright (c) 2021 Tássio Virgínio, Luana Martins, Railana Santana, Adriana Cruz, Larissa Rocha, Heitor Costa, Ivan Machado"/>
+<meta name="DC.Rights" content="http://creativecommons.org/licenses/by/4.0"/>
+<meta name="DC.Source" content="Journal of Software Engineering Research and Development"/>
+<meta name="DC.Source.ISSN" content="2195-1721"/>
+<meta name="DC.Source.Volume" content="9"/>
+<meta name="DC.Source.URI" content="https://journals-sol.sbc.org.br/index.php/jserd"/>
+<meta name="DC.Subject" xml:lang="en" content="Evidence-based Software Engineering"/>
+<meta name="DC.Title" content="On the test smells detection: an empirical study on the JNose Test accuracy"/>
+<meta name="DC.Type" content="Text.Serial.Journal"/>
+<meta name="DC.Type.articleType" content="Research Article"/>
+<meta name="gs_meta_revision" content="1.1"/>
+<meta name="citation_journal_title" content="Journal of Software Engineering Research and Development"/>
+<meta name="citation_journal_abbrev" content="JSERD"/>
+<meta name="citation_issn" content="2195-1721"/> 
+<meta name="citation_author" content="Tássio Virgínio"/>
+<meta name="citation_author_institution" content="Federal Institute of Tocantins"/>
+<meta name="citation_author" content="Luana Martins"/>
+<meta name="citation_author_institution" content="Federal University of Bahia"/>
+<meta name="citation_author" content="Railana Santana"/>
+<meta name="citation_author_institution" content="Federal University of Bahia"/>
+<meta name="citation_author" content="Adriana Cruz"/>
+<meta name="citation_author_institution" content="Federal University of Lavras"/>
+<meta name="citation_author" content="Larissa Rocha"/>
+<meta name="citation_author_institution" content="Federal University of Bahia"/>
+<meta name="citation_author" content="Heitor Costa"/>
+<meta name="citation_author_institution" content="Federal University of Lavras"/>
+<meta name="citation_author" content="Ivan Machado"/>
+<meta name="citation_author_institution" content="Federal University of Bahia"/>
+<meta name="citation_title" content="On the test smells detection: an empirical study on the JNose Test accuracy"/>
+<meta name="citation_language" content="en"/>
+<meta name="citation_date" content="2021/09/08"/>
+<meta name="citation_volume" content="9"/>
+<meta name="citation_firstpage" content="8:1"/>
+<meta name="citation_lastpage" content="8:14"/>
+<meta name="citation_doi" content="10.5753/jserd.2021.1893"/>
+<meta name="citation_abstract_html_url" content="https://journals-sol.sbc.org.br/index.php/jserd/article/view/1893"/>
+<meta name="citation_keywords" xml:lang="en" content="Tests Quality"/>
+<meta name="citation_keywords" xml:lang="en" content="Test Evolution"/>
+<meta name="citation_keywords" xml:lang="en" content="Test Smells"/>
+<meta name="citation_keywords" xml:lang="en" content="Evidence-based Software Engineering"/>
+<meta name="citation_pdf_url" content="https://journals-sol.sbc.org.br/index.php/jserd/article/download/1893/1798"/>
+<meta name="citation_reference" content="Bavota,G.,Qusef,A.,Oliveto,R.,DeLucia,A.,and Binkley, D. (2015). Are test smells really harmful? an empirical study. Empirical Software Engineering,20(4):1052–1094."/>
+<meta name="citation_reference" content="Bavota, G., Qusef, A., Oliveto, R., Lucia, A., and Binkley, D. (2012). An empirical analysis of the distribution of unit test smells and their impact on software maintenance. In 28th IEEE International Conference on Software Maintenance (ICSM)."/>
+<meta name="citation_reference" content="Bell, J., Legunsen, O., Hilton, M., Eloussi, L., Yung, T., and Marinov, D. (2018). DeFlaker: Automatically Detecting Flaky Tests. In IEEE/ACM 40th International Conferenceon Software Engineering (ICSE), pages 433–444."/>
+<meta name="citation_reference" content="Capgemini (2018). World Quality Report 2018­19. https://www.capgemini.com/service/world-quality-report-2018-19/.Accessed:March 1st, 2021."/>
+<meta name="citation_reference" content="CISQ (2021). The Cost of Poor Software Quality in theUS: A 2020 Report. https://www.it-cisq.org/pdf/CPSQ-2020-report.pdf. Accessed: March 1st, 2021."/>
+<meta name="citation_reference" content="Deursen, A., Moonen, L. M., Bergh, A., and Kok, G. (2001). Refactoring test code. InRefactoring Test Code, Amsterdam, The Netherlands, The Netherlands. CWI (Centre for Mathematics and Computer Science)."/>
+<meta name="citation_reference" content="Garousi, V. and Küçük, B. (2018). Smells in software test code: A survey of knowledge in industry and academia. Journal of Systems and Software, 138:52 – 81."/>
+<meta name="citation_reference" content="Gopinath, R., Jensen, C., and Groce, A. (2014). Code cover­age for suite evaluation by developers. InProceedings of the 36th International Conference on Software Engineer­ing (ICSE), New York, NY, USA. ACM."/>
+<meta name="citation_reference" content="Grano,G.,Palomba,F.,DiNucci,D.,DeLucia,A.,andGall,H. C. (2019). Scented since the beginning: On the diffuse­ness of test smells in automatically generated test code. Journal of Systems and Software, 156:312–327."/>
+<meta name="citation_reference" content="Greiler, M., van Deursen, A., and Storey, M. (2013). Auto­mated detection of test fixture strategies and smells. In IEEE Sixth International Conference on Software Testing, Verification and Validation, pages 322–331."/>
+<meta name="citation_reference" content="Guerra Calle, D., Delplanque, J., and Ducasse, S. (2019).Exposing Test Analysis Results with DrTests. In International Workshop on Smalltalk Technologies, pages 1–5, Cologne, Germany. HAL."/>
+<meta name="citation_reference" content="Hallgren, K. A. (2012). Computing inter­rater reliability for observational data: an overview and tutorial. Tutorials in quantitative methods for psychology, 8(1):23."/>
+<meta name="citation_reference" content="Junior, N. S., Rocha, L., Martins, L. A., and Machado, I.(2020). A survey on test practitioners’ awareness of test smells. In Proceedings of the XXIII Iberoamerican Con­ference on Software Engineering, CIbSE2020, pages 462–475. Curran Associates."/>
+<meta name="citation_reference" content="Koochakzadeh, N. and Garousi, V. (2010). TeCReVis: A Tool for Test Coverage and Test Redundancy Visualiza­tion. In Bottaci, L. and Fraser, G., editors, Testing – Prac­ticeand Research Techniques,pages129–136, Berlin, Hei­delberg. Springer Berlin Heidelberg."/>
+<meta name="citation_reference" content="Meszaros, G., Smith, S. M., and Andrea, J. (2003). The testautomation manifesto. In Maurer, F. and Wells, D., edi­tors, Extreme Programming and Agile Methods­ XP / Agile Universe 2003, Berlin, Heidelberg. Springer Berlin Hei­delberg."/>
+<meta name="citation_reference" content="Negar, K. and Garousi, V. (2010). A tester­assisted methodology for test redundancy detection. Advances in Software Engineering, 2010."/>
+<meta name="citation_reference" content="Palomba, F., Zaidman, A., and Lucia, A. D. (2018). Au­tomatic test smell detection using information retrieval techniques. In IEEE International Conference on Soft­ware Maintenance and Evolution (ICSME), pages 311–322, Madrid, Spain. IEEE."/>
+<meta name="citation_reference" content="Pecorelli, F., Di Lillo, G., Palomba, F., and De Lucia, A.(2020). VITRuM: A Plug­In for the Visualization of Test­Related Metrics. In Proceedings of the International Con­ference on Advanced Visual Interfaces, New York, NY,USA. ACM."/>
+<meta name="citation_reference" content="Peruma, A., Almalki, K., Newman, C. D., Mkaouer, M. W., Ouni, A., and Palomba, F. (2019). On the distribution of test smells in open source android applications: An ex­ploratory study. In Proceedings of the 29th Annual Inter­national Conference on Computer Science and Software Engineering (CASCON), Riverton, NJ, USA. IBM."/>
+<meta name="citation_reference" content="Peruma, A., Almalki, K., Newman, C. D., Mkaouer, M. W., Ouni, A., and Palomba, F. (2020). TsDetect: An OpenSource Test Smells Detection Tool. ACM, New York, NY, USA."/>
+<meta name="citation_reference" content="Santana, R., Martins, L., Rocha, L., Virginio, T., Cruz, A.,Costa, H., and Machado, I. (2020). RAIDE: A Tool for Assertion Roulette and Duplicate Assert Identification and Refactoring. In Proceedings of the 34th Brazilian Sympo­sium on Software Engineering (SBES). ACM."/>
+<meta name="citation_reference" content="Spadini, D., Palomba, F., Zaidman, A., Bruntink, M., andBacchelli, A. (2018). On the relation of test smells to soft­ware code quality. In International Conference on Soft­ware Maintenance and Evolution (ICSME), pages 1–12.IEEE."/>
+<meta name="citation_reference" content="Spadini, D., Schvarcbacher, M., Oprescu, A.­M., Bruntink, M.,andBacchelli, A.(2020). Investigatingseveritythresh­olds for test smells. InProceedings of the 17th In­ternational Conference on Mining Software Repositories(MSR). ACM."/>
+<meta name="citation_reference" content="Virginio, T., Martins, L., Soares, L. R., Railana, S., Costa,H., and Machado, I. (2020). An empirical study ofautomatically­generated tests from the perspective of test smells. In Proceedings of theXXXIV Brazilian Symposium on Software Engineering (SBES), New York, NY, USA.ACM."/>
+<meta name="citation_reference" content="Virginio,T.,Santana,R.,Martins,L.A.,Soares,L.R.,Costa,H.,andMachado,I.(2019). On the influence of test smells on test coverage. In Proceedings of the XXXIII Brazilian Symposium on Software Engineering (SBES), pages 467–471, New York, NY, USA. ACM."/>
+<meta name="citation_reference" content="Virgínio, T., Martins, L., Santana, R., Cruz, A., Rocha, L.,Costa, H., and Machado, I. (2021). On the test smells detection: an empirical study on the JNose Test accuracy[Dataset]. Available at:https://doi.org/10.5281/zenodo.4570751."/>
+<meta name="citation_reference" content="Yusifoğlu, V. G., Amannejad, Y., and Can, A. B. (2015). Software test­-code engineering: A systematic mapping.In­formation and Software Technology, 58:123 – 147"/>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3P7HGSZCPS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3P7HGSZCPS');
+</script>
+	<link rel="stylesheet" href="https://journals-sol.sbc.org.br/index.php/jserd/$$$call$$$/page/page/css?name=stylesheet" type="text/css" /><link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto+Sans:400,400italic,700,700italic" type="text/css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css?v=3.2.1.2" type="text/css" /><link rel="stylesheet" href="https://journals-sol.sbc.org.br/plugins/generic/orcidProfile/css/orcidProfile.css?v=3.2.1.2" type="text/css" /><link rel="stylesheet" href="https://journals-sol.sbc.org.br/public/journals/1/styleSheet.css?v=3.2.1.2" type="text/css" /><link rel="stylesheet" href="https://journals-sol.sbc.org.br/public/site/styleSheet.css?v=3.2.1.2" type="text/css" />
+</head>
+<body class="pkp_page_article pkp_op_view has_site_logo" dir="ltr">
+
+	<div class="pkp_structure_page">
+
+				<header class="pkp_structure_head" id="headerNavigationContainer" role="banner">
+						 <nav class="cmp_skip_to_content" aria-label="Jump to content links">
+	<a href="#pkp_content_main">Skip to main content</a>
+	<a href="#siteNav">Skip to main navigation menu</a>
+		<a href="#pkp_content_footer">Skip to site footer</a>
+</nav>
+
+			<div class="pkp_head_wrapper">
+
+				<div class="pkp_site_name_wrapper">
+					<button class="pkp_site_nav_toggle">
+						<span>Open Menu</span>
+					</button>
+										<div class="pkp_site_name">
+																<a href="						https://journals-sol.sbc.org.br/index.php/jserd/index
+					" class="is_img">
+							<img src="https://journals-sol.sbc.org.br/public/journals/1/pageHeaderLogoImage_en_US.jpg" width="1237" height="433" alt="Journal of Software Engineering Research and Development" />
+						</a>
+						</br>
+						<a href="						https://journals-sol.sbc.org.br/index.php/jserd/index
+					" class="is_text">Journal of Software Engineering Research and Development</a>
+										</div>
+				</div>
+
+				
+				<nav class="pkp_site_nav_menu" aria-label="Site Navigation">
+					<a id="siteNav"></a>
+					<div class="pkp_navigation_primary_row">
+						<div class="pkp_navigation_primary_wrapper">
+																				<ul id="navigationPrimary" class="pkp_navigation_primary pkp_nav_list">
+								<li class="">
+				<a href="https://sol.sbc.org.br/index.php">
+					SOL
+				</a>
+									<ul>
+																					<li class="">
+									<a href="https://sol.sbc.org.br/index.php/anais">
+										Proceedings
+									</a>
+								</li>
+																												<li class="">
+									<a href="https://sol.sbc.org.br/journals">
+										Journals
+									</a>
+								</li>
+																												<li class="">
+									<a href="https://sol.sbc.org.br/livros">
+										Books
+									</a>
+								</li>
+																												<li class="">
+									<a href="https://preprints-sol.sbc.org.br">
+										Preprints
+									</a>
+								</li>
+																		</ul>
+							</li>
+								<li class="">
+				<a href="https://journals-sol.sbc.org.br/index.php/jserd/issue/archive">
+					Regular Issues
+				</a>
+							</li>
+								<li class="">
+				<a href="https://journals-sol.sbc.org.br/index.php/jserd/special">
+					Special Issues
+				</a>
+							</li>
+								<li class="">
+				<a href="https://journals-sol.sbc.org.br/index.php/jserd/about">
+					About
+				</a>
+									<ul>
+																					<li class="">
+									<a href="https://journals-sol.sbc.org.br/index.php/jserd/about">
+										About the Journal
+									</a>
+								</li>
+																												<li class="">
+									<a href="https://journals-sol.sbc.org.br/index.php/jserd/about/submissions">
+										Submissions
+									</a>
+								</li>
+																												<li class="">
+									<a href="https://journals-sol.sbc.org.br/index.php/jserd/about/editorialTeam">
+										Editorial Team
+									</a>
+								</li>
+																												<li class="">
+									<a href="https://journals-sol.sbc.org.br/index.php/jserd/about/contact">
+										Contact
+									</a>
+								</li>
+																		</ul>
+							</li>
+			</ul>
+
+				
+
+																									
+	<form class="pkp_search pkp_search_desktop" action="https://sol.sbc.org.br/busca/" method="get" role="search" aria-label="Article Search">
+		<input type="hidden" name="csrfToken" value="93926447c1e9c7444e19897fee5f4f26">
+				
+		<button style="z-index:1;" class="search_prompt" type="submit">
+			&nbsp;Search
+		</button>
+		
+		
+			<input style="opacity : 0;" readonly name="query" value="" type="text" aria-label="Search Query">
+		
+
+		
+		<div class="search_controls" aria-hidden="true">
+			<a href="https://sol.sbc.org.br/busca/" class="search_prompt" aria-hidden="true">
+				Search
+			</a>
+		</div>
+	</form>
+													</div>
+					</div>
+					<div class="pkp_navigation_user_wrapper" id="navigationUserWrapper">
+							<ul id="navigationUser" class="pkp_navigation_user pkp_nav_list">
+								<li class="profile">
+				<a href="https://journals-sol.sbc.org.br/index.php/jserd/user/register">
+					Register
+				</a>
+							</li>
+								<li class="profile">
+				<a href="https://journals-sol.sbc.org.br/index.php/jserd/login">
+					Login
+				</a>
+							</li>
+			</ul>
+
+					</div>
+																			
+	<form class="pkp_search pkp_search_mobile" action="https://sol.sbc.org.br/busca/" method="get" role="search" aria-label="Article Search">
+		<input type="hidden" name="csrfToken" value="93926447c1e9c7444e19897fee5f4f26">
+				
+		<button style="z-index:1;" class="search_prompt" type="submit">
+			&nbsp;Search
+		</button>
+		
+		
+			<input style="opacity : 0;" readonly name="query" value="" type="text" aria-label="Search Query">
+		
+
+		
+		<div class="search_controls" aria-hidden="true">
+			<a href="https://sol.sbc.org.br/busca/" class="search_prompt" aria-hidden="true">
+				Search
+			</a>
+		</div>
+	</form>
+									</nav>
+			</div><!-- .pkp_head_wrapper -->
+		</header><!-- .pkp_structure_head -->
+
+						<div class="pkp_structure_content has_sidebar">
+			<div class="pkp_structure_main" role="main">
+				<a id="pkp_content_main"></a>
+
+<div class="page page_article">
+			<nav class="cmp_breadcrumbs" role="navigation" aria-label="You are here:">
+	<ol>
+		<li>
+			<a href="https://journals-sol.sbc.org.br/index.php/jserd/index">
+				Home
+			</a>
+			<span class="separator">/</span>
+		</li>
+		<li>
+			<a href="https://journals-sol.sbc.org.br/index.php/jserd/issue/archive">
+				Archives
+			</a>
+			<span class="separator">/</span>
+		</li>
+					<li>
+				<a href="https://journals-sol.sbc.org.br/index.php/jserd/issue/view/160">
+					Vol. 9 (2021)
+				</a>
+				<span class="separator">/</span>
+			</li>
+				<li class="current" aria-current="page">
+			<span aria-current="page">
+									Research Article
+							</span>
+		</li>
+	</ol>
+</nav>
+	
+			<article class="obj_article_details">
+
+			<h1 class="page_title">
+		On the test smells detection: an empirical study on the JNose Test accuracy
+	</h1>
+	
+	<div class="row">
+		<div class="main_entry">
+
+							<section class="item authors">
+					<h2 class="pkp_screen_reader">Authors</h2>
+					<ul class="authors">
+											<li>
+							<span class="name">
+								Tássio Virgínio
+							</span>
+															<span class="affiliation">
+									Federal Institute of Tocantins
+								</span>
+																						<span class="orcid">
+									<svg class="orcid_icon" viewBox="0 0 256 256" aria-hidden="true">
+	<style type="text/css">
+		.st0{fill:#A6CE39;}
+		.st1{fill:#FFFFFF;}
+	</style>
+	<path class="st0" d="M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z"/>
+	<g>
+		<path class="st1" d="M86.3,186.2H70.9V79.1h15.4v48.4V186.2z"/>
+		<path class="st1" d="M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5
+			c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z"/>
+		<path class="st1" d="M88.7,56.8c0,5.5-4.5,10.1-10.1,10.1c-5.6,0-10.1-4.6-10.1-10.1c0-5.6,4.5-10.1,10.1-10.1
+			C84.2,46.7,88.7,51.3,88.7,56.8z"/>
+	</g>
+</svg>
+									<a href="https://orcid.org/0000-0001-6259-4957" target="_blank">
+										https://orcid.org/0000-0001-6259-4957
+									</a>
+								</span>
+													</li>
+											<li>
+							<span class="name">
+								Luana Martins
+							</span>
+															<span class="affiliation">
+									Federal University of Bahia
+								</span>
+																						<span class="orcid">
+									<svg class="orcid_icon" viewBox="0 0 256 256" aria-hidden="true">
+	<style type="text/css">
+		.st0{fill:#A6CE39;}
+		.st1{fill:#FFFFFF;}
+	</style>
+	<path class="st0" d="M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z"/>
+	<g>
+		<path class="st1" d="M86.3,186.2H70.9V79.1h15.4v48.4V186.2z"/>
+		<path class="st1" d="M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5
+			c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z"/>
+		<path class="st1" d="M88.7,56.8c0,5.5-4.5,10.1-10.1,10.1c-5.6,0-10.1-4.6-10.1-10.1c0-5.6,4.5-10.1,10.1-10.1
+			C84.2,46.7,88.7,51.3,88.7,56.8z"/>
+	</g>
+</svg>
+									<a href="https://orcid.org/0000-0001-6340-7615" target="_blank">
+										https://orcid.org/0000-0001-6340-7615
+									</a>
+								</span>
+													</li>
+											<li>
+							<span class="name">
+								Railana Santana
+							</span>
+															<span class="affiliation">
+									Federal University of Bahia
+								</span>
+																						<span class="orcid">
+									<svg class="orcid_icon" viewBox="0 0 256 256" aria-hidden="true">
+	<style type="text/css">
+		.st0{fill:#A6CE39;}
+		.st1{fill:#FFFFFF;}
+	</style>
+	<path class="st0" d="M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z"/>
+	<g>
+		<path class="st1" d="M86.3,186.2H70.9V79.1h15.4v48.4V186.2z"/>
+		<path class="st1" d="M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5
+			c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z"/>
+		<path class="st1" d="M88.7,56.8c0,5.5-4.5,10.1-10.1,10.1c-5.6,0-10.1-4.6-10.1-10.1c0-5.6,4.5-10.1,10.1-10.1
+			C84.2,46.7,88.7,51.3,88.7,56.8z"/>
+	</g>
+</svg>
+									<a href="https://orcid.org/0000-0002-1153-8960" target="_blank">
+										https://orcid.org/0000-0002-1153-8960
+									</a>
+								</span>
+													</li>
+											<li>
+							<span class="name">
+								Adriana Cruz
+							</span>
+															<span class="affiliation">
+									Federal University of Lavras
+								</span>
+																						<span class="orcid">
+									<svg class="orcid_icon" viewBox="0 0 256 256" aria-hidden="true">
+	<style type="text/css">
+		.st0{fill:#A6CE39;}
+		.st1{fill:#FFFFFF;}
+	</style>
+	<path class="st0" d="M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z"/>
+	<g>
+		<path class="st1" d="M86.3,186.2H70.9V79.1h15.4v48.4V186.2z"/>
+		<path class="st1" d="M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5
+			c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z"/>
+		<path class="st1" d="M88.7,56.8c0,5.5-4.5,10.1-10.1,10.1c-5.6,0-10.1-4.6-10.1-10.1c0-5.6,4.5-10.1,10.1-10.1
+			C84.2,46.7,88.7,51.3,88.7,56.8z"/>
+	</g>
+</svg>
+									<a href="https://orcid.org/0000-0001-5196-6356" target="_blank">
+										https://orcid.org/0000-0001-5196-6356
+									</a>
+								</span>
+													</li>
+											<li>
+							<span class="name">
+								Larissa Rocha
+							</span>
+															<span class="affiliation">
+									Federal University of Bahia
+								</span>
+																						<span class="orcid">
+									<svg class="orcid_icon" viewBox="0 0 256 256" aria-hidden="true">
+	<style type="text/css">
+		.st0{fill:#A6CE39;}
+		.st1{fill:#FFFFFF;}
+	</style>
+	<path class="st0" d="M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z"/>
+	<g>
+		<path class="st1" d="M86.3,186.2H70.9V79.1h15.4v48.4V186.2z"/>
+		<path class="st1" d="M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5
+			c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z"/>
+		<path class="st1" d="M88.7,56.8c0,5.5-4.5,10.1-10.1,10.1c-5.6,0-10.1-4.6-10.1-10.1c0-5.6,4.5-10.1,10.1-10.1
+			C84.2,46.7,88.7,51.3,88.7,56.8z"/>
+	</g>
+</svg>
+									<a href="https://orcid.org/0000-0002-8069-5249" target="_blank">
+										https://orcid.org/0000-0002-8069-5249
+									</a>
+								</span>
+													</li>
+											<li>
+							<span class="name">
+								Heitor Costa
+							</span>
+															<span class="affiliation">
+									Federal University of Lavras
+								</span>
+																						<span class="orcid">
+									<svg class="orcid_icon" viewBox="0 0 256 256" aria-hidden="true">
+	<style type="text/css">
+		.st0{fill:#A6CE39;}
+		.st1{fill:#FFFFFF;}
+	</style>
+	<path class="st0" d="M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z"/>
+	<g>
+		<path class="st1" d="M86.3,186.2H70.9V79.1h15.4v48.4V186.2z"/>
+		<path class="st1" d="M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5
+			c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z"/>
+		<path class="st1" d="M88.7,56.8c0,5.5-4.5,10.1-10.1,10.1c-5.6,0-10.1-4.6-10.1-10.1c0-5.6,4.5-10.1,10.1-10.1
+			C84.2,46.7,88.7,51.3,88.7,56.8z"/>
+	</g>
+</svg>
+									<a href="https://orcid.org/0000-0002-9903-7414" target="_blank">
+										https://orcid.org/0000-0002-9903-7414
+									</a>
+								</span>
+													</li>
+											<li>
+							<span class="name">
+								Ivan Machado
+							</span>
+															<span class="affiliation">
+									Federal University of Bahia
+								</span>
+																						<span class="orcid">
+									<svg class="orcid_icon" viewBox="0 0 256 256" aria-hidden="true">
+	<style type="text/css">
+		.st0{fill:#A6CE39;}
+		.st1{fill:#FFFFFF;}
+	</style>
+	<path class="st0" d="M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z"/>
+	<g>
+		<path class="st1" d="M86.3,186.2H70.9V79.1h15.4v48.4V186.2z"/>
+		<path class="st1" d="M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5
+			c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z"/>
+		<path class="st1" d="M88.7,56.8c0,5.5-4.5,10.1-10.1,10.1c-5.6,0-10.1-4.6-10.1-10.1c0-5.6,4.5-10.1,10.1-10.1
+			C84.2,46.7,88.7,51.3,88.7,56.8z"/>
+	</g>
+</svg>
+									<a href="https://orcid.org/0000-0001-9027-2293" target="_blank">
+										https://orcid.org/0000-0001-9027-2293
+									</a>
+								</span>
+													</li>
+										</ul>
+				</section>
+			
+																												<section class="item doi">
+						<h2 class="label">
+														DOI:
+						</h2>
+						<span class="value">
+							<a href="https://doi.org/10.5753/jserd.2021.1893">
+								https://doi.org/10.5753/jserd.2021.1893
+							</a>
+						</span>
+					</section>
+							
+									<section class="item keywords">
+				<h2 class="label">
+										Keywords:
+				</h2>
+				<span class="value">
+											Tests Quality, 											Test Evolution, 											Test Smells, 											Evidence-based Software Engineering									</span>
+			</section>
+			
+										<section class="item abstract">
+					<h2 class="label">Abstract</h2>
+					<p>Several strategies have supported test quality measurement and analysis. For example, code coverage, a widely used one, enables verification of the test case to cover as many source code branches as possible. Another set of affordable strategies to evaluate the test code quality exists, such as test smells analysis. Test smells are poor design choices in test code implementation, and their occurrence might reduce the test suite quality. A practical and largescale test smells identification depends on automated tool support. Otherwise, test smells analysis could become a cost-ineffective strategy. In an earlier study, we proposed the JNose Test, automated tool support to detect test smells and analyze test suite quality from the test smells perspective. This study extends the previous one in two directions: i) we implemented the JNose-Core, an API encompassing the test smells detection rules. Through an extensible architecture, the tool is now capable of accomodating new detection rules or programming languages; and ii) we performed an empirical study to evaluate the JNose Test effectiveness and compare it against the state-of-the-art tool, the tsDetect. Results showed that the JNose-Core precision score ranges from 91% to 100%, and the recall score from 89% to 100%. It also presented a slight improvement in the test smells detection rules compared to the tsDetect for the test smells detection at the class level.</p>
+				</section>
+			
+			<div class="item downloads_chart">
+	<h3 class="label">
+		Downloads
+	</h3>
+	<div class="value">
+		<canvas class="usageStatsGraph" data-object-type="Submission" data-object-id="1893"></canvas>
+		<div class="usageStatsUnavailable" data-object-type="Submission" data-object-id="1893">
+			Download data is not yet available.
+		</div>
+	</div>
+</div>
+
+
+																																																													
+										<section class="item references">
+					<h2 class="label">
+						References
+					</h2>
+					<div class="value">
+																					<p>Bavota,G.,Qusef,A.,Oliveto,R.,DeLucia,A.,and Binkley, D. (2015). Are test smells really harmful? an empirical study. Empirical Software Engineering,20(4):1052–1094. </p>
+															<p>Bavota, G., Qusef, A., Oliveto, R., Lucia, A., and Binkley, D. (2012). An empirical analysis of the distribution of unit test smells and their impact on software maintenance. In 28th IEEE International Conference on Software Maintenance (ICSM). </p>
+															<p>Bell, J., Legunsen, O., Hilton, M., Eloussi, L., Yung, T., and Marinov, D. (2018). DeFlaker: Automatically Detecting Flaky Tests. In IEEE/ACM 40th International Conferenceon Software Engineering (ICSE), pages 433–444. </p>
+															<p>Capgemini (2018). World Quality Report 2018­19. <a href="https://www.capgemini.com/service/world-quality-report-2018-19/.Accessed:March">https://www.capgemini.com/service/world-quality-report-2018-19/.Accessed:March</a> 1st, 2021. </p>
+															<p>CISQ (2021). The Cost of Poor Software Quality in theUS: A 2020 Report. <a href="https://www.it-cisq.org/pdf/CPSQ-2020-report.pdf">https://www.it-cisq.org/pdf/CPSQ-2020-report.pdf</a>. Accessed: March 1st, 2021. </p>
+															<p>Deursen, A., Moonen, L. M., Bergh, A., and Kok, G. (2001). Refactoring test code. InRefactoring Test Code, Amsterdam, The Netherlands, The Netherlands. CWI (Centre for Mathematics and Computer Science). </p>
+															<p>Garousi, V. and Küçük, B. (2018). Smells in software test code: A survey of knowledge in industry and academia. Journal of Systems and Software, 138:52 – 81. </p>
+															<p>Gopinath, R., Jensen, C., and Groce, A. (2014). Code cover­age for suite evaluation by developers. InProceedings of the 36th International Conference on Software Engineer­ing (ICSE), New York, NY, USA. ACM. </p>
+															<p>Grano,G.,Palomba,F.,DiNucci,D.,DeLucia,A.,andGall,H. C. (2019). Scented since the beginning: On the diffuse­ness of test smells in automatically generated test code. Journal of Systems and Software, 156:312–327. </p>
+															<p>Greiler, M., van Deursen, A., and Storey, M. (2013). Auto­mated detection of test fixture strategies and smells. In IEEE Sixth International Conference on Software Testing, Verification and Validation, pages 322–331. </p>
+															<p>Guerra Calle, D., Delplanque, J., and Ducasse, S. (2019).Exposing Test Analysis Results with DrTests. In International Workshop on Smalltalk Technologies, pages 1–5, Cologne, Germany. HAL. </p>
+															<p>Hallgren, K. A. (2012). Computing inter­rater reliability for observational data: an overview and tutorial. Tutorials in quantitative methods for psychology, 8(1):23. </p>
+															<p>Junior, N. S., Rocha, L., Martins, L. A., and Machado, I.(2020). A survey on test practitioners’ awareness of test smells. In Proceedings of the XXIII Iberoamerican Con­ference on Software Engineering, CIbSE2020, pages 462–475. Curran Associates. </p>
+															<p>Koochakzadeh, N. and Garousi, V. (2010). TeCReVis: A Tool for Test Coverage and Test Redundancy Visualiza­tion. In Bottaci, L. and Fraser, G., editors, Testing – Prac­ticeand Research Techniques,pages129–136, Berlin, Hei­delberg. Springer Berlin Heidelberg. </p>
+															<p>Meszaros, G., Smith, S. M., and Andrea, J. (2003). The testautomation manifesto. In Maurer, F. and Wells, D., edi­tors, Extreme Programming and Agile Methods­ XP / Agile Universe 2003, Berlin, Heidelberg. Springer Berlin Hei­delberg. </p>
+															<p>Negar, K. and Garousi, V. (2010). A tester­assisted methodology for test redundancy detection. Advances in Software Engineering, 2010. </p>
+															<p>Palomba, F., Zaidman, A., and Lucia, A. D. (2018). Au­tomatic test smell detection using information retrieval techniques. In IEEE International Conference on Soft­ware Maintenance and Evolution (ICSME), pages 311–322, Madrid, Spain. IEEE. </p>
+															<p>Pecorelli, F., Di Lillo, G., Palomba, F., and De Lucia, A.(2020). VITRuM: A Plug­In for the Visualization of Test­Related Metrics. In Proceedings of the International Con­ference on Advanced Visual Interfaces, New York, NY,USA. ACM. </p>
+															<p>Peruma, A., Almalki, K., Newman, C. D., Mkaouer, M. W., Ouni, A., and Palomba, F. (2019). On the distribution of test smells in open source android applications: An ex­ploratory study. In Proceedings of the 29th Annual Inter­national Conference on Computer Science and Software Engineering (CASCON), Riverton, NJ, USA. IBM. </p>
+															<p>Peruma, A., Almalki, K., Newman, C. D., Mkaouer, M. W., Ouni, A., and Palomba, F. (2020). TsDetect: An OpenSource Test Smells Detection Tool. ACM, New York, NY, USA. </p>
+															<p>Santana, R., Martins, L., Rocha, L., Virginio, T., Cruz, A.,Costa, H., and Machado, I. (2020). RAIDE: A Tool for Assertion Roulette and Duplicate Assert Identification and Refactoring. In Proceedings of the 34th Brazilian Sympo­sium on Software Engineering (SBES). ACM. </p>
+															<p>Spadini, D., Palomba, F., Zaidman, A., Bruntink, M., andBacchelli, A. (2018). On the relation of test smells to soft­ware code quality. In International Conference on Soft­ware Maintenance and Evolution (ICSME), pages 1–12.IEEE. </p>
+															<p>Spadini, D., Schvarcbacher, M., Oprescu, A.­M., Bruntink, M.,andBacchelli, A.(2020). Investigatingseveritythresh­olds for test smells. InProceedings of the 17th In­ternational Conference on Mining Software Repositories(MSR). ACM. </p>
+															<p>Virginio, T., Martins, L., Soares, L. R., Railana, S., Costa,H., and Machado, I. (2020). An empirical study ofautomatically­generated tests from the perspective of test smells. In Proceedings of theXXXIV Brazilian Symposium on Software Engineering (SBES), New York, NY, USA.ACM. </p>
+															<p>Virginio,T.,Santana,R.,Martins,L.A.,Soares,L.R.,Costa,H.,andMachado,I.(2019). On the influence of test smells on test coverage. In Proceedings of the XXXIII Brazilian Symposium on Software Engineering (SBES), pages 467–471, New York, NY, USA. ACM. </p>
+															<p>Virgínio, T., Martins, L., Santana, R., Cruz, A., Rocha, L.,Costa, H., and Machado, I. (2021). On the test smells detection: an empirical study on the JNose Test accuracy[Dataset]. Available at:<a href="https://doi.org/10.5281/zenodo.4570751">https://doi.org/10.5281/zenodo.4570751</a>. </p>
+															<p>Yusifoğlu, V. G., Amannejad, Y., and Can, A. B. (2015). Software test­-code engineering: A systematic mapping.In­formation and Software Technology, 58:123 – 147 </p>
+																		</div>
+				</section>
+			
+		</div><!-- .main_entry -->
+
+		<div class="entry_details">
+
+						
+										<div class="item galleys">
+					<h2 class="pkp_screen_reader">
+						Downloads
+					</h2>
+					<ul class="value galleys_links">
+													<li>
+								
+	
+							
+
+<a class="obj_galley_link pdf" href="https://journals-sol.sbc.org.br/index.php/jserd/article/view/1893/1798">
+
+		
+	PDF
+
+	</a>
+							</li>
+											</ul>
+				</div>
+						
+						<div class="item published">
+				<section class="sub_item">
+					<h2 class="label">
+						Published
+					</h2>
+					<div class="value">
+																			<span>2021-09-08</span>
+																	</div>
+				</section>
+							</div>
+			
+										<div class="item citation">
+					<section class="sub_item citation_display">
+						<h2 class="label">
+							How to Cite
+						</h2>
+						<div class="value">
+							<div id="citationOutput" role="region" aria-live="polite">
+								<div class="csl-bib-body">
+  <div class="csl-entry">Virgínio, T., Martins, L., Santana, R., Cruz, A., Rocha, L., Costa, H., &#38; Machado, I. (2021). On the test smells detection: an empirical study on the JNose Test accuracy. <i>Journal of Software Engineering Research and Development</i>, <i>9</i>(1), 8:1 – 8:14. https://doi.org/10.5753/jserd.2021.1893</div>
+</div>
+							</div>
+							<div class="citation_formats">
+								<button class="cmp_button citation_formats_button" aria-controls="cslCitationFormats" aria-expanded="false" data-csl-dropdown="true">
+									More Citation Formats
+								</button>
+								<div id="cslCitationFormats" class="citation_formats_list" aria-hidden="true">
+									<ul class="citation_formats_styles">
+																					<li>
+												<a
+													aria-controls="citationOutput"
+													href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/acm-sig-proceedings?submissionId=1893&amp;publicationId=1490"
+													data-load-citation
+													data-json-href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/acm-sig-proceedings?submissionId=1893&amp;publicationId=1490&amp;return=json"
+												>
+													ACM
+												</a>
+											</li>
+																					<li>
+												<a
+													aria-controls="citationOutput"
+													href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/acs-nano?submissionId=1893&amp;publicationId=1490"
+													data-load-citation
+													data-json-href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/acs-nano?submissionId=1893&amp;publicationId=1490&amp;return=json"
+												>
+													ACS
+												</a>
+											</li>
+																					<li>
+												<a
+													aria-controls="citationOutput"
+													href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/apa?submissionId=1893&amp;publicationId=1490"
+													data-load-citation
+													data-json-href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/apa?submissionId=1893&amp;publicationId=1490&amp;return=json"
+												>
+													APA
+												</a>
+											</li>
+																					<li>
+												<a
+													aria-controls="citationOutput"
+													href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/associacao-brasileira-de-normas-tecnicas?submissionId=1893&amp;publicationId=1490"
+													data-load-citation
+													data-json-href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/associacao-brasileira-de-normas-tecnicas?submissionId=1893&amp;publicationId=1490&amp;return=json"
+												>
+													ABNT
+												</a>
+											</li>
+																					<li>
+												<a
+													aria-controls="citationOutput"
+													href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/chicago-author-date?submissionId=1893&amp;publicationId=1490"
+													data-load-citation
+													data-json-href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/chicago-author-date?submissionId=1893&amp;publicationId=1490&amp;return=json"
+												>
+													Chicago
+												</a>
+											</li>
+																					<li>
+												<a
+													aria-controls="citationOutput"
+													href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/harvard-cite-them-right?submissionId=1893&amp;publicationId=1490"
+													data-load-citation
+													data-json-href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/harvard-cite-them-right?submissionId=1893&amp;publicationId=1490&amp;return=json"
+												>
+													Harvard
+												</a>
+											</li>
+																					<li>
+												<a
+													aria-controls="citationOutput"
+													href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/ieee?submissionId=1893&amp;publicationId=1490"
+													data-load-citation
+													data-json-href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/ieee?submissionId=1893&amp;publicationId=1490&amp;return=json"
+												>
+													IEEE
+												</a>
+											</li>
+																					<li>
+												<a
+													aria-controls="citationOutput"
+													href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/modern-language-association?submissionId=1893&amp;publicationId=1490"
+													data-load-citation
+													data-json-href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/modern-language-association?submissionId=1893&amp;publicationId=1490&amp;return=json"
+												>
+													MLA
+												</a>
+											</li>
+																					<li>
+												<a
+													aria-controls="citationOutput"
+													href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/turabian-fullnote-bibliography?submissionId=1893&amp;publicationId=1490"
+													data-load-citation
+													data-json-href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/turabian-fullnote-bibliography?submissionId=1893&amp;publicationId=1490&amp;return=json"
+												>
+													Turabian
+												</a>
+											</li>
+																					<li>
+												<a
+													aria-controls="citationOutput"
+													href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/vancouver?submissionId=1893&amp;publicationId=1490"
+													data-load-citation
+													data-json-href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/get/vancouver?submissionId=1893&amp;publicationId=1490&amp;return=json"
+												>
+													Vancouver
+												</a>
+											</li>
+																			</ul>
+																			<div class="label">
+											Download Citation
+										</div>
+										<ul class="citation_formats_styles">
+																							<li>
+													<a href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/download/ris?submissionId=1893&amp;publicationId=1490">
+														<span class="fa fa-download"></span>
+														Endnote/Zotero/Mendeley (RIS)
+													</a>
+												</li>
+																							<li>
+													<a href="https://journals-sol.sbc.org.br/index.php/jserd/citationstylelanguage/download/bibtex?submissionId=1893&amp;publicationId=1490">
+														<span class="fa fa-download"></span>
+														BibTeX
+													</a>
+												</li>
+																					</ul>
+																	</div>
+							</div>
+						</div>
+					</section>
+				</div>
+			
+										<div class="item issue">
+
+											<section class="sub_item">
+							<h2 class="label">
+								Issue
+							</h2>
+							<div class="value">
+								<a class="title" href="https://journals-sol.sbc.org.br/index.php/jserd/issue/view/160">
+									Vol. 9 (2021)
+								</a>
+							</div>
+						</section>
+					
+											<section class="sub_item">
+							<h2 class="label">
+								Section
+							</h2>
+							<div class="value">
+								Research Article
+							</div>
+						</section>
+									</div>
+			
+															
+										<div class="item copyright">
+					<h2 class="label">
+						License
+					</h2>
+																										<p>Copyright (c) 2021 Tássio Virgínio, Luana Martins, Railana Santana, Adriana Cruz, Larissa Rocha, Heitor Costa, Ivan Machado</p>
+														<a rel="license" href="https://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" src="//i.creativecommons.org/l/by/4.0/88x31.png" /></a><p>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</p>
+																
+				</div>
+			
+			
+
+		</div><!-- .entry_details -->
+	</div><!-- .row -->
+
+</article>
+
+	<div id="articlesBySameAuthorList">
+						<h3>Most read articles by the same author(s)</h3>
+
+			<ul>
+																													<li>
+													Leila Karita,
+													Brunna Caroline Mourão,
+													Luana Almeida Martins,
+													Larissa Rocha Soares,
+													Ivan Machado,
+												<a href="https://journals-sol.sbc.org.br/index.php/jserd/article/view/742">
+							Software industry awareness on sustainable software engineering: a Brazilian perspective
+						</a>,
+						<a href="https://journals-sol.sbc.org.br/index.php/jserd/issue/view/160">
+							Journal of Software Engineering Research and Development: Vol. 9 (2021)
+						</a>
+					</li>
+																													<li>
+													Edna Dias Canedo,
+													Larissa Rocha,
+													Geovana Ramos Sousa Silva,
+													Fabiana Freitas Mendes,
+												<a href="https://journals-sol.sbc.org.br/index.php/jserd/article/view/4031">
+							Do you think there is no gender inequality in Software Engineering? Perhaps you should reconsider your opinion
+						</a>,
+						<a href="https://journals-sol.sbc.org.br/index.php/jserd/issue/view/308">
+							Journal of Software Engineering Research and Development: Vol. 12 No. 1 (2024)
+						</a>
+					</li>
+																													<li>
+													Nildo Silva Junior,
+													Luana Martins,
+													Larissa Rocha,
+													Heitor Costa,
+													Ivan Machado,
+												<a href="https://journals-sol.sbc.org.br/index.php/jserd/article/view/1802">
+							How are test smells treated in the wild? A tale of two empirical studies
+						</a>,
+						<a href="https://journals-sol.sbc.org.br/index.php/jserd/issue/view/160">
+							Journal of Software Engineering Research and Development: Vol. 9 (2021)
+						</a>
+					</li>
+																													<li>
+													Humberto Damasceno,
+													Carla Bezerra,
+													Denivan Campos,
+													Ivan Machado,
+													Emanuel Coutinho,
+												<a href="https://journals-sol.sbc.org.br/index.php/jserd/article/view/3195">
+							Test smell refactoring revisited: What can internal quality attributes and developers’ experience tell us?
+						</a>,
+						<a href="https://journals-sol.sbc.org.br/index.php/jserd/issue/view/277">
+							Journal of Software Engineering Research and Development: Vol. 11 No. 1 (2023)
+						</a>
+					</li>
+																													<li>
+													Matheus Silva Ferreira,
+													Luana Almeida Martins,
+													Paulo Afonso Parreira Júnior,
+													Heitor Costa,
+												<a href="https://journals-sol.sbc.org.br/index.php/jserd/article/view/544">
+							How is the Work of Developers Measured? An Industrial and Academic Exploratory View
+						</a>,
+						<a href="https://journals-sol.sbc.org.br/index.php/jserd/issue/view/111">
+							Journal of Software Engineering Research and Development: Vol. 8 (2020)
+						</a>
+					</li>
+							</ul>
+			<div id="articlesBySameAuthorPages">
+				
+			</div>
+			</div>
+<div id="articlesBySimilarityList">
+	</div>
+
+
+</div><!-- .page -->
+
+	</div><!-- pkp_structure_main -->
+
+									<div class="pkp_structure_sidebar left" role="complementary" aria-label="Sidebar">
+				<div class="pkp_block block_make_submission">
+	<h2 class="pkp_screen_reader">
+		Make a Submission
+	</h2>
+
+	<div class="content">
+		<a class="block_make_submission_link" href="https://journals-sol.sbc.org.br/index.php/jserd/about/submissions">
+			Make a Submission
+		</a>
+	</div>
+</div>
+<div class="pkp_block block_custom" id="customblock-Metrics">
+	<div class="content">
+		<h3>Metrics:</h3>
+<p><img src="https://sol.sbc.org.br/journals/public/site/images/ojs2/ico-qualis.png" alt="" width="180"></p>
+<p>Classified as <span style="text-decoration: underline;"><strong>Qualis A4</strong></span> by the Brazilian federal agency CAPES – Coordination for the Improvement of Higher Education Personnel –, considering the four-year period 2017-2020.</p>
+	</div>
+</div>
+
+			</div><!-- pkp_sidebar.left -->
+			</div><!-- pkp_structure_content -->
+
+<div class="pkp_structure_footer_wrapper" role="contentinfo">
+	<a id="pkp_content_footer"></a>
+
+	<div class="pkp_structure_footer">
+
+					<div class="pkp_footer_content">
+				<p><em>*All the content made available in this website represent exclusively the opinion of their authors and not necessarily the position of the Brazilian Computing Society - SBC, its collaborators and associates. SBC may at anytime, without prior notice, charge the use and availability of the platform and its content for non-members.</em><br><br></p>
+<p><a href="http://www.sbc.org.br" target="_blank"><img src="https://www.sbc.org.br/images/logo_sbc.png" alt="SBC Logo"></a></p>
+<div class="module-ct">
+<div class="contact-footer">
+<div class="row">
+<div class="col-xs-1 col-sm-1">Av. Bento Gonçalves, 9500 | Setor 4 | Prédio 43.412 | Sala 219 | Bairro Agronomia&nbsp;<br>Caixa Postal 15012 | CEP 91501-970</div>
+<div class="col-xs-1 col-sm-1">Porto Alegre - RS - BRAZIL</div>
+<div class="col-xs-11 col-sm-10">CNPJ: 29.532.264/0001-78</div>
+<div class="row">
+<div class="col-xs-1 col-sm-1">phone: (51) 99252-6018</div>
+</div>
+<div class="row">
+<div class="col-xs-11 col-sm-10">sbc@sbc.org.br</div>
+</div>
+</div>
+</div>
+</div>
+			</div>
+		
+		<div class="pkp_brand_footer" role="complementary">
+			<a href="https://journals-sol.sbc.org.br/index.php/jserd/about/aboutThisPublishingSystem">
+				<img alt="More information about the publishing system, Platform and Workflow by OJS/PKP." src="https://journals-sol.sbc.org.br/templates/images/ojs_brand.png">
+			</a>
+		</div>
+	</div>
+</div><!-- pkp_structure_footer_wrapper -->
+
+</div><!-- pkp_structure_page -->
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js?v=3.2.1.2" type="text/javascript"></script><script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js?v=3.2.1.2" type="text/javascript"></script><script src="https://journals-sol.sbc.org.br/lib/pkp/js/lib/jquery/plugins/jquery.tag-it.js?v=3.2.1.2" type="text/javascript"></script><script src="https://journals-sol.sbc.org.br/plugins/themes/default/js/lib/popper/popper.js?v=3.2.1.2" type="text/javascript"></script><script src="https://journals-sol.sbc.org.br/plugins/themes/default/js/lib/bootstrap/util.js?v=3.2.1.2" type="text/javascript"></script><script src="https://journals-sol.sbc.org.br/plugins/themes/default/js/lib/bootstrap/dropdown.js?v=3.2.1.2" type="text/javascript"></script><script src="https://journals-sol.sbc.org.br/plugins/themes/default/js/main.js?v=3.2.1.2" type="text/javascript"></script><script src="https://journals-sol.sbc.org.br/plugins/generic/citationStyleLanguage/js/articleCitation.js?v=3.2.1.2" type="text/javascript"></script><script type="text/javascript">var pkpUsageStats = pkpUsageStats || {};pkpUsageStats.data = pkpUsageStats.data || {};pkpUsageStats.data.Submission = pkpUsageStats.data.Submission || {};pkpUsageStats.data.Submission[1893] = {"data":{"2021":{"1":0,"2":0,"3":0,"4":0,"5":0,"6":0,"7":0,"8":0,"9":21,"10":13,"11":17,"12":5},"2022":{"1":7,"2":13,"3":8,"4":36,"5":11,"6":19,"7":9,"8":14,"9":7,"10":12,"11":9,"12":9},"2023":{"1":9,"2":5,"3":7,"4":7,"5":10,"6":19,"7":9,"8":9,"9":12,"10":15,"11":16,"12":16},"2024":{"1":10,"2":11,"3":16,"4":12,"5":10,"6":17,"7":14,"8":8,"9":8,"10":9,"11":10,"12":4},"2025":{"1":6,"2":6,"3":17,"4":15,"5":11,"6":32,"7":19,"8":21,"9":28,"10":22,"11":25,"12":26},"2026":{"1":8,"2":15,"3":24,"4":24,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0}},"label":"All Downloads","color":"79,181,217","total":772};</script><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.1/Chart.js?v=3.2.1.2" type="text/javascript"></script><script type="text/javascript">var pkpUsageStats = pkpUsageStats || {};pkpUsageStats.locale = pkpUsageStats.locale || {};pkpUsageStats.locale.months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];pkpUsageStats.config = pkpUsageStats.config || {};pkpUsageStats.config.chartType = "bar";</script><script src="https://journals-sol.sbc.org.br/plugins/generic/usageStats/js/UsageStatsFrontendHandler.js?v=3.2.1.2" type="text/javascript"></script><script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-172316539-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+</body>
+</html>
