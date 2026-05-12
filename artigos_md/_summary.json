@@ -1,0 +1,322 @@
+{
+  "total_pdfs": 51,
+  "successful": 44,
+  "failed": 7,
+  "total_pages": 1172,
+  "total_duration_ms": 263920,
+  "results": [
+    {
+      "filename": "2597073.2597118.pdf",
+      "success": true,
+      "pages_extracted": 4,
+      "duration_ms": 789
+    },
+    {
+      "filename": "2901739.2903501.pdf",
+      "success": true,
+      "pages_extracted": 4,
+      "duration_ms": 2550
+    },
+    {
+      "filename": "3180155.3180195.pdf",
+      "success": true,
+      "pages_extracted": 11,
+      "duration_ms": 1300
+    },
+    {
+      "filename": "A_Large-Scale_Study_on_the_Usage_of_Testing_Patter.pdf",
+      "success": true,
+      "pages_extracted": 11,
+      "duration_ms": 1511
+    },
+    {
+      "filename": "A_Large_Scale_Study_on_the_Usage_of_Testing_Patterns_That_Address_Maintainability_Attributes_Pattern.pdf",
+      "success": true,
+      "pages_extracted": 11,
+      "duration_ms": 1019
+    },
+    {
+      "filename": "A_Survey_on_Large_Language_Model__LLM__Security_an.pdf",
+      "success": true,
+      "pages_extracted": 24,
+      "duration_ms": 3748
+    },
+    {
+      "filename": "A_review_on_quality_models_to_analyse_the_impact_of_refactored_code_on_maintainability_with_referenc.pdf",
+      "success": true,
+      "pages_extracted": 10,
+      "duration_ms": 3308
+    },
+    {
+      "filename": "An_Empirical_Evaluation_of_Using_Large_Language_Mo.pdf",
+      "success": true,
+      "pages_extracted": 21,
+      "duration_ms": 2647
+    },
+    {
+      "filename": "Automatic_Generation_of_Acceptance_Test_Cases_From.pdf",
+      "success": true,
+      "pages_extracted": 38,
+      "duration_ms": 8742
+    },
+    {
+      "filename": "ChatGPT.pdf",
+      "success": true,
+      "pages_extracted": 10,
+      "duration_ms": 1778
+    },
+    {
+      "filename": "Computing_inter_rater_reliability_for_observational_data_an_overview_and_tutorial.pdf",
+      "success": true,
+      "pages_extracted": 12,
+      "duration_ms": 2211
+    },
+    {
+      "filename": "Cross_platform_mobile_frameworks_used_by_software_developers_worldwide_from_2019_to_2023.pdf",
+      "success": true,
+      "pages_extracted": 15,
+      "duration_ms": 6085
+    },
+    {
+      "filename": "DNose_Dart_Test_Smell_Detector.pdf",
+      "success": true,
+      "pages_extracted": 7,
+      "duration_ms": 5520
+    },
+    {
+      "filename": "DNose__Dart_Test_Smell_Detector.pdf",
+      "success": true,
+      "pages_extracted": 7,
+      "duration_ms": 5763
+    },
+    {
+      "filename": "Detecting_Test_Smells_in_Python_Test_Code_Generate.pdf",
+      "success": true,
+      "pages_extracted": 7,
+      "duration_ms": 1229
+    },
+    {
+      "filename": "Do_the_Test_Smells_Assertion_Roulette_and_Eager_Te.pdf",
+      "success": true,
+      "pages_extracted": 11,
+      "duration_ms": 1345
+    },
+    {
+      "filename": "Emotion_SW_commit.pdf",
+      "success": true,
+      "pages_extracted": 10,
+      "duration_ms": 1435
+    },
+    {
+      "filename": "Engenharia_de_Prompt_em_Grandes_Modelos_de_Linguagem.pdf",
+      "success": true,
+      "pages_extracted": 254,
+      "duration_ms": 261693
+    },
+    {
+      "filename": "Fine-tuning_and_prompt_engineering_for_large_langu.pdf",
+      "success": true,
+      "pages_extracted": 12,
+      "duration_ms": 23779
+    },
+    {
+      "filename": "GPT_4_Technical_Report.pdf",
+      "success": true,
+      "pages_extracted": 15,
+      "duration_ms": 2778
+    },
+    {
+      "filename": "How_are_test_smells_treated_in_the_wild_A_tale_of_two_empirical_studies.pdf",
+      "success": true,
+      "pages_extracted": 16,
+      "duration_ms": 2060
+    },
+    {
+      "filename": "JNose_Java_Test_Smell_Detector.pdf",
+      "success": true,
+      "pages_extracted": 127,
+      "duration_ms": 26222
+    },
+    {
+      "filename": "LLM_for_Test_Script_Generation_and_Migration_Challenges_Capabilities_and_Opportunities.pdf",
+      "success": true,
+      "pages_extracted": 12,
+      "duration_ms": 2013
+    },
+    {
+      "filename": "Large_Language_Models_for_Software_Engineering__Su.pdf",
+      "success": true,
+      "pages_extracted": 23,
+      "duration_ms": 21255
+    },
+    {
+      "filename": "Machine_learning_based_test_smell_detection.pdf",
+      "success": true,
+      "pages_extracted": 44,
+      "duration_ms": 4280
+    },
+    {
+      "filename": "Manual_Tests_Do_Smell_Cataloging_and_Identifying_Natural_Language_Test_Smells.pdf",
+      "success": true,
+      "pages_extracted": 11,
+      "duration_ms": 5219
+    },
+    {
+      "filename": "On_the_Relation_of_Test_Smells_to_Software_Code_Qu.pdf",
+      "success": false,
+      "pages_extracted": 0,
+      "duration_ms": 0,
+      "error": "Erro ao abrir PDF: Invalid PDF header: expected '%PDF-', found 'Expected '%PDF-', found '<!DOC''"
+    },
+    {
+      "filename": "On_the_prevalence_of_test_smells_in_mobile_develop.pdf",
+      "success": true,
+      "pages_extracted": 10,
+      "duration_ms": 4322
+    },
+    {
+      "filename": "On_the_test_smells_detection__an_empirical_study_o.pdf",
+      "success": true,
+      "pages_extracted": 14,
+      "duration_ms": 5960
+    },
+    {
+      "filename": "On_the_use_of_test_smells_for_prediction_of_flaky_tests.pdf",
+      "success": true,
+      "pages_extracted": 12,
+      "duration_ms": 2315
+    },
+    {
+      "filename": "PyNose_a_test_smell_detector_for_python.pdf",
+      "success": true,
+      "pages_extracted": 13,
+      "duration_ms": 1083
+    },
+    {
+      "filename": "RAIDE_A_Tool_for_Assertion_Roulette_and_Duplicate_Assert_Identification_and_Refactoring.pdf",
+      "success": true,
+      "pages_extracted": 15,
+      "duration_ms": 4270
+    },
+    {
+      "filename": "Refactoring_Assertion_Roulette_and_Duplicate_Asser.pdf",
+      "success": true,
+      "pages_extracted": 15,
+      "duration_ms": 4159
+    },
+    {
+      "filename": "Search_based_software_test_data_generation_using_evolutionary_computation.pdf",
+      "success": true,
+      "pages_extracted": 11,
+      "duration_ms": 1978
+    },
+    {
+      "filename": "SentimentAnalysis-and-OpinionMining.pdf",
+      "success": true,
+      "pages_extracted": 168,
+      "duration_ms": 6749
+    },
+    {
+      "filename": "Sentiment_Polarity_Detection_for_Software_Developm.pdf",
+      "success": true,
+      "pages_extracted": 27,
+      "duration_ms": 3665
+    },
+    {
+      "filename": "Sentiment_analysis_for_software_engineering_How_far_can_we_go_.pdf",
+      "success": true,
+      "pages_extracted": 37,
+      "duration_ms": 1608
+    },
+    {
+      "filename": "TIOBE_Index_2024.pdf",
+      "success": true,
+      "pages_extracted": 2,
+      "duration_ms": 110
+    },
+    {
+      "filename": "Tc-llama_2__fine-tuning_LLM_for_technology_and_com.pdf",
+      "success": true,
+      "pages_extracted": 31,
+      "duration_ms": 34196
+    },
+    {
+      "filename": "Tc_llama_2_Fine_tuning_LLM_for_Technology_and_Commercialization_Applications.pdf",
+      "success": true,
+      "pages_extracted": 31,
+      "duration_ms": 35448
+    },
+    {
+      "filename": "TestAXE_Automatically_Refactoring_Test_Smells_Using_JUnit_5_Features.pdf",
+      "success": true,
+      "pages_extracted": 10,
+      "duration_ms": 703
+    },
+    {
+      "filename": "TestAXE__Automatically_Refactoring_Test_Smells_Usi.pdf",
+      "success": true,
+      "pages_extracted": 10,
+      "duration_ms": 577
+    },
+    {
+      "filename": "Test_Code_Quality_and_Its_Relation_to_Issue_Handli.pdf",
+      "success": false,
+      "pages_extracted": 0,
+      "duration_ms": 0,
+      "error": "Erro ao abrir PDF: Invalid PDF header: expected '%PDF-', found 'Expected '%PDF-', found '<!DOC''"
+    },
+    {
+      "filename": "Use_Chat_GPT_to_Solve_Programming_Bugs.pdf",
+      "success": true,
+      "pages_extracted": 6,
+      "duration_ms": 473
+    },
+    {
+      "filename": "When__how__and_why_developers__do_not__test_in_the.pdf",
+      "success": false,
+      "pages_extracted": 0,
+      "duration_ms": 0,
+      "error": "Erro ao abrir PDF: Invalid PDF header: expected '%PDF-', found 'Expected '%PDF-', found '<!DOC''"
+    },
+    {
+      "filename": "eInformatica2022Art02.pdf",
+      "success": true,
+      "pages_extracted": 22,
+      "duration_ms": 4477
+    },
+    {
+      "filename": "jserd2021.pdf",
+      "success": false,
+      "pages_extracted": 0,
+      "duration_ms": 0,
+      "error": "Erro ao abrir PDF: Invalid PDF header: expected '%PDF-', found 'Expected '%PDF-', found '\t<!DO''"
+    },
+    {
+      "filename": "paper_1777762520.pdf",
+      "success": true,
+      "pages_extracted": 11,
+      "duration_ms": 5409
+    },
+    {
+      "filename": "raide_2023.pdf",
+      "success": false,
+      "pages_extracted": 0,
+      "duration_ms": 0,
+      "error": "Erro ao abrir PDF: Invalid PDF header: expected '%PDF-', found 'Expected '%PDF-', found '\n\n\n\n\n''"
+    },
+    {
+      "filename": "raide_sciencedirect.pdf",
+      "success": false,
+      "pages_extracted": 0,
+      "duration_ms": 0,
+      "error": "Erro ao abrir PDF: Invalid PDF header: expected '%PDF-', found 'Expected '%PDF-', found '<!DOC''"
+    },
+    {
+      "filename": "test_smells_jnose_2021.pdf",
+      "success": false,
+      "pages_extracted": 0,
+      "duration_ms": 0,
+      "error": "Erro ao abrir PDF: Invalid PDF header: expected '%PDF-', found 'Expected '%PDF-', found '\t<!DO''"
+    }
+  ]
+}
