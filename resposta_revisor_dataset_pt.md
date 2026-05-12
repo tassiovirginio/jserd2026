@@ -20,6 +20,9 @@ Desde o estudo original, a linguagem Dart e o *framework* Flutter evoluíram sig
 **4. Refinamento de Heurísticas de Detecção Específicas:**
 Por fim, corrigimos falsos negativos em detectores específicos. Por exemplo, a heurística para o *smell Unknown Test* foi corrigida para que não confunda mais métodos de verificação de *mocks* (como o `verify` do Mockito) com a lógica real do teste.
 
-Em resumo, as 1.115.938 ocorrências representam um retrato muito mais maduro, realista e completo dos *test smells* presentes nos 4.154 repositórios originais. Adicionamos uma nova subseção na **Metodologia** do artigo para detalhar explicitamente essa evolução da ferramenta de detecção e justificar adequadamente a expansão do *dataset* para os leitores.
+Em resumo, as 1.115.938 ocorrências representam um retrato muito mais maduro, realista e completo dos *test smells* presentes nos 4.154 repositórios originais.
+
+**Alterações no manuscrito:**
+- **Seção 4.2 (Design):** Adicionamos um novo parágrafo (destacado em azul) detalhando explicitamente a evolução arquitetural do DNose entre a versão do SAST 2025 e esta versão estendida para o JSERD, incluindo a refatoração do `RecursiveAstVisitor`, o pipeline concorrente tolerante a falhas e a atualização para o Dart SDK 3.11.0.
 
 
