@@ -1,0 +1,438 @@
+   Handling Test Smells in Python: Results from a Mixed-Method
+                               Study
+           Daniel David Fernandes                                                 Ivan Machado                                           Rita S. P. Maciel
+      Federal University of Bahia (UFBA)                            Federal University of Bahia (UFBA)                        Federal University of Bahia (UFBA)
+               Salvador, Brazil                                              Salvador, Brazil                                           Salvador, Brazil
+            daniel.david@ufba.br                                         ivan.machado@ufba.br                                        rita.suzana@ufba.br
+ABSTRACT                                                                                           1    INTRODUCTION
+Software testing is an activity in the software development pro-                                   Software testing is the activity that looks for software faults. It is
+cess that looks for defects. Automated testing is composed of code                                 considered essential for software quality assurance in almost every
+that allows run software testing scenarios more quickly, avoiding                                  software development methodology [12]. Software testing can be
+manual rework. However, testers are likely to employ practices                                     performed manually or automated. In manual testing, testers as-
+that might negatively impact test quality regarding maintainabil-                                  sume the role of an end-user interacting with the running software
+ity, understandability, and effectiveness when writing test code.                                  to verify its behavior and find possible faults [11]. In automated
+Such bad practices are also known as test smells. Although test                                    testing, test code scripts are developed using frameworks or test-
+smells are a language-independent concept, different programming                                   ing tools and then run to test the software behavior. As software
+languages could present different occurrence standards. Therefore,                                 evolves, tests need to be rerun to ensure that both old and new func-
+studies in one programming language may not be generalizable.                                      tionality works as expected. Therefore, automated testing saves
+This study aims to investigate how test smells occurrence in Python                                repetitive manual rework and may decrease the time to execute
+test files. Python became the most widely used programming lan-                                    test code.
+guage globally in 2020. However, most research on test code quality                                    Automated testing could bring several benefits when compared
+only considers the Java language. To accomplish our goals, we built                                to manual testing, such as repeatability, reduced effort, faster exe-
+a dataset with 5,303 test files from 90 Python projects collected                                  cution, and consequently reduced costs [25]. However, if not im-
+from GitHub repositories to understand and analyze strategies for                                  plemented correctly, following good practices, automated testing
+handling test smells in Python. This analysis allowed us to propose                                can lead to problems and, in some cases, become less effective than
+four new test smells, discussing their potential problems. We carried                              manual testing in detecting faults [2].
+out a preliminary evaluation with 40 Python developers to validate                                     Bad practices in software test coding can be detrimental to under-
+their thoughts on the proposed test smells. These results are part                                 standing and effectiveness of automated testing. These bad practices
+of an ongoing research project aiming to propose a foundation to                                   are known as test smells [7] and may negatively affect test code,
+better support automation tests in Python.                                                         as they lead to poor test comprehensibility, maintainability, and
+                                                                                                   effectiveness [27].
+CCS CONCEPTS                                                                                           Python has grown due to its versatile syntax [14]. Python is a
+                                                                                                   high-level and multi-paradigm language (imperative, functional,
+• Software and its engineering → Software verification and
+                                                                                                   and object-oriented) that can be interpreted, scripted, and enable
+validation.
+                                                                                                   dynamic and strong typing [22]. Recent research shows that Python
+                                                                                                   is the fastest-growing programming language among software de-
+KEYWORDS                                                                                           velopers and has already taken the position of the most popular
+Test Smells, Automated Software Testing, Test Code Quality, Python                                 programming language in the world 1 . Researchers have investi-
+                                                                                                   gated the growing demand for the Python programming language
+ACM Reference Format:                                                                              and positive aspects of software development using this language
+Daniel David Fernandes, Ivan Machado, and Rita S. P. Maciel. 2021. Handling                        [14].
+Test Smells in Python: Results from a Mixed-Method Study. In Brazilian
+                                                                                                       Although the Python language’s growing use, most current re-
+Symposium on Software Engineering (SBES ’21), September 27-October 1, 2021,
+                                                                                                   search works, and tools to support test smells are related to the
+Joinville, Brazil. ACM, New York, NY, USA, 6 pages. https://doi.org/10.1145/
+3474624.3477066                                                                                    Java language, test smell is not academically explored considering
+                                                                                                   the Python context yet [1]. Therefore, automated testing in Python
+                                                                                                   lacks test quality support, which can lead to the negative impacts
+Permission to make digital or hard copies of all or part of this work for personal or              caused by the presence of test smells as well as problems like tests
+classroom use is granted without fee provided that copies are not made or distributed              non-determinism and low effectiveness in finding software faults
+for profit or commercial advantage and that copies bear this notice and the full citation
+on the first page. Copyrights for components of this work owned by others than ACM
+                                                                                                   [8, 21].
+must be honored. Abstracting with credit is permitted. To copy otherwise, or republish,                This paper presents preliminary results of an ongoing research
+to post on servers or to redistribute to lists, requires prior specific permission and/or a        project that aims to provide a rationale for test smells handling and
+fee. Request permissions from permissions@acm.org.
+SBES ’21, September 27-October 1, 2021, Joinville, Brazil                                          test automated support for Python. Toward this goal achievement,
+© 2021 Association for Computing Machinery.
+ACM ISBN 978-1-4503-9061-3/21/09. . . $15.00
+https://doi.org/10.1145/3474624.3477066                                                            1 https://spectrum.ieee.org/at-work/tech-careers/top-programming-language-2020
+
+
+
+
+                                                                                              84
+SBES ’21, September 27-October 1, 2021, Joinville, Brazil                                                       Daniel David Fernandes, Ivan Machado, and Rita S. P. Maciel
+
+
+we built and made publicly available a Python test files dataset2                       addition, they presented test coding patterns and principles from
+from GitHub repositories and investigated the occurrence standard                       the literature aimed at increasing the quality of automated testing.
+of 20 test smells in Python projects to understand strategies to                           Greiler et al. [13] presented techniques to identify six test smells.
+handle test smells in Python. As a result of this investigation, we                     The authors implemented a static analysis tool called TestHound,
+proposed four new test smells validated by 40 software testing                          which provides reports on test code for refactoring the test smells.
+professionals. We aim to support Python developers in building                          The authors evaluated the TestHound tool through three industrial
+and maintaining higher quality test code, avoiding bad practices                        case studies. It shows that developers find that the tool helps them
+reported in the literature. By sharing these results, we hope for                       understand and adjust test code.
+future contributions and improvements in this research work.                               Peruma et al. [18] proposed twelve new test smells and surveyed
+                                                                                        over 40 developers who confirmed the proposed test smells, in-
+2    TEST SMELLS                                                                        dicating bad programming practices. Additionally, they perform
+When developing software, some fundamental design principles                            an empirical study on the occurrences and distribution of the pro-
+may be violated, negatively impacting the software design quality.                      posed smells on 656 open-source Android applications in the java
+Therefore, the Smells concept in software arose to describe these                       programming language.
+anomalies [10]. During software implementation and evolution                               De Bleser et al. [6] analyzed six test smells in 164 open-source
+phases, test code tends to grow as new test cases are needed to be                      Scala projects hosted on GitHub and created SoCRATES, a test smell
+associated with new software functionalities. Developers tend to                        automated detection tool for Scala. In addition, they evaluated
+focus more on the production code rather than test code. However,                       the perception of test smells with 14 Scala developers through
+test code quality could directly impact the quality of source code                      interviews.
+[24].                                                                                      Although these studies are relevant, still missing research on test
+    Automated tests can save time and effort because they can be                        code quality regarding test smells in Python and a tool to support
+rerun when software evolves to validate behavior changes among                          test smells in Python. In this paper, we analyze the occurrence
+system components. Several works have analyzed the impact of                            standard of 20 test smells already proposed in Python projects. In
+the presence of test smells in test code to improve production code                     this analysis, we proposed four new test smells, which test profes-
+quality by using automated tests more efficiently [3, 23, 30]. It is                    sionals agreed on in terms of harmfulness, need for refactoring, and
+essential to know about and to avoid them, keeping a standard                           severity level. This work aims to lay the groundwork for creating
+quality of how test cases should be implemented, organized, and                         an automatic test smells detection tool for Python.
+interact with each other [18].                                                             Table 1 presents the test smells we analyzed in this study. We
+    Although developers’ perception of test smells has shown that                       selected this subset as these are frequently reported in the literature
+developers recognize test smells as potential problems and prioritize                   [15, 18, 27, 30]. In addition, they are among the test smells existing
+some test smells as most critical [24], many developers still do not                    tool support could automatically detect [19, 29].
+know some test smells [11, 15]. In addition, empirical evaluations
+pointed out that different contexts such as distinct programming                        4     METHODOLOGY
+languages and their developers’ perspectives may lead to diverse                        This section presents the research methodology, which comprises
+conclusions [18, 20, 23].                                                               two main activities: (i) build a Python test files dataset and (ii)
+    There is research on test code quality in Python [26, 31] and the                   analyze occurrence standard of test smells in Python through the
+impacts of bad coding practices on production code (code smells)                        built dataset, looking for test smell occurrences.
+in Python projects [4, 28]. However, test code quality considering                         To analyze the test smells occurrence standard in Python, we
+test smells were not investigated in Python projects yet.                               could not consider what already exists in the literature from the
+    In summary, studies on test smells are predominantly for Java,                      ground up. Hence, we first analyzed state-of-the-art approaches and
+both in theory (empirical evaluations) and practice (tools) [1]. This                   identified that most studies are conducted for Java. Although we do
+state-of-the-art analysis reinforces the interest in investigating test                 not use a Java dataset in this analysis, we compared the test smells
+smells from a Python programming language perspective due to                            in Python against Java presented in related works. Test smells are
+its increasing use and the lack of studies to investigate test smells                   language-independent; however, the 10 test smells proposed by
+in Python.                                                                              Peruma et al. [18], presented in Table 1 and our analysis, were
+                                                                                        conducted only in Java.
+3    RELATED WORK                                                                          Initially, we created a script to automate the procedures for se-
+                                                                                        lecting and collecting Python test files from the GitHub repositories
+Deursen et al. [7] introduced the concept of test smells and pre-
+                                                                                        for building the dataset. We used two search tools to select Python
+sented a catalog of test smells related to bad smells. They proposed
+                                                                                        project repositories containing test files. The first tool, GitHub
+and discussed twelve types of test smells, presenting refactoring
+                                                                                        Search3 , was adopted as a repository selection criteria for projects
+strategies.
+                                                                                        with at least 50 stars. In the second tool, GitHub Gists4 , we searched
+   Meszaros et al. [17] discussed the effects of existing and pro-
+                                                                                        potential users who create test cases using unittest and pytest; for
+posed practices on test code with some refactoring strategies. In
+                                                                                        the GitHub Gists, no minimum number of stars was considered.
+
+2 https://figshare.com/articles/conference_contribution/Handling_Test_Smells_in_        3 https://github.com/search
+
+Python_Results_from_a_Mixed-Method_Study/14938650                                       4 https://gist.github.com
+
+
+
+
+                                                                                   85
+Handling Test Smells in Python: Results from a Mixed-Method Study                                                      SBES ’21, September 27-October 1, 2021, Joinville, Brazil
+
+
+                                                Table 1: List of Test Smells investigated in this work.
+
+         #    Acronym      Test Smell                   Detection Rule                                                                           Source
+
+          1   AR           Assertion Roulette           Multiple unexplained assertions in the same test method                                  Deursen et al. [7]
+          2   CI           Constructor Initialization   Test class with constructor method and field initialization                              Peruma et al. [18]
+          3   CLT          Conditional Logic Test       Test methods that contain conditional statements                                         Meszaros et al. [17]
+          4   DA           Duplicate Assert             More than one of the same verification method that checks the same parameters            Peruma et al. [18]
+          5   DT           Default Test                 Automatically generated test class with default name                                     Peruma et al. [18]
+          6   EA           Eager Test                   Test method that checks many methods of the object to be tested                          Deursen et al. [7]
+          7   EH           Exception Handling           When an exception handling is performed within a test method.                            Peruma et al. [18]
+          8   EM           Empty Test                   Test method without executable statements                                                Peruma et al. [18]
+          9   GF           General Fixture              Setup method fields that are not used in all test methods                                Deursen et al. [7]
+         10   IT           Ignored Test                 When a test method is ignored through the framework’s annotation                         Peruma et al. [18]
+         11   LT           Lazy Test                    Several test methods that verify the same production method                              Deursen et al. [7]
+         12   MG           Mystery Guest                When a test method uses and depends on external resources                                Deursen et al. [7]
+         13   MNT          Magic Number Test            Test Method that contains some number without indicating their purpose                   Meszaros et al. [17]
+         14   RA           Redundant Assertion          Test method with checks that always have the same response                               Peruma et al. [18]
+         15   RO           Resource Optimism            Test method that optimistically assumes the state of an external resource as available   Deursen et al. [7]
+         16   RP           Redundant Print              Test method containing screen print statements                                           Peruma et al. [18]
+         17   SE           Sensitive Equality           Use toString method in a test method to make validations                                 Deursen et al. [7]
+         18   ST           Sleepy Test                  Test method with pauses to wait for an event                                             Peruma et al. [18]
+         19   UT           Unknown Test                 Test method without assertion                                                            Peruma et al. [18]
+         20   VT           Verbose Test                 Test method with many lines of code                                                      Meszaros et al. [17]
+
+
+
+   The projects in the dataset have an average of 16,363 stars, rang-                     code; (iii) distinct occurrence standard, having same anomalies
+ing from 0 to 111k stars, forty projects have less than 50 stars, fifty                   impacts, but different occurrence way; and (iv) test smell not found.
+projects have at least 50 stars, and the dataset could have a wider                          In the first one, similar occurrence standard, eight test smells
+diversity among the projects because we employed two different                            are classified: EM, RA, RP, UT, EA, LT, MNT, MG; in the second
+tools to select the projects. To filter out the repositories, after col-                  one, other eight test smells were placed: AR, DA, CLT, CI, EH, SE,
+lecting the test files we ran a script to go through each collected                       VT, RO; in the third one, three test smells present were classified
+test file and remove about 300 test files that had no assertion. As                       as distinct occurrence standard: GF, ST, and IT. Finally, we could
+a result, we reached 5,303 Python test files, 1,963,184 lines of test                     not find the DT test smell in Python files.
+code from 90 Python projects [9].                                                            As the first test smell classification had similar occurrence stan-
+   After creating the dataset, the next step was to analyze the                           dards, we could use the same detection strategy used in Java. There-
+dataset looking for test smells in the Python test files. To help                         fore, we next discuss the test smells placed in the other three classi-
+this analysis, we developed a script to select samples that might                         fications, starting with distinct occurrence standard classification.
+contain certain types of test smells. This script works similarly to                         GF occurs when not all fields in the SetUp method are used in
+the GREP5 command. GREP searches for keywords through regular                             the test methods, making it more generic than necessary. Deursen
+expressions in multiple files. This script returns potential test files                   et al. [7] claim this practice can hinder readability. GF also can
+with certain test smells. Once returned, we manually parsed them                          impact test suite runtime by doing unnecessary work in this case. It
+to verify the occurrences from the test carefully smells definitions.                     occurs in Java and Python. However, we can avoid it in Python by
+   We make all datasets (scripts, forms, answers, code snippets, test                     specifying the fixtures we want to use from the SetUp method in
+smell samples) from this study available [9].                                             each test method through the @pytest.mark.usefixtures() annotation.
+                                                                                          This way, it is possible to specify, as parameters, fields used in each
+5    TEST SMELLS OCCURRENCE ANALYSIS                                                      test method. It is an alternative to avoid unnecessarily allocating
+This section discusses the test smells occurrence standard analyzed                       fields to all test methods, which can decrease test suite execution
+in the Python test files dataset. As earlier mentioned in this paper,                     time6 . Using this feature contained in pytest can avoid GF. However,
+Java is the most studied language concerning test smell [1], so we                        the authors who proposed GF did not opine on whether specifying
+compared the test smells occurrence in Python based on Java.                              the fields used in test methods would still indicate a bad practice,
+    Out of the 20 test smells analyzed in Python projects, we classi-                     compromising readability [7].
+fied them into four classifications according to their occurrence con-                       ST occurs when a pause in a test method interrupts execution,
+cerning Java programming: (i) similar occurrence standard, when                           simulating waiting for an event. This practice can cause unexpected
+occurrence standards are almost the same as well Java and Python;                         results because processing time may vary in different executions.
+(ii) particular aspects, despite having same occurrence standard,                         This practice can occur in Java and Python, but the method used
+there are particular characteristics of programming languages or                          differs. In Python, a feature is used through a parameter in the wait
+testing frameworks that slightly modify its occurrence in a test                          method, called “timeout”. Timeout parameter can prevent the test
+
+5 https://www.gnu.org/software/grep/manual/grep.html                                      6 https://docs.pytest.org/en/stable/fixture.html
+
+
+
+
+                                                                                    86
+SBES ’21, September 27-October 1, 2021, Joinville, Brazil                                           Daniel David Fernandes, Ivan Machado, and Rita S. P. Maciel
+
+
+suite from taking longer than necessary but does not eliminate test            have different detection ways according to each programming lan-
+non-determinism. In Java, ST usually occurs with the presence of               guage syntax.
+thread.sleep, which has a fixed waiting time. The authors who
+proposed the ST did not comment on whether using the “smarter”                 6     NEW PROPOSED TEST SMELLS
+waiting feature would keep such a situation a bad practice [18].               We noticed occurrences of indicative bad practices in test code dur-
+   IT occurs when a test method is ignored through the corre-                  ing the occurrence analysis of the test smells already proposed and
+sponding annotation of the respective framework. The authors of                discussed in other programming languages. Therefore, although
+IT believe this practice can hinder test readability and maintain-             our analysis used the constructed dataset described in the method-
+ability without aggregating to the test suite. IT differs in Python            ology, we could avoid such practices for better test code quality. We
+and Java in the annotation used. In Java, this practice is detected            next describe each of the four new proposed test smells, followed
+through the @Ignore annotation, and using Python, it is possible               by their detection strategy, discussing its significant impacts on test
+to ignore a test method wholly or under certain conditions through             code and possible refactorings.
+the @unittest.skipIf and @pytest.mark.skipif commands. In
+Java, it is possible to skip a test under certain conditions, but it is        6.1     Programming Paradigms Blend
+not done directly with the @Ignore annotation, as IT is detected               Python is a multi-paradigm programming language. The paradigm
+[19, 29]. The authors who proposed IT did not discuss whether                  to be chosen considers the type of system and the goals to achieve.
+ignoring a test method under certain conditions would remain a                 Mixing paradigms in the same project can get confusing. Mixing
+bad practice [18].                                                             paradigms within the same test file can get even more confusing.
+   Regarding our second test smells classification, similar occur-             We have found test code examples where developers have mixed
+rence standard in Java and Python but differences in syntax or                 the Object-Oriented (OO) and procedural paradigms in the same
+language features, AR, DA, and RA differ, e.g., in the list of asser-          test code. This practice can make the code hard to understand and
+tion methods specific to respective test frameworks. On the other              maintain.
+hand, CLT and EH differ in structure, and specific keywords pro-                  This practice has already been discussed on programmer plat-
+gramming language, e.g., Java has the switch conditional statement             forms8 9 . Testing frameworks like JUnit and unittest were designed
+that is not contained in Python. In contrast, Python has the elif              to cope with the OO paradigm, where test cases are mapped into
+conditional statement that is not contained in Java.                           methods. However, when a code snippet is written following the
+   VT occurs when a test method has many lines of code. “Many                  procedural paradigm, it is interpreted in a global scope and accessed
+lines of code” is a relative metric and can differ in different pro-           by the whole class, so this practice increases coupling and violates
+gramming languages. The Python language references a leaner                    the encapsulation principle of the OO paradigm.
+syntax, and it is possible to do more operations with fewer lines of
+code. The number of lines of code for a method to be considered                      Detection strategy: When there are fields initialized out-
+significant may vary depending on the project or programmer’s                        side the test class (global scope) and used in the test class.
+style. Researchers surveyed Python developers and found that they                    Possible refactorings: Fields located outside the test
+considered between 29 and 45 lines of code in Python for a method                    class can be initialized in the SetUp method or in a helper
+to be considered long [5].                                                           method inside the test class.
+   The only test smell not found in the Python test file database was
+DT. DT occurs when the test class name is generic, for example, “Ex-           6.2     Verifying in Setup Method
+ampleUnitTest” or “ExampleInstrumentedTest”. The authors who
+                                                                               Testing frameworks usually have fixture methods called once for
+proposed DT explained that this practice is the default name of the
+                                                                               all test methods (setUp and TearDown)10 . These methods work
+test class automatically generated by Android Studio7 , a popular
+                                                                               similarly in Python and Java. They contain procedures (such as
+Java mobile development tool, so this test smell is specifically asso-
+                                                                               creating object instances, initializing databases, preparing rules)
+ciated with Java. It is recommended that testers rename this test
+                                                                               to execute before and after each test method and intend to help
+class with an intuitive name of its purpose. This practice had the
+                                                                               testers make their test code clean, flexible, and make test cases
+lowest occurrence among the other test smells [18].
+                                                                               independent of each other.
+   We searched the dataset for test class names with other generic
+                                                                                  When the SetUp has a check, this method is escaping the single
+names, such as “Example”, “Instance”, and “Sample”, analogous to
+                                                                               responsibility principle because it is not only initializing data to use
+the DT identification strategy. However, no test classes were found
+                                                                               in the test cases, but it is also validating something. SetUp methods
+in Python with these names either. Thus, this evidence may indicate
+                                                                               initialize conditions needed for test cases; they are executed once
+no occurrence of DT in Python.
+                                                                               before each test method contained in the test class. When there is
+   Therefore, in this work, it can be stated that most of the test
+                                                                               a check-in an SetUp method, it will be processed N times, N being
+smells proposed and discussed apply to Python (19 out of 20). These
+                                                                               the number of test methods in the test class. This may impact test
+results may indicate that most of the proposed test smells are pro-
+                                                                               processing time unnecessarily.
+gramming language-independent, but they may have different oc-
+currences. Consequently, studying detection strategies in other                8 https://stackoverflow.com/questions/47441017/is-it-bad-practice-to-mix-oop-and-
+
+programming languages is required. Furthermore, test smells will               procedural-programming-in-python-or-to-mix-pr
+                                                                               9 https://softwareengineering.stackexchange.com/questions/149578/is-unit-testing-
+                                                                               procedural-code-effective
+7 https://developer.android.com                                                10 https://docs.python.org/3/library/unittest.html#class-and-module-fixtures
+
+
+
+
+                                                                          87
+Handling Test Smells in Python: Results from a Mixed-Method Study                                     SBES ’21, September 27-October 1, 2021, Joinville, Brazil
+
+
+      Detection strategy: When there is an assertion method                   assess whether Python developers agree that these four proposed
+      within the SetUp method.                                                practices are harmful to test code. For each of these practices, they
+      Possible refactorings: Instead of using it in the SetUp                 were asked if they believe it can harm test code quality, if they
+      method that runs before each test method, use it in the                 would refactor, how much they think it would impact the test code,
+      SetUpClass method that runs only once.                                  on a 0-10 scale, and an open-ended question about the general sur-
+                                                                              vey aspects. In the questionnaire, for each type of test smell asked,
+6.3      Non-Functional Statement                                             its definition, potential problems, and ways of detection were pre-
+                                                                              sented. We did not mention the term "test smells” as a strategy
+When a test method scope becomes empty, it does not execute any-              to reduce respondent bias; we used the term "practice" instead. In
+thing. In Python, this occurs when a scope uses the pass keyword.             addition, no code snippets were presented, as this may interfere
+We can also realize it in Java by using the continue keyword. This            with the participants’ answers.
+practice generally represents a placeholder for future code. Usually,             Table 2 presents the results of the 40 developers’ opinion poll
+we can remove this scope without losing functionality. When the               regarding the 4 test smells proposed in this paper.
+pass statement executes, nothing happens. However, it saves the                   We found the number of developers who believe that such prac-
+developer from getting an error message because an empty scope                tices are harmful to test code quality, between 72.5% and 95%; those
+is not allowed in loops, conditional structures, function definitions,        who would refactor, between 65% and 82.5%; and the severity level
+or class definitions. This is a practice to avoid, as it may not add          on a scale from 0 to 10, between 5.83 and 8.20, relevant to the
+functional value to test code and may make test code more difficult           proposed test smells.
+to understand.                                                                    Some participants reported that while they agree that the prac-
+      Detection strategy: When there is an empty scope                        tices are harmful, they believe that the refactoring decision requires
+      within a test method. In Python, this occurs with the use               further analysis of the project context. Other participants reinforced
+      of the pass keyword within a scope.                                     the need to follow good practices in test code because it is also es-
+      Possible refactorings: Remove the empty scope or im-                    sential to serving as project documentation, adding value to its
+      plement the expected functionality.                                     maintainability.
+                                                                                  A threat to validity concerning test smell detection includes the
+                                                                              manual analysis, as it may be susceptible to misunderstanding. To
+6.4      Undefined Test                                                       mitigate this, we built a dataset of 5,303 project test files to analyze
+By the convention of Python testing frameworks (unittest and                  test smells at different occurrences for each test smells type in
+pytest), test methods are executed as test cases when they have               real projects. Also, the test smells occurrence standard in Python
+the prefix “test” in method name11 . Otherwise, the method is not             was only analyzed by the authors of this paper. Different contexts,
+executed as a test case. In JUnit, this information is passed to the          professionals, and test smells occurrence cases may present different
+compiler through the “@Test” annotation. Test annotation is a                 views. However, we based our analyses on the definitions given by
+feature that has been studied for its importance in code. The anno-           the respective authors of each test smell analyzed.
+tations, besides passing informative instructions to the compiler,
+help in the understanding, maintenance, and code quality [16]. This
+practice could be analogous to other programming languages if an
+annotation is not used as agreed upon by the testing framework.               8    CONCLUSION
+                                                                              This paper reports on the analysis of the occurrence standard of 20
+      Detection strategy: It occurs when the name of a test                   test smell in Python projects. To perform this analysis, we built a
+      method is not prefixed with “test”.                                     dataset of 5,303 test files from 90 projects on GitHub. In this analysis,
+      Possible refactorings: Rename the test method using                     we noticed four patterns of indicative bad practices in Python test
+      the prefix “test” or remove it.                                         code, 3 of which are programming language-independent and 1
+                                                                              for multi-paradigm languages. In addition, we found that some
+7     PRELIMINARY EVALUATION                                                  test smells may occur differently in programming languages, so
+In this preliminary evaluation, we invited 126 Brazilian Python               conclusions regarding test smells may require further analysis in
+developers with knowledge in pytest or unittest, and we got 40 par-           other contexts.
+ticipants. We used the LinkedIn search tool to filter these profiles             This work is part of an ongoing project with the primary goal of
+in the platform to achieve this goal. We sent invitation messages di-         developing a test smells detection tool for the Python programming
+rectly through the LinkedIn platform with these randomly collected            language due to the growing demand and current lack of support
+profiles containing the link to our Google Forms questionnaire. It            for test smells detection in Python.
+is worth noting that the sample included software development                    As future work, we intend to verify whether the test smells
+professionals since the target audience was composed of developers            proposed in this paper are applicable in other programming lan-
+and testers.                                                                  guages and how they behave. Also, further research on refactoring
+   This questionnaire contained 13 questions, 12 closed-ended ques-           strategies for the proposed test smells is necessary.
+tions and one open-ended question. This questionnaire aimed to                   The possible refactorings indicated in each proposed test smells
+                                                                              may vary from case to case and have differences of opinion among
+11 https://docs.python.org/3/library/unittest.html                            developers. Therefore, further analysis with professionals in the
+
+
+
+
+                                                                         88
+SBES ’21, September 27-October 1, 2021, Joinville, Brazil                                                              Daniel David Fernandes, Ivan Machado, and Rita S. P. Maciel
+
+
+                                            Table 2: Survey results concerning the new proposed test smells
+
+                                                                     Harmful (%)                        Refactor (%)                 Severity level (0-10)
+                    Test Smell
+                                                             Yes      No   Don’t know           Yes      No    Don’t know         Average Median Mode
+
+                    Programming Paradigms Blend             95.00    5.00          0.00         67.50   17.50        15.00          6.68         7.00      7.00
+                    Verifying in Setup Method               85.00    10.00         5.00         80.00   17.50         2.50          7.28         8.00      9.00
+                    Non-Functional Statement                72.50    20.00         7.50         65.00   27.5          7.50          5.83         6.00      10.00
+                    Undefined Test                          87.50    5.00          7.50         82.50   10.00         7.50          8.20         8.50      10.00
+
+
+
+field is needed to offer more effective refactoring solutions for such                               (ICCPR ’19). Association for Computing Machinery, New York, USA, 458–465.
+practices.                                                                                      [15] Nildo Silva Junior, Larissa Rocha Soares, Luana Almeida Martins, and Ivan
+                                                                                                     Machado. 2020. A survey on test practitioners’ awareness of test smells. CoRR
+                                                                                                     abs/2003.05613 (2020).
+ACKNOWLEDGMENTS                                                                                 [16] Dong Jae Kim, Nikolaos Tsantalis, Tse-Hsun (Peter) Chen, and Jinqiu Yang. 2021.
+                                                                                                     Studying Test Annotation Maintenance in the Wild. In Proceedings of the 43rd
+This research has been partially supported by Conselho Nacional de                                   International Conference on Software Engineering. IEEE, Madrid, ES, 62–73.
+Desenvolvimento Científico e Tecnológico (CNPq) grant 133477/2020-                              [17] Gerard Meszaros, Shaun M. Smith, and Jennitta Andrea. 2003. The Test Automa-
+                                                                                                     tion Manifesto. In Extreme Programming and Agile Methods - XP/Agile Universe,
+7 and FAPESB grant JCB0060/2016.                                                                     Frank Maurer and Don Wells (Eds.). Springer Berlin Heidelberg, Berlin, Heidel-
+                                                                                                     berg, 73–81.
+REFERENCES                                                                                      [18] Anthony Peruma, Khalid Almalki, Christian D. Newman, Mohamed Wiem
+                                                                                                     Mkaouer, Ali Ouni, and Fabio Palomba. 2019. On the Distribution of Test Smells
+ [1] Wajdi Aljedaani, Anthony Peruma, Ahmed Aljohani, Mazen Alotaibi, Mo-                            in Open Source Android Applications: An Exploratory Study. In Proceedings
+     hamed Wiem Mkaouer, Ali Ouni, Christian Newman, Abdullatif Ghallab, and                         of the 29th Annual International Conference on Computer Science and Software
+     Stephanie Ludi. 2021. Test Smell Detection Tools: A Systematic Mapping Study.                   Engineering (CASCON ’19). IBM Corp., USA, 193–202.
+     In International Conference of East-Asian Association for Science Education (EASE).        [19] Anthony Peruma, Khalid Almalki, Christian D. Newman, Mohamed Wiem
+     Cornell University, Shizuoka, Japan.                                                            Mkaouer, Ali Ouni, and Fabio Palomba. 2020. TsDetect: An Open Source Test
+ [2] Y. Amannejad, V. Garousi, R. Irving, and Z. Sahaf. 2014. A Search-Based Approach                Smells Detection Tool. ACM, New York, USA, 1650–1654.
+     for Cost-Effective Software Test Automation Decision Support and an Indus-                 [20] Anthony Peruma, Christian D. Newman, Mohamed Wiem Mkaouer, Ali Ouni,
+     trial Case Study. In IEEE Seventh International Conference on Software Testing,                 and Fabio Palomba. 2020. An Exploratory Study on the Refactoring of Unit
+     Verification and Validation Workshops. IEEE, Cleveland, USA, 302–311.                           Test Files in Android Applications. In 42nd International Conference on Software
+ [3] Gabriele Bavota, Abdallah Qusef, Rocco Oliveto, Andrea Lucia, and Dave Binkley.                 Engineering Workshops (ICSEW). ACM, New York, USA, 350–357.
+     2015. Are Test Smells Really Harmful? An Empirical Study. Empirical Software               [21] Gustavo Pinto, Breno Miranda, Supun Dissanayake, Marcelo d’Amorim,
+     Engineering 20, 4 (2015), 1052–1094.                                                            Christoph Treude, and Antonia Bertolino. 2020. What is the Vocabulary of Flaky
+ [4] Z. Chen, L. Chen, W. Ma, and B. Xu. 2016. Detecting Code Smells in Python                       Tests?. In Proceedings of the 17th International Conference on Mining Software
+     Programs. In International Conference on Software Analysis, Testing and Evolution               Repositories (MSR). ACM, New York, USA, 492–502.
+     (SATE). IEEE, Kunming, China, 18–23.                                                       [22] G. Van Rossum and F. L. Drake. 2011. An Introduction to Python. Network Theory
+ [5] Zhifei Chen, Lin Chen, Wanwangying Ma, Xiaoyu Zhou, Yuming Zhou, and                            Limited, Network Theory.
+     Baowen Xu. 2018. Understanding Metric-Based Detectable Smells in Python                    [23] Davide Spadini, Fabio Palomba, A. Zaidman, M. Bruntink, and A. Bacchelli.
+     Software. Inf. Softw. Technol. 94, C (2018), 14–29.                                             2018. On the Relation of Test Smells to Software Code Quality. In International
+ [6] Jonas De Bleser, Dario Di Nucci, and Coen De Roover. 2019. Assessing diffusion                  Conference on Software Maintenance and Evolution (ICSME). IEEE, Madrid, Spain,
+     and perception of test smells in scala projects. In 16th International Conference               1–12.
+     on Mining Software Repositories (MSR). IEEE, Montreal, QC, Canada, 457–467.                [24] Davide Spadini, Martin Schvarcbacher, Ana-Maria Oprescu, Magiel Bruntink,
+ [7] Arie Van Deursen, Leon Moonen, Alex Van Den Bergh, and Gerard Kok. 2001.                        and Alberto Bacchelli. 2020. Investigating Severity Thresholds for Test Smells. In
+     Refactoring test code. In 2nd international conference on extreme programming and               Proceedings of the 17th International Conference on Mining Software Repositories
+     flexible processes in software engineering (XP2001). CWI (Centre for Mathematics                (MSR). ACM, New York, USA, 311–321.
+     and Computer Science), NLD, 92–95.                                                         [25] Suresh Thummalapenta, Saurabh Sinha, Nimit Singhania, and Satish Chandra.
+ [8] Moritz Eck, Fabio Palomba, Marco Castelluccio, and Alberto Bacchelli. 2019.                     2012. Automating test automation. In 34th International Conference on Software
+     Understanding Flaky Tests: The Developer’s Perspective. In Proceedings of the 27th              Engineering (ICSE). IEEE, Zurich, Switzerland, 881–891.
+     ACM Joint Meeting on European Software Engineering Conference and Symposium                [26] F. Trautsch and J. Grabowski. 2017. Are There Any Unit Tests? An Empirical Study
+     on the Foundations of Software Engineering (ESEC/FSE 2019). ACM, New York,                      on Unit Testing in Open Source Python Projects. In International Conference on
+     USA, 830–840.                                                                                   Software Testing, Verification and Validation (ICST). IEEE, Tokyo, Japan, 207–218.
+ [9] Daniel Fernandes, Ivan Machado, and Rita Maciel. 2021. Attachments from                    [27] M. Tufano, F. Palomba, G. Bavota, M. Di Penta, R. Oliveto, A. De Lucia, and D.
+     Handling Test Smells in Python: Results from a Mixed-Method Study. https:                       Poshyvanyk. 2016. An empirical investigation into the nature of test smells. In
+     //doi.org/10.6084/m9.figshare.14938650                                                          31st International Conference on Automated Software Engineering (ASE). IEEE,
+[10] Martin Fowler. 1999. Refactoring: Improving the Design of Existing Code. Addison-               Singapore, 4–15.
+     Wesley, Boston, MA, USA.                                                                   [28] Nicole Vavrová and Vadim Zaytsev. 2017. Does Python Smell Like Java? Tool
+[11] Vahid Garousi and Barış KUÇUK. 2018. Smells in software test code: A survey of                  Support for Design Defect Discovery in Python. The Art, Science, and Engineering
+     knowledge in industry and academia. Journal of Systems and Software 138 (2018),                 of Programming 1, 2 (2017), 11–29.
+     52 – 81.                                                                                   [29] Tássio Virgínio, Luana Martins, Larissa Rocha, Railana Santana, Adriana Cruz,
+[12] Dorothy Graham, Erik Van Veenendaal, Isabel Evans, and Rex Black. 2008. Founda-                 Heitor Costa, and Ivan Machado. 2020. JNose: Java Test Smell Detector. In 34th
+     tions of Software Testing: ISTQB Certification. Intl Thomson Business Pr, Cengage               Brazilian Symposium on Software Engineering (SBES). ACM, New York, USA,
+     Learning Emea.                                                                                  564–569.
+[13] Michaela Greiler, Arie van Deursen, and Margaret-Anne D. Storey. 2013. Auto-               [30] Tássio Virgínio, Railana Santana, Luana Almeida Martins, Larissa Rocha Soares,
+     mated Detection of Test Fixture Strategies and Smells. In 6th IEEE International                Heitor Costa, and Ivan Machado. 2019. On the influence of test smells on test
+     Conference on Software Testing, Verification and Validation. IEEE, Luxembourg,                  coverage. In 33rd Brazilian Symposium on Software Engineering. ACM, New York,
+     322–331.                                                                                        USA, 467–471.
+[14] A. Javed, M. Zaman, M. Uddin, and T. Nusrat. 2019. An Analysis on Python Pro-              [31] Hongyu Zhai, Casey Casalnuovo, and Prem Devanbu. 2019. Test Coverage in
+     gramming Language Demand and Its Recent Trend in Bangladesh. In Proceedings                     Python Programs. In Proceedings of the 16th International Conference on Mining
+     of the 2019 8th International Conference on Computing and Pattern Recognition                   Software Repositories. IEEE Press, Montreal, Canada, 116–120.
+
+
+
+
+                                                                                           89
+

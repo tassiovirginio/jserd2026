@@ -1,0 +1,661 @@
+                                        Manual Tests Do Smell! Cataloging and Identifying
+                                                 Natural Language Test Smells
+                                                Elvys Soares∗ , Manoel Aranda† , Naelson Oliveira† , Márcio Ribeiro† , Rohit Gheyi‡ , Emerson Souza∗ ,
+                                                           Ivan Machado§ , André Santos∗ , Baldoino Fonseca† , and Rodrigo Bonifácio¶
+                                                                                ∗ Universidade Federal de Pernambuco (UFPE), Brazil
+
+                                                                        Email: eas5@cin.ufpe.br, epss@cin.ufpe.br, alms@cin.ufpe.br
+                                                                                † Federal University of Alagoas (UFAL), Brazil
+
+                                                               Email: mpat@ic.ufal.br, naelson@ic.ufal.br, marcio@ic.ufal.br, baldoino@ic.ufal.br
+                                                                           ‡ Federal University of Campina Grande (UFCG), Brazil
+
+                                                                                         Email: rohit@dsc.ufcg.edu.br
+
+
+
+
+arXiv:2308.01386v1 [cs.SE] 2 Aug 2023
+                                                                                  § Federal University of Bahia (UFBA), Brazil
+
+                                                                                         Email: ivan.machado@ufba.br
+                                                                                      ¶ University of Brası́lia (UnB), Brazil
+
+                                                                                            Email: rbonifacio@unb.br
+
+
+                                           Abstract—Background: Test smells indicate potential problems        verifications [4]), or unreliable results (i.e., non-deterministic
+                                        in the design and implementation of automated software tests           execution behavior [5]).
+                                        that may negatively impact test code maintainability, coverage,
+                                                                                                                  The necessary investment in configuration can lead a project
+                                        and reliability. When poorly described, manual tests written in
+                                        natural language may suffer from related problems, which enable        to opt for manual testing over test automation due to budget
+                                        their analysis from the point of view of test smells. Despite the      limitations [6], [7]. In such cases, manual test descriptions
+                                        possible prejudice to manually tested software products, little is     are in natural language and “often of poor quality and writ-
+                                        known about test smells in manual tests, which results in many         ten without the best practices of software engineering” [8].
+                                        open questions regarding their types, frequency, and harm to tests
+                                                                                                               Similar to known issues with natural language requirements,
+                                        written in natural language. Aims: Therefore, this study aims to
+                                        contribute to a catalog of test smells for manual tests. Method: We    documentation of tests in natural language often results in test
+                                        perform a two-fold empirical strategy. First, an exploratory study     cases that are incomprehensible, ambiguous, and difficult to
+                                        in manual tests of three systems: the Ubuntu Operational System,       maintain due to problems such as translation and spelling er-
+                                        the Brazilian Electronic Voting Machine, and the User Interface        rors, different description styles for similar testing procedures,
+                                        of a large smartphone manufacturer. We use our findings to
+                                                                                                               or excessive use of abbreviations [9].
+                                        propose a catalog of eight test smells and identification rules
+                                        based on syntactical and morphological text analysis, validating          Despite the format differences, bad choices when imple-
+                                        our catalog with 24 in-company test engineers. Second, using our       menting automatic tests [10] or describing a manual test
+                                        proposals, we create a tool based on Natural Language Processing       using natural language may pose similar threats to the test-
+                                        (NLP) to analyze the subject systems’ tests, validating the results.   ing activity. For example, Table I presents a fragment of a
+                                        Results: We observed the occurrence of eight test smells. A survey
+                                        of 24 in-company test professionals showed that 80.7% agreed           test description from the Ubuntu Operational System (OS)
+                                        with our catalog definitions and examples. Our NLP-based tool          manual tests.1 In the test, the second action step presents
+                                        achieved a precision of 92%, recall of 95%, and f-measure of           two conditions, “USB 3.0 storage device” and “USB 3.0
+                                        93.5%, and its execution evidenced 13,169 occurrences of our           port,” that must be met for the action “transfer a large file”
+                                        cataloged test smells in the analyzed systems. Conclusion: We          and the corresponding verification step to be performed. The
+                                        contribute with a catalog of natural language test smells and
+                                        novel detection strategies that better explore the capabilities of     conditional logic phrased in natural language negatively affects
+                                        current NLP mechanisms with promising results and reduced              test comprehension and correctness. Indeed, as can be seen
+                                        effort to analyze tests written in different idioms.                   in Table I, a problem in USB 3.0 file transfers may not be
+                                           Index Terms—Test Design, Software/Program Verification, Test        identified if the tester does not use compliant equipment and
+                                        Smells, Manual Tests, Natural Language Processing                      skip step 2. From the point of view of test smells, this is the
+                                                               I. I NTRODUCTION                                Conditional Test [11] in natural language [6].
+                                                                                                                  Using the rationale presented by the example in Table I,
+                                           Test smells are indications of potential problems in the
+                                                                                                               Hauptmann et al. [6] coined the term natural language test
+                                        design and implementation of automated software tests [1].
+                                                                                                               smells to represent possible design problems in manual soft-
+                                        Like a code smell [2], [3], a test smell does not necessarily
+                                                                                                               ware testing from the point of view of test smells. A set of
+                                        mean an already existing problem but an indication of fur-
+                                                                                                               seven test smells is presented along with simple detection
+                                        ther difficulties such as poor maintainability (i.e., duplication
+                                        of code [1]), lack of coverage (i.e., missing or unexecuted               1 [Online]. “testcases\hardware\1476 USB Ports” test, available: https://
+                                                      978-1-6654-5223-6/23/$31.00 ©2023 IEEE                   git.launchpad.net/ubuntu-manual-tests
+                                                                    TABLE I
+                        S TEPS OF A N U BUNTU OS TEST HAVING THE C ONDITIONAL T EST SMELL PHRASED IN NATURAL LANGUAGE
+
+No       Action                                                         Verification
+1        Plug a USB device in and attempt to use it                     The device is correctly recognized. The software normally used with the device functions
+                                                                        normally. The device behaves as expected. The USB device works in every port. You
+                                                                        are able to disconnect and re-connect the USB device correctly without errors
+2        If the device is a USB 3.0 storage device and you have a USB   The transfer is above USB 2.0 speed
+         3.0 port, transfer a large file between the two
+3        Repeat for each USB device you have
+
+
+
+rules, such as word count or occurrences from keyword                            evaluate our catalog. We recruited 24 test professionals and
+lists. After Hauptmann et al. [6] publication, we noticed a                      presented them with our definitions and examples, asking for
+research gap of almost ten years concerning natural language                     their agreement level to our propositions. In this study, we
+test smells, which did not happen in the context of smells                       intend to answer the following research question:
+in automatic tests [5], [12]–[14]. Such absence motivates a                            •   RQ4 :“How software testing professionals evaluate our
+handful of questions concerning the existence of additional                                proposed smells?”
+natural language test smells, their frequency, the possible
+problems they indicate, and whether we can benefit from the                         As a result of our survey, our proposals had an average
+powerful Natural Language Processing mechanisms available                        acceptance of 80.7% among the interviewed in-company test
+nowadays. These questions motivate our work in this paper,                       engineers, contributing to additional concerns, such as test
+which aims to advance the research on natural language test                      reproducibility, length, maintainability, and coverage, all orig-
+smells.                                                                          inating from doubts raised from poor test writing.
+   We first conduct an exploratory study to analyze a statisti-                     We also contribute to developing an NLP-based tool to
+cally relevant sample of manual test descriptions of three sys-                  identify our catalog’s natural language test smells automat-
+tems from different domains: (i) the Ubuntu Operational Sys-                     ically. Our tool implements our defined rules using spaCy,2
+tem (OS), which is open-source; (ii) the Brazilian Electronic                    a “free, open-source library for industrial-strength Natural
+Voting Machine, in an institutional partnership between our                      Language Processing (NLP) in Python,”, and its capabilities
+institution [name omitted for the blind review process] and the                  concerning syntactic analysis (i.e., elements of the sentences
+Superior Electoral Court (TSE); and (iii) a large smartphone                     and their properties) like verification verbs and declarative
+manufacturer’s UI — name omitted due to non-disclosure of                        sentences, which are present in multiple languages and whose
+proprietary information agreement —, also in partnership. In                     implementation can be is mostly reused — as we do to
+this first study, we intend to answer the following research                     Portuguese, used in the tests of the Brazilian electronic voting
+questions:                                                                       machine. To evaluate our tool, we conduct one last empirical
+                                                                                 study to answer the following research question:
+     • RQ1 :“What already proposed natural language test
+       smells can be observed?”,                                                       •   RQ5 :“How precise can the automated discovery of nat-
+     • RQ2 :“What new natural language test smells can be
+                                                                                           ural language test smells be when using NLP?”
+       observed?”, and                                                              The results of this study point to a precision of 92%,
+     • RQ3 :“How frequent are these test smells?”                                recall of 95%, and f-measure of 93.5%, indicating a suitable
+   Answering these research questions is important to advance                    detection level for our proposals. Overall, the tool execution
+the list of test smells applicable to natural language tests.                    evidenced 13,169 test smell occurrences in the 2,007 tests
+In particular, we identify the occurrence of two already                         of the analyzed systems, which, by definition, may represent
+proposed natural language test smells (i.e., Conditional Test                    enhancement opportunities to their descriptions.
+and Ambiguous Test) and contribute to six new smells (i.e.,                         To sum up, this paper presents the following contributions:
+Unverified Action, Misplaced Precondition, Misplaced Verifi-                           • We conduct an exploratory study for natural language
+cation, Misplaced Action, Eager Action, and Tacit Knowledge),                            test smells on systems of different domains: open-source,
+and their frequency in the systems mentioned above. As the                               government, and industry (Section II);
+final product of this study, we introduce a catalog containing                         • We present a catalog of natural language test smells,
+these eight smells. Our catalog organizes each smell in terms                            with six new contributions from our study, along with
+of their name, definition, problem, and identification rules.                            detection rules that use syntactic and morphological lan-
+Instead of using simple detection mechanisms (e.g., searching                            guage analysis, representing a novel approach enabled by
+for a keyword to identify a test smell), our rules are based                             current NLP technology (Section III);
+on powerful natural language processing capabilities like the                          • We evaluate our catalog with 24 in-company test engi-
+identification of indefinite determiners, which may indicate                             neers (Section IV);
+non-determinism in the test description.
+   We conduct an empirical study using an online survey to                          2 [Online]. Available: https://spacy.io/
+  • We introduce a NLP-based tool to identify the proposed                  Concerning the already proposed smells for tests written in
+    test smells (Section V);                                             natural language, from the existing list of seven test smells [6],
+  • We evaluate our tool by analyzing a sample of its results            five are identified using metrics from an automatic analy-
+    concerning the before-mentioned systems (Section VI).                sis [17]: Badly Structured Test Suite, Inconsistent Wording,
+   The survey dataset, tool logs, and tool validation records —          Hard-Coded values, Long Test Steps, and Test Clones. As we
+for Ubuntu OS tests — are available online [15].                         intended to manually read test descriptions and take notes of
+                                                                         the identified problems, using any tool to generate such metrics
+   II. E XPLORATORY S TUDY: T OWARDS A C ATALOG OF                       was out of scope.
+           NATURAL L ANGUAGE T EST S MELLS                                  Finally, to make our manual analysis effort feasible, we used
+                                                                         Cochran’s Sample Size Formula [18] to calculate the sample
+   This section describes how we analyzed natural language               needed to obtain an 80% confidence level with a 5% margin
+test descriptions to prospect test smells. Also, we give further         of error for each system individually. Table II presents the
+detail on the selected systems, a sample set of tests, and               analyzed sample test set per system:
+the distribution (frequency) of our findings. In particular, this
+exploratory study answers RQ1 , RQ2 , and RQ3 .                                                        TABLE II
+                                                                                        A NALYZED SAMPLE SET OF TESTS PER SYSTEM .
+A. Planning
+                                                                                          System         Manual tests     Sample size
+   This exploratory study aims to prospect a set of manual tests
+from different systems and gather the identified occurrences of                           Ubuntu OS                973           141
+                                                                                          BEVM                     136            75
+test smells. To increase the representativeness of our results,                           LSM                      898           139
+we selected manual tests written in natural language from                                       Total             2,007          355
+important systems of three distinct domains: open-source,
+government, and industry. Considering the limits imposed by
+the agreements for non-disclosure of confidential information,           B. Results
+we detail the obtained tests as follows:                                    We found similarities in all systems regarding the structure
+   Ubuntu OS: As open-source software [16], the Ubuntu                   of their manual tests. Although Ubuntu’s team does not use a
+OS manual tests are available in a public repository.3 In the            specific test managing tool, they describe their tests as the
+repository, test descriptions are in English and XML format,             other two systems, which use open-source and proprietary
+with standardized tags for test suites, test cases, and action           software for such activities. Fig. 1 presents a test visualization.
+and verification steps. In total, 305 test files containing 973          Table III details the test section’s writing, regarding the
+tests are available.                                                     sentence types, with examples from the Ubuntu OS tests.
+   Brazilian Electronic Voting Machine (BEVM): An open-
+source web-based test management and test execution system
+manages the manual test descriptions of the BEVM. In the
+ecosystem, test descriptions are in Portuguese. In total, we
+had access to 133 tests exported to HTML format.
+   Large Smartphone Manufacturer (LSM): The manual
+test descriptions of this industry partner are managed by a
+proprietary issue-tracking product that allows bug tracking and
+agile project management. Manual test descriptions for this                        Fig. 1. Common test design found in the exploratory study.
+system are in English. In total, 898 test descriptions were made
+available for our analysis and exported to spreadsheet format.
+   Three authors manually and independently analyzed a ran-                                        TABLE III
+domly selected subset of test descriptions to perform the                    C OMMON TEST STRUCTURE FOUND IN THE EXPLORATORY STUDY.
+exploratory study. Using their know-how on test smells for               Section         Sentence       Example
+automatic and manual tests, the authors quoted every question-                           type
+able description and indicated the possible smell, discussing            Objective       Declarative This test checks that Audio project menu Works
+results in follow-up meetings. It is important to emphasize                              Declarative VMWare Player version ≥ 4.0 is required
+                                                                         Preconditions
+that access to BEVM and LSM tests was controlled and                                     Imperative Ensure that your system has no Internet access
+                                                                                                     before proceeding
+accessed by cleared authors only. As to the analysis procedure,          Action          Imperative Click the ‘Restart now’ button
+all authors involved in this activity started with the Ubuntu                            Declarative An ‘Installation Complete’ dialog appears
+                                                                         Verification
+manual tests to achieve standardization of actions, continuing                           Imperative Verify the system upgraded correctly
+the analysis in the remaining systems according to their access
+grants.                                                                     The exploratory study identified eight test smells, briefly
+                                                                         defined in Table IV and further detailed in Section III. From
+  3 [Online]. Available: https://git.launchpad.net/ubuntu-manual-tests   this list, two smells (i.e., Ambiguous Test and Conditional
+Test) are proposals from the literature on natural language test              D. Threats to Validity
+smells [6], and the remaining ones are contributions from our                        a) Conclusion: Our identified test smells relate to the
+study. Also, we manually accounted for 447 occurrences of                     common test structure in all three analyzed systems. How-
+the identified test smells, and Fig. 2 presents their distribution            ever, it is important to notice that BEVM and LSM tests
+per system.                                                                   are managed by well-adopted software solutions throughout
+                                                                              the industry, leading us to understand the found pattern as
+                                TABLE IV
+                         C ATALOGED TEST SMELLS
+                                                                              generally widespread, possibly minimizing this threat.
+                                                                                     b) Internal: As the accuracy of the exploratory study
+Test Smell                 Brief definition                                   (i.e., 80%) is not ideal for generalizations in the analyzed sys-
+Ambiguous Test             Test steps leaving room for interpretation         tems (i.e., 95% [18]), the distribution of test smells presented
+Conditional Test           Conditional logic phrased in natural language      in Fig. 2 may not be precise. We minimized this problem
+Eager Action               Single action steps that group multiple actions    by modeling and validating a Natural Language Processing
+Misplaced Action           Action steps written as verification steps
+Misplaced Precondition     Preconditions as action steps                      (NLP)-based tool, further detailed in Section V, to provide
+Misplaced Verification     Verification steps written as action steps         the exact distribution of the presented test smells.
+Tacit Knowledge            Unexplained terms and abbreviations                       c) External: As external threats, analyzing a few soft-
+Unverified Action          Action steps without corresponding verifications
+                                                                              ware systems may not be enough to identify relevant or well-
+                                                                              spread test smells. We minimize this probability by using sys-
+                                                                              tems representative of different domains and spoken languages
+                                                                              and finding test smells common to such systems.
+
+                                                                               III. A C ATALOG OF NATURAL L ANGUAGE T EST S MELLS
+                                                                                 We now present our catalog, the main product of our
+                                                                              exploratory study. We show the identified test smells in terms
+                                                                              of their names, definition, problem, and identification rules for
+                                                                              their detection with examples from the analyzed Ubuntu OS
+                                                                              test descriptions.
+
+                                                                              A. Ambiguous Test
+                                                                                    a) Definition: Originally proposed by Hauptmann et
+                                                                              al. [6], this smell indicates an “under-specified test that leaves
+                                                                              room for interpretation”.
+         Fig. 2. Distribution of identified test smells per system.                 b) Problem: It negatively impacts test comprehension
+                                                                              and execution, since the aim needs to be clarified and multiple
+C. Discussion                                                                 test executions are not comparable [6].
+   The structural test pattern found in the analyzed systems                        c) Identification: The original detection rule was the
+(Section II-B) enabled us to propose the test smells presented                occurrence of any word from a fixed list of “vague words.”4
+in Section III. Moreover, the distribution of such smells                     As Hauptmann et al.’s [6] keyword list originated from oc-
+demonstrates the analysis of natural language test descriptions               currences in their analyzed test suites and we found a slightly
+from the point of view of test smells to present promising                    different list in our exploratory study (e.g., some, other, and
+results. The manual analysis offers some insights whose reality               any), we noticed such keywords to be common in their
+will be precisely shown in Section V. These insights, for now,                semantics (syntactic analysis). We propose a more general
+indicate that:                                                                set of detection rules which consider keyword semantics, and
+                                                                              examples, in Table V.
+   • Most observed test smells are common to all analyzed
+     systems (e.g., Eager Action);                                            B. Conditional Test
+   • There are test smells unique to a single system (e.g., Tacit
+     Knowledge);                                                                   a) Definition: Tests containing conditional logic phrased
+   • Each system has its own test smell trend (e.g., Ubuntu                   in natural language.
+     tests suffer more from Unverified Action).                                    b) Problem: The Conditional Test turns tests very com-
+   Summary: Answering RQ1 , we could observe two already                      plex and difficult to maintain, negatively impacting test com-
+proposed natural language test smells in the analyzed systems.                prehension and correctness since it is hard to understand the
+In addition, six new test smells are observed, which answers                  intention, and complex tests are more likely to have errors [6].
+RQ2 . Answering RQ3 , the test smells are frequent throughout                    4 similar, better, similarly, worse, having in mind, take into account, take
+the analyzed systems. In particular, Eager Action and Tacit                   into consideration, clear, easy, strong, good, bad, efficient, useful, significant,
+Knowledge tend to be the most and the least frequent ones.                    adequate, fast, recent, far, close
+                              TABLE V                                                                         TABLE VIII
+                    A MBIGUOUS T EST I DENTIFICATION                                               M ISPLACED ACTION I DENTIFICATION
+
+Rule                            Example                                         Rule                                   Example
+Verb + indefinite determiner    Open any application and suspend machine        Imperatives, excluding verifica-       Give a name to the directory and add
+Indefinite pronouns             At “Write changes to disks”, verify that        tion verbs, as verification steps      files to it as you did in the previous step
+                                everything is right and select YES
+Comparative adjectives          Is the performance similar or better with no
+                                graphical display issues?
+Superlative adjectives          The root filesystem uses most of the SD card.        b) Problem: Difficulties in test correctness, since the
+Adverbs of manner               Does fast user switching work quickly?          incorrect placement of preconditions may influence the tester
+Comparative adverbs             Does everything function better than the sta-
+                                ble version?                                    to report test failure should a precondition be unattended.
+                                                                                     c) Identification: When the first action step declares the
+                                                                                SUT state. The common format of SUT state is a noun
+     c) Identification: Originally, Hauptmann et al. [6] pro-                   (subject) followed by an auxiliary verb, followed by a past
+posed a fixed list of words for its detection.5 As the list is non-             participle verb or adjective in the same sentence (Table IX).
+exhaustive concerning subordinating conjunctions, we propose
+any subordinating conjunction, as in Table VI, to identify this                                               TABLE IX
+                                                                                               M ISPLACED P RECONDITION I DENTIFICATION
+smell as a more robust detection rule.
+                                                                                Rule                                      Example
+                              TABLE VI
+                   C ONDITIONAL T EST I DENTIFICATION                           Subject followed by an auxiliary          The monitor is not connected, and
+                                                                                verb followed by another verb on          the PC is not paired
+Rule                            Example                                         the past participle
+
+Subordinating conjunctions      If you have a USB drive, plug it in.
+                                                                                F. Misplaced Verification
+C. Eager Action                                                                      a) Definition: Another indicative of structurally mal-
+                                                                                formed tests, this smell arises when verification steps written
+     a) Definition: Single action steps that group multiple
+                                                                                as action steps.
+actions.
+                                                                                     b) Problem: It negatively impacts test maintainability,
+     b) Problem: This test smell may hide implementation
+                                                                                since the test structure is not consistent.
+problems when any action lacks verification, negatively af-
+                                                                                     c) Identification: Sentences containing verification verbs
+fecting test effectiveness.
+                                                                                written as or along with action steps. Example in Table X.
+     c) Identification: Imperative verbs represent actions. Ex-
+ample in Table VII.
+                                                                                                              TABLE X
+                                                                                               M ISPLACED V ERIFICATION I DENTIFICATION
+                               TABLE VII
+                      E AGER ACTION I DENTIFICATION
+                                                                                Rule                                    Example
+
+Rule                     Example                                                Verification in or as an action step    Close flip and check app continuity
+
+Multiple imperative      Change some sound settings or other settings (night
+verbs                    mode, call history, SMS, etc.) and display them on
+                         the phone, download some applications, etc.            G. Tacit Knowledge
+                                                                                     a) Definition: This test smell is related to the use of
+                                                                                unexplained terms and abbreviations presuming the tester’s
+D. Misplaced Action
+                                                                                familiarity to domain-specific definitions.
+     a) Definition: Indicative of a structurally malformed test,                     b) Problem: It negatively impacts test comprehension
+the Misplaced Action smell arises when action steps are                         and execution.
+written as results.                                                                  c) Identification: Abbreviations and domain-specific
+     b) Problem: It negatively impacts test maintainability,                    terms not explained in the test description or external reference
+since the test structure is not consistent.                                     document (i.e., glossary). A hypothetical example, since we
+     c) Identification: Imperative verbs, excluding verification                are not authorized to disclose BEVM tests, is in Table XI.
+verbs,6 present in verification steps. Example in Table VIII.
+E. Misplaced Precondition                                                                                     TABLE XI
+                                                                                                   TACIT K NOWLEDGE I DENTIFICATION
+    a) Definition: Also an indicative of structurally mal-
+formed tests, here, preconditions are written as action steps.                  Rule                                        Example
+
+  5 if, whether, depending, when, in case                                       Unexplained terms and abbreviations         Check for reported residual votes
+  6 Verification verbs identified in use: check, verify, observe, recheck
+H. Unverified Action                                               repeat the same procedure/routine or try few different ways
+      a) Definition: Action steps that miss corresponding ver-     to suspend the app.” Among the testers that disagree with the
+ification steps.                                                   test smell definition, the variance allowed by non-deterministic
+      b) Problem: Absent verification steps negatively affect      terms is beneficial to test different scenarios, as seen in “I
+test execution and correctness since there is no instruction on    would say that exploratory test cases use a similar approach
+how the system should behave, leaving room for the testers’        and it has been working”.
+interpretation.                                                       Known in automatic and manual testing, the Conditional
+      c) Identification: Action steps with no corresponding        Test (Section III-B) smell definition and example had the
+verification steps.                                                acceptance of 83% of the respondents. Concerns about the
+                                                                   conditionals being able to improve the test coverage on fea-
+                 IV. C ATALOG E VALUATION                          tures not always available arise in both sides, as in the agreeing
+  In this section, we present the online survey performed to       opinion “The only part I would not agree is if it is related to
+evaluate our proposals. This activity, in particular, answers      a feature that the product may not actually have implemented,
+RQ4 .                                                              for example, NFC.”, and the disagreeing opinion “The test
+                                                                   writer attempted to cover more possible verifications. If a step
+A. Planning                                                        or accessory can’t be verified all the test is not blocked, and
+   This study planned to assess the opinions of software testing   the test becomes applicable to different kinds of product”.
+professionals (e.g., engineers, analysts, and managers) about         As the first proposal of our work, the Eager Action (Sec-
+the manual test smells we proposed in Section III through an       tion III-C) test smell definition was ratified by 87.5% of
+online survey. By stating their agreement with our definitions     respondents, with no disagreeing opinion. Among the com-
+and examples and commenting on their answers, the software         ments, difficulties in the test execution and concerns about the
+testing professionals would validate whether our proposals         verifications can be found in “it seems rather confusing and
+represented valid test smells in theory and practice.              not pointing to any settings overall, it is covering multiple
+   We assembled an online survey with questions correspond-        scenarios” and in “There isn’t a guarantee that the tester
+ing to the given definition and example, same as presented in      checked all configurations available”.
+Section III. Respondents were presented with the following            Ratified by 75% of the respondents, the Misplaced Action
+answering options (unique): “I strongly agree”, “I agree”,         (Section III-D) test smell had supporters that manifested
+“Indifferent”, “I disagree”, and “I strongly disagree”. Also,      concerns about test structure, as in “Verification steps should
+every question had an optional comment field.                      be in the end of test cases. Preconditions at the beginning,
+   We recruited participants through individual email invita-      and actions in the middle.” Testers that do not agree with the
+tions, using emails from our industry partner. The invitations     given definition manifest no concern to test structure, since
+were sent to participants of manual test teams, quality as-        they comprehend the test objective, as in “If the action keeps
+surance professionals, and test managers, none of whom had         the step valid as a single one, it makes sense to be written”.
+compensation or obligation to respond to the survey.                  The concerns described by the Misplaced Precondition
+                                                                   (Section III-E) test smell definition were accepted by 87.5%
+B. Results                                                         of the respondents. Unfortunately, as that was not a mandatory
+   We performed the survey in March 2023, achieving 24 re-         task in this survey, the respondents provided no comments to
+sponses for 110 sent emails (21.8% response rate). Concerning      this test smell description.
+the demographics, we had participants from Brazilian teams,           The Misplaced Verification (Section III-F) test smell was
+where 83.3% defined their primary work area as the industry        our least accepted proposal, even though counting with 62.5%
+— over academia — and their average declared experience            agreeing opinions. Testers claim the test clarity to benefit
+with software testing was 4.3 years. Fig. 3 details the results    from the separation into action and verification steps, as in
+concerning the participants’ opinions on our proposals.            “I agree because I think that is more clear and organized
+                                                                   for the test have it in separated (verification) steps”. On
+C. Discussion                                                      the opposite hand, testers that did not agree also claimed
+   Regarding the proposed test smells (Section III), the opinion   maintainability benefits of keeping action and verification steps
+of experienced test professionals (industry partner) served as     written together, as in “these actions help to avoid too many
+validation that obtained a high acceptance rate (Fig. 3). We       steps in a script and reduces the effort in test maintenance”.
+present the details in the following paragraphs.                      Our most accepted proposal, the Tacit Knowledge test smell
+   Already present in the literature, the Ambiguous Test smell     (Section III-G) definition had the support of 91.6% respon-
+(Section III-A) definition was ratified by 83% of the respon-      dents. The excessive use of abbreviations and unexplained
+dents. Among the agreeing comments, the ambiguity may              domain-specific terms is indeed a concern to agreeing respon-
+indeed cause tests to be poorly performed depending on the         dents, as in “In my experience, I have faced many new testers
+tester experience, as in “My experience can improve the test       and interns having problems knowing abbreviations in test
+coverage, however for a beginner tester is not be clear the        cases”. Disagreements call attention to test maintainability,
+ways to test an interruption, and this can induce he/she to        as in “I would say it is a case by case scenario where it
+                                                         Fig. 3. Survey results
+
+
+
+could be bad either way. I could have overly long texts due to       test smells we described in Section III. This effort shows
+unnecessary repetition that could be solved by Basic Glossary        how implementing our rules for natural language test smells
+before the TCs (test cases). Or a inverse scenario where the         identification is feasible using the current state of the NLP
+tester is not provided with edge information to that test.”          technology.
+   Our last proposal, the Unverified Action test smell (Sec-            We use Python and spaCy [19], a commercial open-source
+tion III-H) had the approval of 75% respondents. No agreeing         software released under the MIT license [20], to implement the
+respondent gave further details on their answer. Disagreeing         NLP tool containing our rules for discovering natural language
+respondents manifested concern about the verification steps          test smells. SpaCy features convolutional neural network
+to every action, as in “Not every action, in a sequence of           models for part-of-speech (POS) tagging [21], dependency
+actions, generates a relevant result to be verified.” and “In        parsing [22], text categorization, and named entity recognition
+some situations the expected result is too obvious and can be        (NER) [23]. Fig. 4 shows a visualization of the dependency
+dispensed. I believe that this helps to not tire the reader.”        parsing — arrows above the sentence — and the POS tagging
+   Summary: The online survey shows software testing pro-            — labels beneath each sentence element — for the Conditional
+fessionals to mostly agree with our proposals. In addition to        Test example of Section III-B.
+positively answering RQ4 , their comments show additional               The motivation for choosing this combination of program-
+concerns, such as test reproducibility, length, maintainability,     ming language and NLP library were (i) using market tools
+and coverage, all originated from poor test writing.                 focused on results and performance to analyze industrial-scale
+D. Threats to Validity                                               software and (ii) the availability of language models beyond
+                                                                     English since BEVM tests are in Portuguese.
+   Concerning the internal results, some respondents made the
+                                                                        The chosen strategy enabled us to implement most of our
+same claim for better organization when a test has action and
+                                                                     identification proposals. However, identifying the Tacit Knowl-
+verification steps written together or separated, for instance,
+                                                                     edge (Section III-G) requires a more comprehensive solution.
+both representing agreeing and disagreeing opinions. However,
+                                                                     To perform it, one would consider (i) external documentation
+the wide acceptance of our proposals votes in favor of our
+                                                                     (e.g., glossaries and execution manuals) — non-existent in
+interpretation of the possible prejudices, minimizing the threat.
+   We used responses from software testing professionals who         Ubuntu and not provided in the BEVM and LSM — and
+work for our industrial partner, and this bias may influence         (ii) a list of standard terms used in manual software testing
+the generalization of results to other audiences. We minimize        and considered tacit in every manual testing scenario, where
+this probability through the respondents’ experience, of about       every outsider term would characterize the Tacit Knowledge
+4.3 years in average (Section IV-B), and whose answers tend          test smell if not clarified. To our knowledge, the proposition
+to be similar to experienced professionals who test software         of such a list requires a formal study.
+in other domains.                                                       Also, we had to consider the different test file formats
+   Concerning the construct validity, the lack of an attention       according to each analyzed project (Section II-A): XML for
+checking question could bias the results towards the confirma-       the Ubuntu OS, HTML for the BEVM tests, and spreadsheet
+tion of our proposals. We minimize this threat by providing          for LSM tests. To that end, specific parsers were created for
+examples with attention terms stressed with bold fonts, as in        each system’s test file format. Fig. 5 presents a simplified
+Section III examples.                                                UML class diagram of the Manual Test Sensei tool, where the
+                                                                     parsers — responsible for transforming a test file into several
+    V. A TOOL TO DETECT SMELLS IN MANUAL TESTS                       test objects — and the test smell matchers are shown. Finally,
+  We present the development of an NLP-based tool, which             the tool produces a CSV file as output containing the test file
+we call Manual Test Sensei, to detect the natural language           name, the identified test smell, the specific words or sentence
+                                                    Fig. 4. spaCy’s visualizer module example
+
+
+
+span that characterize the test smell, and the analyzed (action                                      TABLE XII
+or verification) step.                                                        D ISTRIBUTION OF SELECTED TESTS IN THE VALIDATION SAMPLE
+
+                                                                                            System       Total tests    Sample size
+                                                                                            Ubuntu OS           973             49
+                                                                                            BEVM                136              7
+                                                                                            LSM                 898             45
+                                                                                                Total         2,007            101
+
+
+
+                                                                          B. Results
+                                                                             A total of 2,007 test descriptions were analyzed by the
+                                                                          Manual Test Sensei tool. The tool indicated 13,169 test smells,
+                                                                          with an average of 6.5 test smells per analyzed test, noticeably
+    Fig. 5. Simplified UML class diagram of the developed NLP tool        higher than the 1.2 test smells found in the exploratory study
+                                                                          (Section II). Considering the analyzed systems individually,
+   The tool source code is available in an online repository at           we obtained an average of 8.5 test smells per Ubuntu OS test,
+https://github.com/easy-software-ufal/manual-test-sensei.                 5.8 test smells per BEVM test, and 4.5 test smells per LSM
+                                                                          test. Table XIII presents the results per test smell and system.
+                    VI. T OOL E VALUATION                                 Finally, a distribution of the found test smells per analyzed
+   Once the proposition and development of the Manual Test                system is presented in Fig. 6.
+Sensei tool — implementing our natural language test smell
+identification rules — proved possible using current NLP                                                 TABLE XIII
+technology (Section V), in this last study, we present the tool                                      T OTAL NLP RESULTS
+results and validation, therefore demonstrating how precise is
+                                                                               Test Smell                Ubuntu        BEVM    LSM      Total
+the tool performance. This activity, in particular, answers RQ5 .
+                                                                               Ambiguous Test              2,627        185    1,776    4,588
+                                                                               Conditional Test              277        110      193      580
+A. Planning                                                                    Eager Action                2,664        299    1,191    4,154
+   This study planned to execute the Manual Test Sensei tool                   Misplaced Action              318         19      124      461
+                                                                               Misplaced Precondition         45          3       74      122
+against the entire test set of the three analyzed systems and                  Misplaced Verification        428        161      513    1,102
+validate the results. Therefore, we could verify whether the                   Unverified Action           1,967         11      184    2,162
+distribution found in the exploratory study (Section II) is                                      Total     8,326        788    4,055   13,169
+maintained in the Manual Test Sensei execution results, as
+well as the accuracy — in terms of precision, recall, and f-                 Three authors performed the verification as defined in
+measure metrics [24], [25] — of such results.                             Section VI-A. The selected sample of 101 tests resulted in
+   Although we executed our tool against the entire test set              708 results for this activity. The analysis of such results by
+of the three systems, manually validating the tool’s output of            the involved authors resulted in 15 disagreements comprising
+13,169 smells would be infeasible. Therefore, we randomly                 doubts in syntactical and morphological text analysis, properly
+selected 101 tests distributed in proportion to the number of             clarified in a discussion meeting. Table XIV presents the
+tests available in every analyzed system.                                 detailed validation totals per system and the precision, recall,
+   For every selected test, an author would first analyze it              and f-measure metrics achieved by the tool in this validation
+manually and indicate the found test smells, then verify the              activity.
+tool results for that test, and finally indicate the results that
+were correct or true positives (TP), incorrect or false positives         C. Discussion
+(FP), and the missed or false negatives (FN) test smells.                    The high expressiveness of the adopted technology, either
+Table XII presents the distribution of the randomly selected              in the identification of dependency relationships (e.g., subject
+tests per system:                                                         + auxiliary verb + participle verb) or in the identification of
+                                                                              metrics presented by Table XIV.
+                                                                                 According to Table XIII, the most frequent test smells
+                                                                              detected were the Ambiguous Test (i.e., 34.8%) and Eager
+                                                                              Action (i.e., 31.5%). An interesting distribution noticed is
+                                                                              that, from the 4,588 occurrences of the Ambiguous Test, we
+                                                                              accounted for 2,225 (i.e., 48.5%) occurring in action steps and
+                                                                              2,363 (i.e., 51.5%) occurrences in verification steps, meaning
+                                                                              that ambiguous tests have an almost equal probability of
+                                                                              presenting testers with difficulties in “what to perform in the
+                                                                              test” and “what to verify as a result.” However, being less
+                                                                              frequent may not mean less harm to the testing activity. It
+                                                                              is important to remember that a Misplaced Precondition can
+                                                                              induce the tester to declare the test failed if the precondition
+                Fig. 6. Distribution of test smells per system.
+                                                                              is not met and the test cannot be executed [26], [27].
+                                                                                 Comparing the distribution of test smells found in the
+                           TABLE XIV
+           D ETAILED NLP TOOL VALIDATION AND METRICS                          exploratory study (Section II) and the one found by the NLP
+                                                                              tool (Section VI-B), shown in Fig. 7, we noticed that some
+  System           TP     FP     FN     Precision    Recall       F-measure   test smells had a different percentage result between the two
+  Ubuntu OS        384    43     18           0.9      0.96           92.64   activities, which was the case of the Ambiguous Test and the
+  BEVM              25     0      0             1         1               1   Conditional Test. This expressive difference was due to the
+  LSM              213    13     12          0.94      0.95           94.46   more precise identification of the tool in cases of undefined
+        Total      622    56     30          0.92      0.95           93.53   determinants, which may escape the most attentive — or not
+                                                                              sufficiently trained in the exploratory study — eyes. Still, the
+                                                                              precision difference in the exploratory study (Section II) and
+the Part of Speech (POS) (e.g., indefinite pronouns), enabled                 the tool validation (Section VI-B), necessary for this study to
+us to implement most of the detection rules as defined in                     be feasible, influenced the found deviation.
+Section III. Only one identification rule could not be imple-
+mented entirely, which was the Conditional Test, identified
+through subordinating conjunctions (SCONJ) at the beginning
+of a dependent clause in a sentence. As spaCy does not
+natively support splitting sentences into clauses, which varies
+from language to language, identifying SCONJ in a dependent
+clause in the middle of a sentence results in many identification
+problems by the pre-trained models. This problem resulted in 8
+false negatives identified in the validation activity, representing
+approximately 27% of the test smells not identified by the tool.
+   We encountered various formatting, spelling, and character
+encoding conversion issues in the test descriptions. Using
+numbered and unnumbered lists, parentheses, and the lack of
+correct punctuation impaired the NLP engine classification in
+some cases reported as false positives and false negatives. For
+example, the implemented mechanism was not able to identify                   Fig. 7. Comparison between the exploratory study and the NLP tool results.
+a subordinate clause in the sentence “(If on a ‘laptop’) Is
+plugged to a power source,” nor in “Type in your user name                       Furthermore, we noticed that test smells not found in the
+and press Enter (you can accept the default if you wish),” and                exploratory study for specific systems, such as the Misplaced
+could not differentiate the link label in the sentence “Click the             Precondition for the BEVM tests, are now among the results
+Choose Payment Method link,” which lacked quotes, and was                     of the NLP tool (Table XIII), even with few occurrences
+erroneously classified as multiple actions.                                   (i.e., 3). This result is also expected and included in the
+   However, even with the implementation challenges and                       exploratory study’s 5% margin of error (Section II-A). Finally,
+some test malformations mentioned, the result obtained in the                 the proportional distribution of test smells per system shown
+metrics of precision, recall, and f-measure for the tool can still            in Fig. 6 shows that although the tests of the analyzed systems
+be considered expressive. The results remain promising even                   suffer from the test smells found, they do so in different
+when using a trained model for a different idiom and executing                proportions.
+the same rules — except for the list of verification verbs                       Summary: The results obtained in the tool validation show
+used in the Misplaced Verification detection, which needed                    that our detection rules are effective in identifying the con-
+a partner in Portuguese for BEVM tests — as seen in the                       sidered test smells. In particular, we achieved a f-measure of
+93.53%, which answers RQ5 .                                        on natural language test smells. Meszaros et al. [11] and
+                                                                   Peruma et al. [13] studied test smells in test code, such as
+D. Threats to Validity                                             Conditional Test and Conditional Test Logic, which are related
+   Internal: The tool’s results may contain errors. We manually    to Hauptmann et al. [6] natural language test smell. Aljedaani
+analyzed 101 tests to minimize this threat, which meant more       et al. [31] also listed the Assertionless Test smell, defined
+than 700 results, according to Table XIV. This amount of           by the absence of assertions, which is similar to our idea of
+results was enough to guarantee statistical validity [18] for      natural language tests having no verification steps (Unverified
+the 13,169 results generated by the tool.                          Action).
+   External: The generalization of the obtained results is
+impossible with the selected sample of three systems. We min-         VIII. C ONCLUDING R EMARKS AND F UTURE W ORK
+imize this threat by choosing highly expressive systems from
+different domains to analyze. Nevertheless, an exploratory             In this paper, we extended the current research on Natural
+study would confirm whether our results indicate some degree       Language Test Smells by contributing six new test smell
+of probability to the analysis of other systems.                   propositions, strategies for their detection, and their frequency
+                                                                   in a sample of three representative systems in the government,
+                    VII. R ELATED W ORK                            open-source, and industry domains. Also, we proposed updates
+    Hauptmann et al. [6] presented possible problems in manual     for two well-known test smells applicable to natural language
+test descriptions performed in natural language from the point     test descriptions. Unlike the current research, we proposed
+of view of test smells. Together with coining the term Natural     a novel detection strategy for natural language test smells
+Language Test Smells, the authors propose a set of seven           that relies on syntactical and morphological text analysis,
+smells: Hard-Coded Values, Long Test Steps, Conditional            thus exploring the capabilities of current Natural Language
+Tests, Badly Structured Test Suites, Test Clones, Ambiguous        Processing mechanisms.
+Tests, and Inconsistent Wording. Also, the authors present iden-       To conduct this work, we performed two independent and
+tification strategies for their proposals that rely on keyword     complimentary parts: first, we performed an exploratory study
+lists and complimentary metrics (i.e., number of words) and        whose results we validated with industry test professionals. We
+the frequency of the proposed test smells in nine industrial       guided the development of an NLP-based tool in the second
+test suites. In our work, we extend the current catalog by         part. The results and validation metrics showed our strategy
+adding six new test smells, their discovery strategies and         to be effective, detecting test smells with over 90% precision,
+frequency, and providing updates for the discovery of two of       even in a multiple-idiom context.
+Hauptmann et al.’s list, which we base on broader definitions          In future work, we intend to (i) enable the implementation
+focused on morphological and syntactical language analysis,        of the Tacit Knowledge test smell by performing a formal study
+thus exploring the capabilities of current Natural Language        to define common terms in software testing terminology that
+Processing mechanisms.                                             may be considered tacit in any manual execution of software
+    Rajkovic and Enoiu presented a tool called NALABS to de-       tests; (ii) execute the tool analysis in other candidate systems
+tect bad smells in natural language requirements and test spec-    whose test management is performed using the same tools
+ifications [28]. Similarly to Hauptmann et al. [6], the proposed   as BEVM and LSM tests to verify the generalization of our
+tool uses keyword lists to measure vagueness, referenceability,    results; and (iii) aggregate tests — and test file formats —
+optionality, subjectivity, and weakness metrics. They also used    from uncovered systems in the results.
+Automated Readability Index (ARI) to measure readability               Finally, we verified that some cataloged test smells also
+and the number of words and conjunctions to measure test           exist in the case of automatic tests. Moreover, the results of
+complexity. Again, our work differentiates from Rajkovic and       this study show that, like their automatic correlates, natural
+Enoiu’s work because we use current NLP mechanisms to              language test smells are also quite frequent, corroborating the
+identify words using morphological and syntactical language        title statement.
+analysis.
+    Transferring the concept of code smells to requirements                             ACKNOWLEDGMENT
+engineering, Femmer et al. [29] introduced a lightweight static
+requirements analysis approach that allows for quick checks           We thank the Brazilian Superior Electoral Court (TSE)
+when requirements are written down in natural language. In         and our industrial partner for kindly allowing their tests
+another work, Femmer et al. [30] derived a set of smells           to be analyzed in our study. This research was partially
+from the natural language criteria of the ISO/IEC/IEEE 29148       funded by CNPq grants 312195/2021-4, 421306/2018-1,
+standard, showing that lightweight smell analysis can uncover      310313/2022-8; and FAPEAL grants 60030.0000000462/2020
+many practically relevant requirements defects. Like our work,     and 60030.0000000161/2022. Also, this work is par-
+they also use tool support to analyze text in natural language     tially supported by INES (National Institute of Software
+descriptions.                                                      Engineering): CNPq grant 465614/2014-0, CAPES grant
+    Previous works presented test smells in test code. Some        88887.136410/2017-00, and FACEPE grants APQ-0399-
+of these smells are related to ours, although we focused           1.03/17 and PRONEX APQ/0388-1.03/14.
+                               R EFERENCES                                              Test Smell - Replication Package,” 7 2023. [Online]. Available:
+                                                                                        http://doi.org/10.6084/m9.figshare.22652620.v2
+ [1] A. van Deursen, L. Moonen, A. van Den Bergh, and G. Kok, “Refac-              [16] C. Ltd., “Ubuntu operational system,” https://ubuntu.com/download,
+     toring test code,” in 2nd International Conference on eXtreme Program-             [Accessed 02-May-2023].
+     ming and Flexible Processes in Software Engineering, ser. XP. USA:            [17] K. Sparck Jones, “A statistical interpretation of term specificity and its
+     CiteSeer, 2001, pp. 92–95.                                                         application in retrieval,” Journal of documentation, vol. 28, no. 1, pp.
+ [2] N. Oliveira, M. Ribeiro, R. Bonifácio, R. Gheyi, I. Wiese, and B. Fon-            11–21, 1972.
+     seca, “Lint-based warnings in python code: Frequency, awareness and           [18] J. E. Bartlett II, J. W. Kotrlik, and C. C. Higgins, “Organizational
+     refactoring,” in 2022 IEEE 22nd International Working Conference on                research: Determining appropriate sample size in survey research,”
+     Source Code Analysis and Manipulation (SCAM), ser. SCAM 2022,                      Information technology, learning, and performance journal, vol. 19,
+     2022, pp. 208–218.                                                                 no. 1, pp. 43–50, 2001.
+ [3] F. Medeiros, G. Lima, G. Amaral, S. Apel, C. Kästner, M. Ribeiro, and        [19] M. Honnibal and I. Montani. spacy – industrial-strength natural
+     R. Gheyi, “An investigation of misunderstanding code patterns in c open-           language processing in python. [Online]. Available: https://spacy.io/
+     source software projects,” Empirical Software Engineering, vol. 24, pp.       [20] J. H. Saltzer, “The origin of the “mit license”,” IEEE Annals of the
+     1693–1726, 2019.                                                                   History of Computing, vol. 42, no. 4, pp. 94–98, 2020.
+ [4] A. Tahir, S. Counsell, and S. G. MacDonell, “An empirical study into the      [21] M. P. Marcus, B. Santorini, and M. A. Marcinkiewicz, “Building a
+     relationship between class features and test smells,” in APSEC. New                large annotated corpus of English: The Penn Treebank,” Computational
+     York, NY, USA: IEEE, 2016, pp. 137–144.                                            Linguistics, vol. 19, no. 2, pp. 313–330, 1993. [Online]. Available:
+ [5] F. Palomba and A. Zaidman, “The smell of fear: On the relation between             https://aclanthology.org/J93-2004
+     test smells and flaky tests,” Empirical Software Engineering, vol. 24,        [22] J. Nivre, M.-C. de Marneffe, F. Ginter, Y. Goldberg, J. Hajič, C. D.
+     no. 5, pp. 2907–2946, 2019.                                                        Manning, R. McDonald, S. Petrov, S. Pyysalo, N. Silveira, R. Tsarfaty,
+ [6] B. Hauptmann, M. Junker, S. Eder, L. Heinemann, R. Vaas, and P. Braun,             and D. Zeman, “Universal Dependencies v1: A multilingual treebank
+     “Hunting for smells in natural language tests,” in 35th International              collection,” in Proceedings of the Tenth International Conference on
+     Conference on Software Engineering, ser. ICSE. New York, NY, USA:                  Language Resources and Evaluation (LREC’16), May 2016, pp. 1659–
+     IEEE, 2013, pp. 1217–1220.                                                         1666.
+ [7] L. Fernandes, M. Ribeiro, R. Gheyi, M. Delamaro, M. Guimarães, and           [23] M. Honnibal and I. Montani, “spacy 2: Natural language understanding
+     A. Santos, “Put your hands in the air! reducing manual effort in mutation          with bloom embeddings, convolutional neural networks and incremental
+     testing,” in Proceedings of the XXXVI Brazilian Symposium on Software              parsing,” To appear, vol. 7, no. 1, pp. 411–420, 2017.
+     Engineering, ser. SBES ’22. New York, NY, USA: Association for                [24] C. J. Van Rijsbergen, “Foundation of evaluation,” Journal of documen-
+     Computing Machinery, 2022, p. 198–207.                                             tation, vol. 30, no. 4, pp. 365–373, 1974.
+ [8] B. Hauptmann, “Reducing system testing effort by focusing on com-             [25] D. M. Powers, “Evaluation: from precision, recall and f-measure
+     monalities in test procedures,” Ph.D. dissertation, Technische Universität        to roc, informedness, markedness and correlation,” arXiv preprint
+     München, Germany, Jul 2016.                                                       arXiv:2010.16061, 2020.
+ [9] K. Juhnke, A. Nikic, and M. Tichy, “Clustering natural language test          [26] E. Soares, M. Ribeiro, G. Amaral, R. Gheyi, L. Fernandes, A. Garcia,
+     case instructions as input for deriving automotive testing dsls,” Journal          B. Fonseca, and A. Santos, “Refactoring test smells: A perspective from
+     of Object Technology, vol. 20, no. 3, pp. 1–14, 2021.                              open-source developers,” in Proceedings of the 5th Brazilian Symposium
+[10] F. Dalton, M. Ribeiro, G. Pinto, L. Fernandes, R. Gheyi, and B. Fonseca,           on Systematic and Automated Software Testing, ser. SAST 20. New
+     “Is exceptional behavior testing an exception? an empirical assessment             York, NY, USA: Association for Computing Machinery, 2020, p. 50–59.
+     using java automated tests,” in Proceedings of the 24th International         [27] E. Soares, M. Ribeiro, R. Gheyi, G. Amaral, and A. Santos, “Refactoring
+     Conference on Evaluation and Assessment in Software Engineering,                   test smells with JUnit 5: Why should developers keep up-to-date?” IEEE
+     ser. EASE ’20. New York, NY, USA: Association for Computing                        Transactions on Software Engineering, vol. 49, no. 3, pp. 1152–1170,
+     Machinery, 2020, p. 170–179.                                                       2023.
+[11] G. Meszaros, xUnit test patterns: Refactoring test code. Boston, USA:         [28] K. Rajkovic and E. P. Enoiu, “Nalabs: Detecting bad smells in natural
+     Pearson Education, 2007.                                                           language requirements and test specifications,” Mälardalen Real-Time
+[12] V. Garousi and B. Küçük, “Smells in software test code: A survey of             Research Centre, Mälardalen University, Tech. Rep., February 2022.
+     knowledge in industry and academia,” Journal of Systems and Software,              [Online]. Available: http://www.es.mdu.se/publications/6382-
+     vol. 138, pp. 52–81, 2018.                                                    [29] H. Femmer, D. Méndez Fernández, S. Wagner, and S. Eder, “Rapid
+[13] A. Peruma, K. Almalki, C. D. Newman, M. W. Mkaouer, A. Ouni, and                   quality assurance with requirements smells,” Journal of Systems and
+     F. Palomba, “On the distribution of test smells in open source android             Software, vol. 123, pp. 190–213, 2017.
+     applications: An exploratory study,” in 29th Annual International Con-        [30] H. Femmer, D. M. Fernández, E. Juergens, M. Klose, I. Zimmer, and
+     ference on Computer Science and Software Engineering, ser. CASCON.                 J. Zimmer, “Rapid requirements checks with requirements smells: Two
+     USA: IBM Corp, 2019, pp. 193–202.                                                  case studies,” in Proceedings of the 1st International Workshop on Rapid
+[14] A. Panichella, S. Panichella, G. Fraser, A. A. Sawant, and V. J.                   Continuous Software Engineering, ser. RCoSE 2014. New York, NY,
+     Hellendoorn, “Test smells 20 years later: detectability, validity, and             USA: Association for Computing Machinery, 2014, pp. 10–19.
+     reliability,” Empirical Software Engineering, vol. 27, no. 7, p. 170, 2022.   [31] W. Aljedaani, A. Peruma, A. Aljohani, M. Alotaibi, M. W. Mkaouer,
+[15] E. Soares, M. Terceiro, N. Oliveira, M. Ribeiro, R. Gheyi, E. Souza,               A. Ouni, C. D. Newman, A. Ghallab, and S. Ludi, “Test smell detection
+     I. Machado, A. Santos, B. Fonseca, and R. Bonifácio, “Manual                      tools: A systematic mapping study,” in Evaluation and Assessment in
+     Tests Do Smell! Cataloging and Identifying Natural Language                        Software Engineering, ser. EASE 2021. Association for Computing
+                                                                                        Machinery, 2021, pp. 170–180.
+

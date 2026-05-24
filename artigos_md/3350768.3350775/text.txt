@@ -1,0 +1,354 @@
+                      On the influence of Test Smells on Test Coverage
+                   Tássio Virgínio                                             Railana Santana                                Luana Almeida Martins
+           tassio.virginio@ufba.br                                      railana.santana@ufba.br                           luana.martins1@estudante.uﬂa.br
+      Federal University of Bahia (UFBA)                           Federal University of Bahia (UFBA)                    Federal University of Lavras (UFLA)
+             Salvador, BA, Brazil                                         Salvador, BA, Brazil                                    Lavras, MG, Brazil
+
+             Larissa Rocha Soares                                                 Heitor Costa                                      Ivan Machado
+            larissars@dcc.ufba.br                                            heitor@uﬂa.br                                     ivan.machado@ufba.br
+      Federal University of Bahia (UFBA)                          Federal University of Lavras (UFLA)                     Federal University of Bahia (UFBA)
+             Salvador, BA, Brazil                                          Lavras, MG, Brazil                                    Salvador, BA, Brazil
+ABSTRACT                                                                                           speciﬁed at early stages of software development, it may avoid
+Software testing is a key practice in the software quality assurance                               wasting time and resources at later stages.
+process. Usually, the quality of a test is not analyzed before its                                    Software testing plays a fundamental role in the quality
+execution, i.e., there are no tests to check the tests. When the                                   assurance process [11, 17]. There are several software testing
+quality of tests is not guaranteed, it may impair the quality of the                               techniques, either manual or automated, among which the later
+software. Test Smells are an alternative to indicate problems in the                               has been predominantly used in software industry [20]. Although
+test code that can aﬀect test maintainability, more speciﬁcally                                    automated tests identify errors eﬃciently from repeated
+readability and comprehension. This study investigates                                             executions and with lower cost, when compared to manual test
+correlations between test coverage and test smells types. We also                                  execution, they may be prone to errors [11, 17, 20]. An alternative
+introduce the JNose Test, a tool to automate test smells detection.                                is to plan and implement test code using good design
+We analyzed 11 open source projects and detected 21 types of                                       practices [14].
+smells and 10 diﬀerent test coverage metrics to each test class. We                                   The quality of automated test suites could be evaluated through
+identiﬁed 63 out of 210 calculated correlations. Our results show                                  the analysis of code coverage metrics, which measure the quality
+that there is a relationship between test smells and test coverage,                                based on how much they cover structural elements, such as
+in which test smells may inﬂuence code coverage. Our ﬁndings                                       functions, instructions, branches, and conditions of a system [8].
+might support software testers and help them understand the                                        Even with a high test code coverage, test implementation may
+behavior and consequences of poorly written and designed tests.                                    contain poor design choices, the so-called test smells. The presence
+                                                                                                   of test smells may negatively aﬀect the quality of the test code [5].
+CCS CONCEPTS                                                                                       Rompaey et al. [15] describe test smells as violations of the
+                                                                                                   four-phase test pattern (conﬁguration, execution, veriﬁcation, and
+· Software and its engineering → Software testing and                                              disassembly), which result in less satisfaction of the test quality
+debugging; Empirical software validation.                                                          criteria.
+ACM Reference Format:                                                                                 In this paper, we investigate the correlation between test smells
+Tássio Virgínio, Railana Santana, Luana Almeida Martins, Larissa Rocha                             and code coverage. From 11 software projects, we collected 21 test
+Soares, Heitor Costa, and Ivan Machado. 2019. On the inﬂuence of Test                              smells and 10 code coverage metrics. We also introduce the JNose
+Smells on Test Coverage. In XXXIII Brazilian Symposium on Software                                 Test tool, developed to automate the detection of test smells, and
+Engineering (SBES 2019), September 23–27, 2019, Salvador, Brazil. ACM, New                         collect code coverage metrics. We aimed to analyze the correlation
+York, NY, USA, 5 pages. https://doi.org/10.1145/3350768.3350775                                    between each type of test smell and each type of code coverage
+                                                                                                   metric. Our analysis enable to identify the existing inﬂuence of test
+1     INTRODUCTION                                                                                 smells on code coverage, such as the existence of strong correlations
+                                                                                                   between them.
+Software companies face the challenge of developing complex, high-
+quality systems without increasing project development time and
+                                                                                                   2   TEST SMELLS AND METRICS
+budget [14]. Usually, quality assurance is a concern throughout
+the software development process. However, when discussed and                                      Test code is a way to ensure the quality of the developed
+                                                                                                   system [11, 17]. Tests can be either manual, in which the system is
+                                                                                                   executed manually by a professional or automated, where code
+Permission to make digital or hard copies of all or part of this work for personal or
+classroom use is granted without fee provided that copies are not made or distributed              scripts are developed and executed when needed. Usually,
+for proﬁt or commercial advantage and that copies bear this notice and the full citation           automated tests present more eﬃcient results than manual tests
+on the ﬁrst page. Copyrights for components of this work owned by others than ACM                  due to their repeatability capability, and the lack of human
+must be honored. Abstracting with credit is permitted. To copy otherwise, or republish,
+to post on servers or to redistribute to lists, requires prior speciﬁc permission and/or a         interference, gaining in reliability when compared to most
+fee. Request permissions from permissions@acm.org.                                                 manually developed tests [6, 7]. Thus, automated tests are
+SBES 2019, September 23–27, 2019, Salvador, Brazil                                                 predominantly used in the software industry as a safety way to
+© 2019 Association for Computing Machinery.
+ACM ISBN 978-1-4503-7651-8/19/09. . . $15.00                                                       modify a system in order to either improve, correct or adapt them
+https://doi.org/10.1145/3350768.3350775                                                            to changes [3]. Tools for automated tests are used in order to
+
+
+
+
+                                                                                             467
+SBES 2019, September 23ś27, 2019, Salvador, Brazil                                                                                         Virgínio et al.
+
+
+facilitate the development of test scripts and the interpretation of                   of time (e.g., simulating an external event) and, after that, it
+their results. However, the use of those tools may not ensure the                      continues with the execution;
+quality of the system once they might have been poorly planed [4].                   • Unknown Test (UT): Occurs when a test method is written
+   Test smells are deﬁned as bad design choices, which can                             without an assertion statement, which makes it diﬃcult to
+negatively aﬀect the understanding and maintenance of the test                         understand the purpose of the test method.
+code [19]. For this study, we selected 21 types of test                              • Verbose Test (VT): Occurs when the tests use a lot of code
+smells [5, 10, 13]. They are described next:                                           to do what they need to do. In other words, the test code is
+                                                                                       not clean and simple.
+     • Assertion Roulette (AR): Occurs when a test method                         Meanwhile, software metrics are used to monitor and improve
+       contains multiple non-documented assertions. Thus, if an                the quality of the development process and software product [18].
+       assertion fails, it can be diﬃcult to identify wich one failed;         Coverage metrics determine how much a test suit scans a given
+     • Conditional Test Logic (CTL): Occurs when a test method                 program [9]. There are several strategies for measuring coverage,
+       contains conditional expressions or loop structures. The test           such as line coverage, branch coverage, path coverage,
+       fails when a test statement is not executed;                            function/method coverage, and class coverage. Each of these
+     • Constructor Initialization (CI): Occurs when a test suit                strategies can be applied at any stage of testing, e.g., unit testing,
+       method contains a constructor;                                          integration testing, or system testing.
+     • Default Test (DT): Occurs when a test suit contains test                   For this work, we select ﬁve code coverage metrics, analyzed in
+       classes created by default;                                             terms of covered and missed. Branch metric is related to the
+     • Dependent Test (DepT): Occurs when the test being                       number of branches in a method and determines the number of
+       executed depends on other tests’ success. As a result,                  executed and missed branches. Branch coverage is always
+       dependent tests can fail for the wrong reason;                          available, even in the absence of debugging information in class
+     • Duplicate Assert (DA): Occurs when a test method tests                  ﬁles. Cyclomatic complexity is the minimum number of paths
+       the same condition multiple times;                                      that can generate all possible paths through a method. Metrics
+     • Eager Test (ET): Occurs when a test method checks more                  complexity coverage and missed count the number of paths
+       than one method of the test class;                                      completely covered and the number of unconvered paths.
+     • Empty Test (EpT): Occurs when a test method does not                    Instruction metric provides information about the amount of
+       contain executable statements;                                          code which has been either executed or lost. The amount of code is
+     • Exception Catching Throwing (ECT): Occurs when a test                   calculated independently on source formatting. Line coverage is
+       method is explicitly dependent on the production method                 calculated for the class ﬁles compiled with debug information.
+       throwing an exception;                                                  These metrics calculate the number of lines executed or not.
+     • General Fixture (GF): Occurs when a test case ﬁxture is                 Finally, Method metric considers the method which is executed
+       general and the test method only access part of it;                     when at least one statement was covered. Each non-abstract
+     • Ignored Test (IgT): Occurs when a test method is                        method contains at least one statement.
+       suppressed from running;
+     • Lazy Test (LT): Occurs when several test methods check
+                                                                               3     CORRELATION OF TESTS AND COVERAGE
+       the same method;
+     • Magic Number Test (MNT): Occurs when assert                             This work investigates the correlation between test smells and code
+       statements contain numeric literals;                                    coverage. Thus, we deﬁne the following research question (RQ):
+     • Mystery Guest (MG): Occurs when a test method uses                      Is there a correlation between test smells and code coverage
+       external resources (e.g., a ﬁle containing test data), and,             metrics?
+       thus, it is not self-contained. Hence, if this resource is                 To answer the RQ, we execute the proposed JNose Test tool
+       changed, the tests can fail;                                            to analyze software projects and automatic collect test smells and
+     • Print Statement (PS): Occurs when unit tests contain print              code coverage metrics.
+       statements;
+     • Redundant Assertion (RA): Occurs when test methods                      3.1     JNose Test
+       contain assertion statements that are either always true or             JNose Test is a tool developed to automatically detect test smells
+       always false.                                                           in test code, and to collect coverage metrics. JNose test is an
+     • Resource Optimism (RO): This smell refers to a test                     extension of the Test Smell Detector [1]. Besides presenting
+       method that makes optimistic assumptions about the                      the number of test smells detected by class, our tool shows the
+       existence and the state of external resources can cause                 collection of code metrics and test coverage using the JaCoCo
+       non-deterministic behavior in a test result;                            library1 ; a uniﬁed result for all projects under analysis; and a
+     • Sensitive Equality (SE): Occurs in test methods that                    graphical interface. In addition, the project uses the Apache
+       contain an equality check using the method toString,                    Maven2 to manage all library dependencies and support the
+       which depends on details, such as commas and spaces. Thus,              compilation and execution of the JNose Test tool.
+       when the method for an object is changed, the test can fail;
+     • Sleepy Test (ST): Occurs when the execution of statements               1 https://www.eclemma.org/jacoco/
+
+       in a test method needs to be paused for a certain amount                2 https://maven.apache.org/
+
+
+
+
+                                                                         468
+On the influence of Test Smells on Test Coverage                                                                 SBES 2019, September 23ś27, 2019, Salvador, Brazil
+
+
+      Table 1: Summary of analyzed open source projects                        Table 2: Descriptive Statistics for Test Smells (top 5 by Max)
+               Project                   Version    LOC     JUnit LOC              Test Smells   Min   1st Qu.      Median     Mean     3st Qu.      Max.        SD
+                                                                                       LT        0.0     0.0          6.0       50.8      45.0      1,268.0     120.5
+    Joda Time                              2.9.7   29,272       55,554
+                                                                                      AR         0.0     0.0          2.0       7.2       7.0        219.0      14.6
+    Apache Commons Text                     1.6     9,526       13,467                 GF        0.0     0.0          0.0        2.0       0.0       196.0       12.2
+    Apache Commons Lang                     3.9    28,006       47,833                 ET        0.0     0.0          2.0       8.7       9.0        195.0      18.2
+    Apache Commons Email                   1.5.1    2,947        3,989                ECT        0.0     0.0          1.0       5.0       4.0        195.0      13.7
+    Apache Commons CSV                      1.6     1,787        4,783
+    Apache Commons Colletion                4.3    29,309       34,200         Table 3: Descriptive Statistics for Test Covers (top 5 by Max)
+    Apache Commons Codec                   1.11     8,392       12,040            Coverage       Min   1st Qu.     Median    Mean      3st Qu.      Max         SD
+    Apache Commons DBCP                    2.6.0   14,458       16,846          InstructionC     0.0     68.0       167.0    445.3      461.0     18,146.0    1,010.9
+                                                                                InstructionM     0.0      0.0         5.0     34.7       25.0      2,046.0     115.9
+    Apache Commons Math                    3.4.1   86,481       89,016              LineC        0.0     16.0        35.0     80.0       87.0      2,010.0     142.4
+    Apache Commons Pool                    2.6.2    5,532        8,813            BranchC        0.0      3.0        12.0     36.8       37.0     1,495.0       93.5
+    Apache Commons DbUtils                  1.7     3,101        3,789          ComplexityC      0.0      7.0        14.0     34.1       37.0       997.0       64.5
+
+
+                                                                               has many responsibilities. Then, it is necessary to develop several
+   After executing the tool, based on the yielded results, we could
+                                                                               methods to test it.
+investigate the correlation between the types of test smells and
+                                                                                  Regarding the test coverage metrics presented in Table 3,
+types of code coverage metrics values.
+                                                                               InstructionC and LineC presented the highest average values,
+                                                                               assuming the values of 445.3 and 80.0, respectively. Also,
+3.2     Data Collection and Analysis                                           InstructionC presented the highest dispersion, 1010.9, followed by
+Data collection was performed with an analysis of 21 types of                  LineC, with 142.4. These results indicate that Line and Instruction
+smells and 10 coverage metrics. Table 1 lists the 11 projects used in          coverages tend to occur more in test smells than Branch and
+data collection. They were selected using the following criteria:              Complexity coverages.
+(i) project developed in Java language; (ii) use of Maven;                        Since the data follow a non-normal distribution, we applied the
+(iii) implement unit tests with JUnit; (iv) available under an open            Spearman correlation test. The correlation was calculated between
+source license. Projects vary in the number of lines of code (LOC).            the set of test smells and the test coverage metrics analyzed, which
+For example, the Apache Commons CSV project was the smallest                   yielded a set of 210 correlations, as Table 4 shows. The results were
+one, with 871 LOC; and the Apache Commons Math was the largest                 interpreted according to Salkind and Rainwater [16], as follows:
+one, with 30,162 LOC.                                                                 • 0.8 to 1.0, or -0.8 to -1.0: very strong relationship;
+    In order to describe and characterize the data sample, we used                    • 0.6 to 0.8, or -0.6 to -0.8: strong relationship;
+measures of central tendency and measures of dispersion. Also, we                     • 0.4 to 0.6, or -0.4 to -0.6: moderate relationship;
+identiﬁed whether the sample data follow the normal distribution                      • 0.2 to 0.4, or -0.2 to -0.4: weak relationship;
+using the Kolmogorov-Smirnov (K-S) test. Since the data sample did                    • 0.0 to 0.2, or 0.0 to -0.2: weak or no relationship.
+not follow a normal distribution, we chose the Spearman correlation
+test to evaluate the following hypotheses:                                        The Correlations for the EpT, IgT, MG, PS, RO, ST, and VT, were
+                                                                               removed from Table 4 by non-correlation. In addition, the tests of
+ H 0 : There is no correlation between the test coverage metrics and           DepT and DT did not manifest themselves in the analyzed projects,
+       test smells.                                                            so the correlation could not be calculated for these two test odors.
+ H 1 : There is correlation between the test coverage metrics and test         However, the rest of the test smells have weak to strong
+       smells.                                                                 correlation related to test coverage. In general, we identiﬁed that
+   In general, our hypotheses aim to understand the relation                   there is correlation between the test coverage and the test smells.
+between each metric versus each test smell collected with our tool.
+                                                                               5      IMPLICATIONS FOR RESEARCH AND
+4     RESULTS                                                                         PRACTICE
+Table 2 and Table 3 present the descriptive statistics for test smells         From our correlation analysis, we highlight two main ﬁndings:
+and test coverage metrics, respectively. For example, regarding the            (i) AR, ET, LT, and DA smells presented moderate to strong
+LT test smell, the number of LT ranged from 0 (minimum) to 1268                correlation with 5 test coverages, i.e., Branch, Complexity,
+(maximum). The 1st quartile represents 14 of the data set, and it              Instruction, Method and Lines; (ii) the missing Code Coverage
+is composed only by classes without LT (zero). The 3rd quartile                Metrics do not show a signiﬁcant correlation with the number of
+represents 34 of the data set, and it is composed by classes that              smells identiﬁed in the test classes.
+contain between 45 and 1268 LT. The classes analyzed presented 6                   AR test smell is related to non-documentation of assertions,
+LT on average with a mean value of 50.8, and standard deviation of             making it diﬃcult to identify which assertion has passed or failed.
+120.5, indicating high dispersion of values, as Table 2 shows.                 We identiﬁed that there is a higher correlation between AR and
+   Our results shows that LT has the highest mean and the highest              method coverage (0.59) than with instruction coverage (0.41). Since
+standard deviation. LT was followed by ET with a mean value of                 the methods have more than one assertion, some of them may
+8.7, and AR with 7.0. LT occurs when several test methods verify               have comments while others may not be, leading to accounting
+the same method. A high number of LT indicates that a method                   for the method as a whole for metric coverage. Conversely, at the
+of the production class performs several functions, i.e., a method             instruction level, only those that were not actually documented
+
+
+
+
+                                                                         469
+SBES 2019, September 23ś27, 2019, Salvador, Brazil                                                                                         Virgínio et al.
+
+
+                                          Table 4: Correlation between Test Smells and Coverage Metrics
+    Smell    BranchC       BranchM        ComplexityC   ComplexityM       InstructionC   InstructionM    LineC      LineM        MethodC   MethodM
+    AR         0.42★          0.29❖            0.55★       0.25❖             0.41★           0.18         0.46★      0.18         0.59★       0.06
+     CI         0.02           0.02             0.15        0.02              -0.01         -0.01          0.05      0.00         0.26❖       -0.02
+    CTL        0.25❖          0.27❖            0.20❖       0.26❖             0.29❖          0.26❖         0.26❖     0.24❖          0.15        0.17
+    DA         0.47★          0.35❖            0.52★       0.33❖             0.47★          0.26❖         0.50★     0.25❖         0.49★        0.14
+    ECT        0.24❖          0.21❖            0.34❖        0.19             0.29❖           0.19         0.32❖      0.19         0.38❖        0.09
+     ET        0.51★          0.32❖            0.67◆       0.29❖             0.51★          0.23❖         0.57★     0.22❖         0.70◆        0.11
+     GF         0.15           0.15             0.18        0.18               0.16         0.23❖          0.18     0.23❖          0.16        0.19
+     LT        0.56★          0.34❖            0.65◆       0.28❖             0.52★          0.23❖         0.57★     0.21❖         0.62◆        0.07
+    MNT        0.40❖          0.26❖            0.44★       0.21❖             0.40❖           0.17         0.41★      0.14         0.43★        0.06
+    RA          0.05           0.05             0.16        0.02               0.11          0.00          0.13      0.00         0.22❖       -0.04
+     SE        0.28❖           0.14            0.38❖        0.09             0.28❖           0.02         0.31❖      0.03         0.40❖       -0.06
+     UT         0.14           0.15             0.16        0.11             0.28❖           0.09         0.25❖      0.09          0.14        0.02
+                                 labels: (▲) very strong, (◆) strong, (★) moderate, (❖) weak, ( ) no correlation.
+
+are counted, which reduces the correlation in relation to method                                        (a) ET and ComplexityC
+coverage. In general, there is a moderate correlation between the
+smell AR and the test coverage.
+   The ET smell is related to a test method that veriﬁes several
+functionalities. This smell has a strong correlation with complexity
+(0.67) and method coverage (0.7), as Figures 1(a) and (b) show,
+respectively. That is, for complexity coverage, the correlation
+indicates that to test the various paths in a class, several assertions
+are created in the same test method. Similarly, method coverage
+shows that the method has many assertions that verify various
+functionalities, which makes it diﬃcult to understand the test code.                                     (b) ET and MethodC
+According to Figures 1 (a) and (b), some of the test classes have
+about 50 ET and cover approximately 150 paths and 100 methods,
+respectively. Additionally, this smell test has a moderate
+correlation with the BranchC, InstructionC, and LineC.
+   In contrast, LT is related to several test methods that only verify
+one method. LT correlates with all coverage metrics, reaching a
+weak to strong correlation, with the exception of MethodM metric.
+LT has a strong correlation with the coverages ComplexityC (0.65)
+and MethodC (0.62), as Figures 1 (c) e (d) show. Also, LT presents
+                                                                                                        (c) LT and ComplexityC
+moderate correlation with BranchC, InstructionC and LineC.
+   The DA test smell is related to a method that checks the same
+condition several times within the same test method. DA has a weak
+to medium correlation with all coverage metrics, with the exception
+of the MethodM metric. DA metric also had its highest (moderate)
+correlation with ComplexityC (0.52). In addition, AR, ET, LT, and DA
+smells are related to duplicity and accomplishment of many tasks.
+For example, in the time that the DA smell occurs when duplicate
+assertions, an ET method checks several other methods, LT when
+several methods check one, and DA when the same condition is                                             (d) LT and MethodC
+checked several times.
+   Finally, the missing code coverage metrics have either weak or
+no correlation with test smells. For example, among the missing test
+coverage metrics (BranchM, ComplexityM, InstructionM, LineM,
+and MethodM), all resulted in a weak correlation between 5 to 9
+test smells, except the metric covering MethodM (it did not present
+correlation with any test smell).
+6     THREATS TO VALIDITY
+Internal Validity. In this study, a set of coverage metrics and                                 Figure 1: Strong Correlations
+another set of tests smells were selected from previous studies.
+These sets may contain other coverage metrics and test smells,
+besides the selected ones.
+
+
+
+
+                                                                           470
+On the influence of Test Smells on Test Coverage                                                                   SBES 2019, September 23ś27, 2019, Salvador, Brazil
+
+
+   External Validity. In this study, we use free-code projects,                 test smells and test coverage. In other words, test smells may
+which are real-world software, so this requirement is not a threat              inﬂuence test coverage. As future work, we intend to perform a
+to external validity, since we can use other projects that pass the             more in-depth study of the reasons for each correlation of the 63
+requirements cited above as input to this study. On the other hand,             found. Furthermore, we intend to apply our study to more projects
+to reduce the scope of the study, only the JUnit library was used,              of diﬀerent domains and sizes. We also plan to reﬁne the JNose
+because it is the library used in the referenced articles. Due to               Test algorithm to identify the line of code in which test smells are
+scope constraints, other programming languages that run on the                  found. In addition, we can analyze which parts of the code are
+Java Virtual Machine were not addressed in this study.                          most aﬀected by test smells.
+   Conclusion Validity. In this experiment, the veriﬁcation of
+the hypotheses was performed by checking the correlation, using                 ACKNOWLEDGMENTS
+Spearman’s correlation coeﬃcient, between the test smells and the               This research was partially funded by INES 2.0; CNPq grants
+coverage metrics, from the data generated by the JNose Test tool.               465614/2014-0 and 408356/2018-9 and FAPESB grant JCB0060/2016.
+
+7    RELATED WORK                                                               REFERENCES
+                                                                                 [1] Gabriele Bavota, Abdallah Qusef, Rocco Oliveto, Andrea De Lucia, and Dave
+Bavota et al. [1] investigated the diﬀusion of smells in test classes                Binkley. 2015. Are test smells really harmful? An empirical study. Empirical
+related to 27 software projects and their eﬀects on software                         Software Engineering 20, 4 (2015).
+maintenance. In their work, ten types of test smells were analyzed.              [2] Gabriele Bavota, Abdallah Qusef, Rocco Oliveto, Andrea De Lucia, and David W.
+                                                                                     Binkley. 2012. An empirical analysis of the distribution of unit test smells and
+As a result, they found that test classes are aﬀected by at least one                their impact on software maintenance. In 28th IEEE International Conference on
+smell. In addition, the presence of test smells has a negative impact                Software Maintenance (ICSM).
+on software maintenance.                                                         [3] David Bowes, Tracy Hall, Jean Petrić, Thomas Shippey, and Burak Turhan. 2017.
+                                                                                     How Good Are My Tests?. In 2017 IEEE/ACM 8th Workshop on Emerging Trends
+    Spadini et al. [17] investigated the relationship between test                   in Software Metrics (WETSoM).
+smells and their propensity for changes/defects through a set of                 [4] Adalberto Nobiato Crespo, Odair J Silva, Carlos Alberto Borges, Clênio Figueiredo
+                                                                                     Salviano, M Argollo, and Mario Jino. 2004. Uma metodologia para teste de
+one million test cases. In their work, six types of test smells were                 Software no Contexto da Melhoria de Processo. In Simpósio Brasileiro de Qualidade
+collected. As a result, they identiﬁed that the presence of test smells              de Software (SBQS).
+in test codes makes them more prone to changes and defects. Also,                [5] Arie Deursen, Leon M.F. Moonen, A. Bergh, and Gerard Kok. 2001. Refactoring
+                                                                                     Test Code. Technical Report. Amsterdam, The Netherlands, The Netherlands.
+they identiﬁed that the production code is more prone to defects                 [6] Gerald D. Everett and Raymond McLeod Jr. 2007. Automated Testing Tools (1 ed.).
+when tested by tests containing smells.                                              Wiley-IEEE Computer Society Press.
+                                                                                 [7] Vahid Garousi and Barış Küçük. 2018. Smells in software test code: A survey
+    Palomba et al. [12] investigated how test smells refactoring can
+                                                                                     of knowledge in industry and academia. Journal of Systems and Software 138
+induce ﬂaky tests correction, preventing them from hiding real                       (2018).
+bugs. In their work, three types of test smells were collected in 18             [8] Rahul Gopinath, Carlos Jensen, and Alex Groce. 2014. Code Coverage for Suite
+                                                                                     Evaluation by Developers. In Proceedings of the 36th International Conference on
+software systems. They found that most of the ﬂaky tests contain                     Software Engineering (ICSE).
+test smells. In addition, they identiﬁed that the refactoring of test            [9] Suhaimi Ibrahim and Shahid Muhammad. 2011. An Evaluation of Test Coverage
+smells resulted in the removal of design ﬂaws and the ﬂaky tests                     Tools in Software Testing. In International Conference On Telecommunication
+                                                                                     Technology And Application (ICTTA).
+correction caused by test smells.                                               [10] Gerard Meszaros. 2007. xUnit test patterns: refactoring test code (1st ed.). Addison-
+    Several approaches and tools have been proposed in the                           Wesley.
+literature to identify test smells [2, 11, 12]. However, few studies            [11] Fabio Palomba, Dario Di Nucci, Annibale Panichella, Rocco Oliveto, and
+                                                                                     Andrea De Lucia. 2016. On the Diffusion of Test Smells in Automatically
+focus on associating smells to software quality. Our work diﬀers                     Generated Test Code: An Empirical Study. In IEEE/ACM 9th International
+by investigating the correlation between “test smells” and “test                     Workshop on Search-Based Software Testing (SBST).
+                                                                                [12] Fabio Palomba, Andy Zaidman, and Andrea De Lucia. 2018. Automatic Test Smell
+coverage”. In this way, we value the inﬂuence of the “test smells”                   Detection Using Information Retrieval Techniques. In 2018 IEEE International
+in the coverage of the projects, and we verify if this can inﬂuence                  Conference on Software Maintenance and Evolution (ICSME).
+the quality and the sustainability of the projects.                             [13] Anthony Peruma. 2018. What the Smell? An Empirical Investigation on the
+                                                                                     Distribution and Severity of Test Smells in Open Source Android Applications.
+                                                                                [14] Roger Pressman. 2016. Software Engineering: A Practitioner’s Approach (8th ed.).
+8    CONCLUDING REMARKS                                                              McGraw-Hill, Inc., New York, NY.
+                                                                                [15] Bart Van Rompaey, Bart Du Bois, Serge Demeyer, and Matthias Rieger. 2007. On
+In this paper, we analyzed the inﬂuence of test smells on code                       The Detection of Test Smells: A Metrics-Based Approach for General Fixture and
+                                                                                     Eager Test. IEEE Transactions on Software Engineering 33, 12 (Dec 2007).
+coverage. Thus, we selected eleven software projects, in which we               [16] Neil J Salkind and Terese Rainwater. 2005. Exploring research (6 ed.). Prentice
+collected twenty-one test smells and ten coverage metrics using                      Hall.
+the JNose Test, a tool developed to support this analysis. From                 [17] Davide Spadini, Fabio Palomba, Andy Zaidman, Magiel Bruntink, and Alberto
+                                                                                     Bacchelli. 2018. On the Relation of Test Smells to Software Code Quality. In IEEE
+our results, we observed that the Lazy Test stand out as the type of                 International Conference on Software Maintenance and Evolution (ICSME).
+test smell that most occurred among all the anti-pattern studied,               [18] Bharti Suri and Shweta Singhal. 2015. Investigating the OO characteristics
+for all projects. Lazy Test is commonly caused by a large number                     of software using CKJM metrics. In 4th International Conference on Reliability,
+                                                                                     Infocom Technologies and Optimization (ICRITO) (Trends and Future Directions).
+of test methods related to only one method in the decay code. This              [19] Michele Tufano, Fabio Palomba, Gabriele Bavota, Massimiliano Di Penta, Rocco
+situation indicates diﬃculties in maintaining the test [1, 2].                       Oliveto, Andrea De Lucia, and Denys Poshyvanyk. 2016. An Empirical
+                                                                                     Investigation into the Nature of Test Smells. In 31st IEEE/ACM Intern. Conf.
+   We calculated 210 correlations between test smells and test                       on Automated Software Engineering (ASE). ACM, New York, NY, USA.
+coverage metrics. As a result, we obtained 4 strong correlations, 17            [20] Vahid Garousi Yusifoğlu, Yasaman Amannejad, and Aysu Betin Can. 2015.
+moderate correlations, 42 weak correlations, 147 pairs without                       Software test-code engineering: A systematic mapping. Information and Software
+                                                                                     Technology 58 (2015).
+correlation. Based on data, we observed a relationship between
+
+
+
+
+                                                                          471
+

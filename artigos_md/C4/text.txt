@@ -1,0 +1,303 @@
+        A Preliminary Evaluation on the Relationship
+           among Architectural and Test Smells
+                     Manuel De Stefano1 , Fabiano Pecorelli2 , Dario Di Nucci1 , Andrea De Lucia1
+                                        1
+                                     SeSa Lab - University of Salerno, Fisciano, Italy
+                                           2
+                                             Tampere University, Tampere, Finland
+                     madestefano@unisa.it, fabiano.pecorelli@tuni.fi, ddinucci@unisa.it, adelucia@unisa.it
+
+
+    Abstract—Software maintenance is the software life cycle’s       the other hand, tangled dependencies among components and
+longest and most challenging phase. Bad architectural decisions      other smells make it difficult to design and develop tests [11].
+or sub-optimal solutions might lead to architectural erosion,           Test smells are signs of a degraded test code quality [12]
+i.e., the process that causes the system’s architecture to deviate
+from its original design. The so-called architectural smells are     that represent less-than-ideal solutions and poor design choices
+the most common signs of architectural erosion. Architectural        that impact test code, just as their equivalents in code and
+smells might affect several quality aspects of a software system,    architecture. Previous studies have looked at these smells from
+including testability. When a system is not prone to testing,        various perspectives, highlighting that tests that are affected by
+sub-optimal solutions may be introduced in the test code, a.k.a.     them have less ability to discover faults [13]. In addition, they
+test smells. This paper explores the possible relations between
+architectural and test smells. By mining 798 releases of 40 open-    need more work to be maintained or improved [14], [15].
+source Java systems, we studied the correlation between class-          Since architectural smells are signs of degraded architecture
+level architectural and test smells. In particular, Eager Test       and test smells are signs of degraded test code, it could be
+and Assertion Roulette smells often occur in conjunction with        possible to spot issues in the test code by looking at the
+Cyclically-dependent Modularization, Deficient Encapsulation,        signs of a degraded architecture. In other words, there might
+and Insufficient Encapsulation architectural smells.
+    Index Terms—Architectural Smells; Code quality; Test Smells;     be a relationship between architectural and test smells. To
+Correlation; Inter-smell Relationships.                              explore this possibility, we conducted a preliminary study that
+                                                                     considered 11 class-level architectural and seven test smells
+                      I. I NTRODUCTION                               on 798 releases of 40 Java open-source systems hosted on
+                                                                     G IT H UB. We detected the architectural smells affecting these
+   Software maintenance is the most extended phase of the            systems and the test smells affecting the corresponding test
+software life cycle [1]. Once delivered to the customer, it is       class. Then we mined association rules to discover potential
+necessary to proceed with continuous and periodic changes            relationships among them. The obtained results showed that
+to preserve software usefulness [1]. However, developers are         Cyclically-dependent Mdularization, Deficient Encapsulation,
+often forced to adopt sub-optimal solutions in the maintenance       and Insufficient Encapsulation architectural smells often imply
+activities to speed up the work and delivery the product in          Eager Test and Assertion Roulette in the test code.
+time. Thus, good programming principles are often sacrificed            The paper is then organized as follows. Section II depicts
+for a short-term benefit, leading to a cost to be paid back,         related work on architectural smells and test smells. Section III
+namely “technical debt”. The symptoms of these sub-optimal           describes the empirical investigation we conducted, while
+decisions are called code smells, which were defined and             Section IV presents the results we achieved. Section V depicts
+collected in a catalog by Martin Fowler in his book on               potential threats to the study’s validity and how we managed
+refactoring [2]. Afterward, further studies proved that code         them. Finally, Section VI wraps up the paper and presents
+smells affect code maintainability and understandability [3].        future research directions.
+   However, sub-optimal solutions might also occur when
+designing software architecture. Bad architectural decisions                              II. R ELATED W ORK
+might lead to “architectural drift”, i.e., the process that causes      The concept of architectural smell was introduced by Lip-
+the system’s architecture to deviate from its original design        pert et al. [8]. They pointed out the concept of architectural
+[4]. When this deviation worsens, going against the conceived        smells and defined them as bad smells that occur at a higher
+architecture, we face “architectural erosion” [4], whose symp-       of the system’s granularity.
+toms are described by architectural smells. Similarly to their          Garcia et al. in 2009 [10] defined architectural bad smell
+code counterpart, they represent the same problem, but at a          as “frequently recurring software designs that can have non-
+higher level of abstraction [5]–[8].                                 obvious and significant detrimental effects on system life-cycle
+   Architectural smells may impact all system quality at-            properties, such as understandability, testability, extensibility,
+tributes, e.g., maintainability and understandability [5], [9],      and re-usability”.
+[10], including testability. On the one hand, good architecture         To what concerns test smells, Beck [16] was the first to
+should foster and facilitate the testability of a system [9]. On     stress the value of having well-designed test code. He stated
+that test cases adhering to sound design principles are desirable     detect test smells in Java systems. It was initially designed
+since these test cases are simpler to understand, maintain, and       to allow developers to see static and dynamic test-related
+successfully use to identify issues in the production code.           data (alongside test smells) in an enhanced visual interface,
+   Based on these arguments, van Deursen et al. [17] created          potentially improving their ability to diagnose code flaws.
+the term ”test smells” and the very first list of 11 bad design       We relied on a fork of VITRuM, developed to run in a CLI
+choices for writing tests, along with refactoring procedures          environment to make it useful to mining studies.
+intended to eliminate them.                                              Finally, to what concerns the systems we took into consid-
+   The first controlled laboratory experiment to determine            eration, we selected java systems from GitHub that (1) had
+the effect of test smells on program comprehension during             at least ten releases, (2) had at least 10,000 stars, (3) were
+maintenance operations was carried out by Bavota et al. [14].         not forks, (4) had at least one test class, and (5) followed the
+According to their results, test smells detrimentally impact the      standard test directory structure src/test. We employed the
+understandability and maintainability of test code.                   first three criteria to select mature systems (i.e., highlighted
+   Spadini et al. [13] investigated the relationship between the      by the number of releases and stars), which we could analyze
+presence of test smells and the change- and defect-proneness          with the available tools (i.e., only Java projects). In particular,
+of both these test methods and the production code they intend        we leveraged “Github Search”, which allowed us to apply the
+to test. They discovered that test code with smells is more           above criteria all at once.1 The output of this tool was a list
+prone to changes and defects. Moreover, production code               of 90 GitHub repositories matching the criteria. Criterion 4
+tested by smelly tests is more defect-prone as well. Among            was included to ensure having at least one test to analyze
+the studied test smells, “Indirect testing”, “Eager Test”, and        to measure test smells. Finally, the last criterion was due to
+“Assertion Roulette” are those associated with the highest            VITRuM, which only works with a standard test directory
+change-proneness; moreover, the first two are also related to         structure. As a result, we obtained a final number of 40 java
+a higher defect-proneness of the exercised production code.           systems and 798 releases.
+               III. E MPIRICAL S TUDY D ESIGN                            For the sake of space limitations, we include the complete
+                                                                      list of the considered systems, along with their characteristics,
+   The goal of our work is to study the correlation between
+                                                                      in our online appendix.2
+architectural and test smells with the purpose of assessing
+whether the degradation of software architectures detrimen-
+tally impacts test code quality. The perspective is of both           B. Data Collection and Analysis
+researchers and practitioners interested in discovering the
+potential impact of architectural smells on the emergence of             In the following, we describe the procedure we performed
+test smells, a possible cause-effect relationship, and new ways       to gather the necessary data and the steps we performed to
+of predicting their emergence. Given this, we aim to answer           analyze it. First, we collected all repositories of the sys-
+the following research question:                                      tems from GitHub. Then, we mined all the releases (tagged
+                                                                      commits) for each system by using RepoDriller [21]. On
+ RQ. Is there any relationship between architectural smells           each release, we ran Designite [18] to detect the architectural
+ and test smells?                                                     smells. Once we collected the production classes, we gathered
+                                                                      the corresponding test classes, and by leveraging on VITRuM
+A. Context selection                                                  [20], we determined whether they were affected by test smells.
+   The context of our study is composed of architectural              The final output of this step was a collection of records where
+smells, test smells, and software systems. Table I depicts the        it was possible to find components affected by architectural
+architectural smells we considered in our study. The rationale        smells and the test classes affected by test smells.
+behind these smells is that they are all class-level defined             After the mining procedure, we performed association rule
+architectural smells [5] which can be detected by tools [5],          mining by exploiting the aPriori algorithm [22] to find which
+[18]. In particular, we relied on Designite [18], a static analysis   architectural smells and test smells co-occur. Association rule
+tool for assessing technical debt. Designite can detect seven         mining, in particular, is an unsupervised learning technique for
+module- (package-) level architectural smells, 20 class level         detecting local patterns, highlighting attribute value conditions
+(design) architectural smells, and 11 implementation smells in        that occur together in a dataset [22]. In our specific case, in
+software systems implemented in C# and Java. We limited our           our case, the dataset contained the set of architectural smells
+choice to class-level defined architectural smells to have the        and test smells discovered in each release of the considered
+same granularity of test smells defined at the (test) class level.    systems. An association rule in the form of Rlef t → Rright
+However, we excluded the “Feature Envy” smell since it is             indicates that the presence of an architectural smell in a
+considered a code smell rather than an architectural smell.           class implies the occurrence of that particular test smell in
+   Table II depicts the well-known test smells we consid-             the relative test class. For each association rule mined, we
+ered in our empirical study. [12], [17], [19] which can be
+automatically detected in source code by tools [20]. In this            1 https://seart-ghs.si.usi.ch
+
+case, we relied on VITRuM, a code analysis tool that can                2 Online Appendix https://figshare.com/s/72d71fb1f99e1e8c0080
+                                                                    TABLE I
+                                          A RCHITECTURAL SMELLS CONSIDERED IN THE CONTEXT OF OUR STUDY.
+
+       Name                                             Definition
+       Deficient Encapsulation (DE)                     This smell occurs when the declared accessibility of one or more members of abstraction is
+                                                        more permissive than required.
+       Unutilized Abstraction (UNA)                     This smell arises when an abstraction is left unused (either not directly used or not reachable)
+       Broken Hierarchy (BH)                            This smell arises when a super-type and its sub-type conceptually do not share an ”IS-A”
+                                                        relationship resulting in broken substitutability
+       Broken Modularization (BM)                       This smell arises when data and/or methods that ideally should have been localized into a
+                                                        single abstraction are separated and spread across multiple abstractions
+       Insufficient Modularization (IM)                 This smell arises when an abstraction exists that has not been completely decomposed, and
+                                                        a further decomposition could reduce its size, implementation complexity, or both
+       Wide Hierarchy (WH)                              This smell arises when an inheritance hierarchy is ”too” wide, indicating that intermediate
+                                                        types may be missing
+       Unnecessary Abstraction (UA)                     This smell occurs when an abstraction that is not needed (and thus could have been avoided)
+                                                        gets introduced in a software design
+       Multifaceted Abstraction (MA)                    This smell arises when an abstraction has more than one responsibility assigned to it
+       Cyclically-dependent Modularization (CDM)        This smell arises when two or more abstractions depend on each other directly or indirectly
+       Cyclic Hierarchy (CH)                            This smell arises when a super-type in a hierarchy depends on any of its sub-types
+       Rebellious Hierarchy (RH)                        This smell arises when a sub-type rejects the methods provided by its super-type(s)
+
+
+
+                           TABLE II                                                 where T is the total amount of co-occurrences among
+     T EST SMELLS CONSIDERED IN THE CONTEXT OF OUR STUDY.                        architectural and test smells in our dataset. These metrics
+                                                                                 gave us insights concerning the strength of the association.
+   Name                         Definition
+                                                                                 We filtered out all the rules having a support value of 0.1
+   Ignored Test (It1)           A test method or class that contains the         and a confidence value of 0.8 as defined in previous studies
+                                @Ignore annotation
+                                                                                 [22]. Moreover, we calculated the lift metric, which assesses
+   General Fixture (Gf1)        Not all fields instantiated within the           the ability of a rule to accurately detect a relationship when
+                                setUp() method of a test class are
+                                utilized by all test methods in the same
+                                                                                 compared to a random choice model [22]. A lift value greater
+                                test class                                       than one indicates that the left-hand and right-hand operators
+                                                                                 of an association rule occur together more frequently than
+   Resource Optimism (Ro1)      A test method utilizes an instance
+                                of a File class without calling                  predicted, implying that the existence of the left-hand operator
+                                the exists(), isFile() or                        frequently suggests the presence of the right-hand operator.
+                                notExists() methods of the object                Finally, to statistically evaluate the significance of the mined
+   Assertion Roulette (Ar1)     A test method contains more than one             rules, we computed Fisher’s exact test [23] on the lift value.
+                                assertion statement without an expla-            This test measures the significance of deviation between the
+                                nation/message (parameter in the asser-
+                                tion method)                                     association rule model and the random choice models [23].
+                                                                                 If the p-value is lower than 0.05, we consider the deviation
+   Eager Test (Et1)             A test method contains multiple calls
+                                to multiple production methods                   statistically significant.
+   Mystery Guest (Mg1)          A test method containing object in-
+                                stances of files and databases classes
+   Sensitive Equality (Se1)     A   test method   invokes     the                                            TABLE III
+                                toString() method of an object                     S TATISTICALLY SIGNIFICANT ASSOCIATION RULES MINED FROM THE
+                                                                                         OBSERVED DATA , ORDERED BY DESCENDING LIFT VALUE .
+
+
+                                                                                            Rule              Support     Confidence           Lift
+computed two metrics, namely support and confidence [22],
+                                                                                            CDM → et1           0.147           0.916        1.165
+which are defined as follows:
+                                                                                            IM → et1            0.254           0.958        1.219
+                                   |Rlef t ∪ Rright |
+                      support =                                            (1)              DE → et1            0.246           0.846        1.075
+                                           T
+                                                                                            DE → ar1            0.251           0.864        1.072
+                                      |Rlef t ∪ Rright |
+                 conf idence =                                             (2)
+                                            Rlef t
+                 IV. A NALYSIS OF R ESULTS                           A. Threats To Construct Validity
+                                                                        The relationships between theory and observation are a
+   Table III depicts the association rules we mined from the
+                                                                     threat to construct validity. This threat typically alludes to
+analyzed data, which were evaluated as statistically significant
+                                                                     measurement accuracy issues. In our case, it impacts all data
+by Fisher’s exact test [23]. The first and foremost aspect that
+                                                                     collected because it may be “biased” by the sloppiness of the
+we can note from the table is that three out of four association
+                                                                     used tools. However, Designite and VITRuM are both well-
+rules have the “Eager Test” (et1) as the right-hand side of the
+                                                                     established tools [18], [20], demonstrating strong detection
+rule. This observation is quite reasonable since “Eager Test”
+                                                                     abilities. Therefore, we are confident in the veracity of the
+represents a test class that violates the single responsibility
+                                                                     information gathered.
+rule [24] because it tests multiple production methods, i.e.,
+more behaviors.                                                      B. Threats To Conclusion Validity
+   The first rule, which associates the presence of CDM with            Using the aPriori algorithm to identify connections between
+et1 might be explained by the fact that cyclic dependencies          the observable events poses the most significant threat in this
+among classes do not fully allow for isolating a production          area. On the one hand, researchers have commonly used this
+class in a test environment. Indeed, a class involved in a cyclic-   method to examine unknown connections between two occur-
+dependent modularization will always require some other class        rences ( [25]–[27]). On the other hand, we only considered
+to be instantiated, requiring other classes recursively. This        and discussed the most solid regulations, i.e., those that were
+architectural flaw makes it difficult to create test stubs, and      most trustworthy and achieved great support and confidence
+it might be that the actual production classes are used in tests.    and were found as significant by Fisher’s exact test [23].
+Eventually, some methods of the other classes might also be
+tested in the same test method. This rule shows the highest          C. Threats to External Validity
+lift value, which means it is very likely that a class affected         The main threats falling into this category might be related
+by CDM will have its test class affected by et1.                     to the number of analyzed systems and the choice of smells.
+   The second rule states that when a class suffers from             To what concerns the systems, we analyzed a dataset of
+insufficient modularization (IM), its test class will exhibit an     40 Java systems that met certain criteria (e.g., being old
+eager test smell. This rule shows a reasonably high lift value       enough to have ten releases or having a minimum number
+and higher support than the former (0.254 vs. 0.157), meaning        of stars to exclude toy systems). On the one hand, 40 Java
+it frequently happens. This relationship might be explained by       systems on the whole amount of systems might seem a small
+the cumbersome nature of classes affected by IM. Since these         number. Even the selection criteria (i.e., number of stars and
+classes are composed of non-fully decomposed abstractions,           releases) were highly selective to maximize the possibility of
+some internal dependencies might force developers to test            not selecting toy projects, which would have been irrelevant
+multiple production methods, as it was an end-to-end test.           for the study. Hence, on the other hand, it must be considered
+   The third and fourth rules regard Deficient Encapsulation         that the purpose of this study is a preliminary evaluation of the
+(DE) architectural smells implying eager test (et1) and asser-       possible effect of architectural erosion and not an extensive
+tion roulette (ar1). They showed the smallest lift value (1.075      empirical study on the whole architectural conditions of all
+and 1.072, respectively), which means that the presence of           the systems hosted on G IT H UB. Moreover, it must also be
+the former implies the presence of the latter slightly often. A      considered that we were limited by the tools we employed,
+possible explanation behind these two rules might be given by        i.e., Designite and VITRuM, which can analyze only systems
+the nature of the architectural smell itself. A deficient encap-     written in Java. Further studies will consider a more extensive
+sulation occurs when some aspects of a class, i.e., methods or       set of systems and different programming languages whenever
+attributes, have too permissive visibility. Therefore, methods or    tools supporting them are available. To what concerns the
+attributes that should not be accessible from external classes,      considered smells, we were also limited by the tools at our
+including test classes, are visible. When testing a production       disposal. Further studies will certainly consider other smells
+method, developers might have tested methods (which should           as soon as we can detect them.
+be private) invoking the method under test or included some
+attribute of the external class to ensure its correct state                                VI. C ONCLUSION
+after executing the method under test. This situation leads to          In this paper, we explored the potential effect of archi-
+eager tests (since multiple production methods are testes) and       tectural degradation on some quality aspects of a software
+assertion roulette (since multiple assertions are used to check      system. In particular, we examined how architectural degra-
+some class attributes as well).                                      dation (seen as the presence of architectural smells) can
+                                                                     impact the testability of the system (seen as the presence of
+                  V. T HREATS T O VALIDITY                           test smells in the test code). We detected architectural and
+                                                                     test smells occurring on 798 releases coming from 40 Java
+  In the following, we discuss the potential threats to the          projects hosted on G IT H UB by leveraging association rule
+validity of our study, alongside the strategies we applied to        mining. We found that the presence of some architectural
+mitigate them.                                                       smells (i.e., Cyclically-dependent Modularization, Insufficient
+encapsulation, and Deficient Encapsulation) often implies the                    [11] M. Feathers, Working Effectively With Legacy Code: Work Effect Leg
+presence of test smells in their test classes (i.e., Eager Test                       Code p1. Prentice Hall Professional, 2004.
+                                                                                 [12] G. Meszaros, xUnit test patterns: Refactoring test code.         Pearson
+and Assertion Roulette).                                                              Education, 2007.
+   Further, more in-depth studies will be conducted to discover                  [13] D. Spadini, F. Palomba, A. Zaidman, M. Bruntink, and A. Bacchelli,
+not only how this occurs, but also why. In particular, we plan                        “On the relation of test smells to software code quality,” in 2018
+                                                                                      IEEE international conference on software maintenance and evolution
+to conduct historical, observational, and case studies to make                        (ICSME). IEEE, 2018, pp. 1–12.
+us understand the causality relationship between these smells.                   [14] G. Bavota, A. Qusef, R. Oliveto, A. De Lucia, and D. Binkley, “Are
+We considered only class-level architectural smells. Thus, in                         test smells really harmful? an empirical study,” Empirical Software
+                                                                                      Engineering, vol. 20, no. 4, pp. 1052–1094, 2015.
+the future, we will also consider the impact of module-level (or                 [15] G. Grano, F. Palomba, D. Di Nucci, A. De Lucia, and H. C. Gall,
+package-level) architectural smells on the software testability.                      “Scented since the beginning: On the diffuseness of test smells in
+   In the long run, we aim to develop an automatic architectural                      automatically generated test code,” Journal of Systems and Software,
+                                                                                      vol. 156, pp. 312–327, 2019.
+refactoring strategy to improve software testability. In this                    [16] K. Beck, Test-driven development: by example.             Addison-Wesley
+scenario, refactoring will primarily improve the overall quality                      Professional, 2003.
+of the architecture and the side effect of facilitating testing ac-              [17] A. Van Deursen, L. Moonen, A. Van Den Bergh, and G. Kok, “Refac-
+                                                                                      toring test code,” in Proceedings of the 2nd international conference
+tivities, which eventually could improve other non-functional                         on extreme programming and flexible processes in software engineering
+requirements, such as the system dependability. Hence, further                        (XP2001). Citeseer, 2001, pp. 92–95.
+studies will consider other quality aspects that architectural                   [18] T. Sharma, P. Mishra, and R. Tiwari, “Designite: A software design
+                                                                                      quality assessment tool,” in Proceedings of the 1st International Work-
+degradation might affect, not only at the product level but                           shop on Bringing Architectural Design Thinking into Developers’ Daily
+also at the process level.                                                            Activities, 2016, pp. 1–4.
+                                                                                 [19] L. Moonen, A. v. Deursen, A. Zaidman, and M. Bruntink, “On the
+                              R EFERENCES                                             interplay between software testing and evolution and its effect on
+ [1] M. M. Lehman, “Programs, life cycles, and laws of software evolution,”           program comprehension,” in Software evolution. Springer, 2008, pp.
+     Proceedings of the IEEE, vol. 68, no. 9, pp. 1060–1076, 1980.                    173–202.
+ [2] M. Fowler and K. Beck, “Refactoring: Improving the design of existing       [20] F. Pecorelli, G. Di Lillo, F. Palomba, and A. De Lucia, “Vitrum: A
+     code,” Addison-Wesley Longman Publishing Co., Inc., 1999.                        plug-in for the visualization of test-related metrics,” in Proceedings of
+ [3] M. Tufano, F. Palomba, G. Bavota, R. Oliveto, M. Di Penta, A. De Lucia,          the International Conference on Advanced Visual Interfaces, 2020, pp.
+     and D. Poshyvanyk, “When and why your code starts to smell bad,”                 1–3.
+     in 2015 IEEE/ACM 37th IEEE International Conference on Software             [21] M. Aniche, “Repodriller,” 2012.
+     Engineering, vol. 1. IEEE, 2015, pp. 403–414.                               [22] R. Agrawal, T. Imieliński, and A. Swami, “Mining association rules
+ [4] N. Medvidovic and R. N. Taylor, “Software architecture: foundations,             between sets of items in large databases,” in Proceedings of the 1993
+     theory, and practice,” in 2010 ACM/IEEE 32nd International Conference            ACM SIGMOD international conference on Management of data, 1993,
+     on Software Engineering, vol. 2. IEEE, 2010, pp. 471–472.                        pp. 207–216.
+ [5] H. Mumtaz, P. Singh, and K. Blincoe, “A systematic mapping study on         [23] R. A. Fisher, “On the interpretation of χ 2 from contingency tables, and
+     architectural smells detection,” Journal of Systems and Software, vol.           the calculation of p,” Journal of the royal statistical society, vol. 85,
+     173, p. 110885, 2021.                                                            no. 1, pp. 87–94, 1922.
+ [6] U. Azadi, F. A. Fontana, and D. Taibi, “Architectural smells detected       [24] R. C. Martin, Agile software development: principles, patterns, and
+     by tools: a catalogue proposal,” in 2019 IEEE/ACM International                  practices. Prentice Hall, 2002.
+     Conference on Technical Debt (TechDebt). IEEE, 2019, pp. 88–97.             [25] M. De Stefano, F. Pecorelli, D. A. Tamburri, F. Palomba, and A. De Lu-
+ [7] J. Garcia, D. Popescu, G. Edwards, and N. Medvidovic, “Toward a                  cia, “Splicing community patterns and smells: A preliminary study,” in
+     catalogue of architectural bad smells,” in International conference on           Proceedings of the ieee/acm 42nd international conference on software
+     the quality of software architectures. Springer, 2009, pp. 146–162.              engineering workshops, 2020, pp. 703–710.
+ [8] M. Lippert and S. Roock, Refactoring in large software projects:            [26] F. Palomba, G. Bavota, M. Di Penta, R. Oliveto, D. Poshyvanyk, and
+     performing complex restructurings successfully. John Wiley & Sons,               A. De Lucia, “Mining version histories for detecting code smells,” IEEE
+     2006.                                                                            Transactions on Software Engineering, vol. 41, no. 5, pp. 462–489, 2014.
+ [9] R. C. Martin, J. Grenning, S. Brown, K. Henney, and J. Gorman,              [27] F. Palomba, G. Bavota, M. Di Penta, F. Fasano, R. Oliveto, and
+     Clean architecture: a craftsman’s guide to software structure and design.        A. De Lucia, “A large-scale empirical study on the lifecycle of code
+     Prentice Hall, 2018, no. s 31.                                                   smell co-occurrences,” Information and Software Technology, vol. 99,
+[10] J. Garcia, D. Popescu, G. Edwards, and N. Medvidovic, “Identifying ar-           pp. 1–10, 2018.
+     chitectural bad smells,” in 2009 13th European Conference on Software
+     Maintenance and Reengineering. IEEE, 2009, pp. 255–258.
+

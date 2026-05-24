@@ -1,0 +1,718 @@
+                                                                                                                                                                                              2025 IEEE International Conference on Collaborative Advances in Software and COmputiNg (CASCON)
+
+
+
+                                                                                                                                                                                            Pushing Feelings: Emotion and Sentiment in
+                                                                                                                                                                                                    Software Commit Messages
+
+
+
+
+2025 IEEE International Conference on Collaborative Advances in Software and COmputiNg (CASCON) | 979-8-3315-9948-5/25/$31.00 ©2025 IEEE | DOI: 10.1109/CASCON66301.2025.00072
+                                                                                                                                                                                                                     Krishno Dey∗ , Jagannath Singh† , Hung Cao‡ , Francis Palma∗
+                                                                                                                                                                                                  ∗ SE+AI Research Lab, Faculty of Computer Science, University of New Brunswick, NB, Canada
+                                                                                                                                                                                                          † School of Computer Engineering, Kalinga Institute of Industrial Technology, India
+                                                                                                                                                                                              ‡ Analytics Everywhere Lab, Faculty of Computer Science, University of New Brunswick, NB, Canada
+
+                                                                                                                                                                                                                 {krishno.dey, hcao3, francis.palma}@unb.ca, jagannath.singhfcs@kiit.ac.in
+
+
+
+                                                                                                                                                                                    Abstract—Software repositories are the primary source of                      community [2], [3], analyzing commit messages remains
+                                                                                                                                                                                 information for software artifacts and contain a large amount                    challenging due to the inconsistent and informal nature of
+                                                                                                                                                                                 of unstructured data, including commits, issue reports, and code                 these messages [4]. Most prior studies include lexicon-based
+                                                                                                                                                                                 comments. Mining information for different tasks, such as senti-
+                                                                                                                                                                                 ment and emotion analysis, has been studied on several artifacts.                approaches [5], [6]. As such, words or lexicons played a
+                                                                                                                                                                                 While significant progress has been made in sentiment analysis                   crucial role in identifying emotions, rather than relying on
+                                                                                                                                                                                 on various artifacts, the study of emotion analysis remains                      contextual information. The advancement of natural language
+                                                                                                                                                                                 under-researched due to a lack of resources, such as relevant                    processing and machine learning techniques has paved the
+                                                                                                                                                                                 and labeled datasets. This study presents a manually annotated                   way for groundbreaking research in identifying emotions from
+                                                                                                                                                                                 dataset comprising 12,005 commit messages from the open-
+                                                                                                                                                                                 source Apache Tomcat project, exploring emotion and sentiment                    software artifacts. Researchers have conducted several studies
+                                                                                                                                                                                 analysis through the application of natural language processing                  to identify emotions in commit messages using traditional
+                                                                                                                                                                                 and machine learning techniques. We studied traditional models                   machine learning approaches [7].
+                                                                                                                                                                                 (SVM and random forest), deep learning models (bidirectional-                       There has been a growing research interest in sentiment
+                                                                                                                                                                                 LSTM), and pre-trained language models (LMs), as well as their                   analysis on software artifacts [8]–[10]. However, due to several
+                                                                                                                                                                                 ensemble, to evaluate and compare their performance on the
+                                                                                                                                                                                 curated dataset. Our findings suggest that software engineering                  challenges, very few studies (e.g., [1]) focus on emotion
+                                                                                                                                                                                 domain-specific pretrained LMs consistently outperform tradi-                    identification. One of the main challenges is the lack of well-
+                                                                                                                                                                                 tional and deep learning models. The ensemble of pretrained LMs                  designed annotation guidelines, which may result in unreliable
+                                                                                                                                                                                 performs better on sentiment analysis. Additionally, identifying                 [11] and low-agreement datasets that cause biases in learning.
+                                                                                                                                                                                 sentiment from commit messages outperforms emotion analysis                      The content of an artifact (e.g., commit messages and code
+                                                                                                                                                                                 tasks. We have made model implementations and the curated
+                                                                                                                                                                                 dataset available.                                                               comments) sometimes belongs to multiple classes [12], mak-
+                                                                                                                                                                                    Index Terms—Emotion and sentiment analysis, Pretrained                        ing it difficult to categorize them into a single class and posing
+                                                                                                                                                                                 language model, Ensemble learning, Commit messages.                              challenges for the model to differentiate among classes. An-
+                                                                                                                                                                                                                                                                  other challenge is distinguishing between different emotions
+                                                                                                                                                                                                           I. I NTRODUCTION                                       in similar content within the project. Developers often express
+                                                                                                                                                                                    Sentiment analysis in software engineering is crucial for                     their emotions and sentiments through commit messages, issue
+                                                                                                                                                                                 identifying developer sentiments or emotions [1] expressed                       responses, code comments, and team conversations; however,
+                                                                                                                                                                                 through various software artifacts. Although software devel-                     it is challenging to determine sentiment and emotion from
+                                                                                                                                                                                 opment is a logical and systematic endeavor, the individuals                     most artifacts.
+                                                                                                                                                                                 behind it bring emotions, perspectives, and experience. Under-                      Further, the performance of the models used to classify
+                                                                                                                                                                                 standing the underlying emotions and sentiments of software                      sentiment and emotion varies across the datasets [12]. Al-
+                                                                                                                                                                                 artifacts is crucial for understanding the impact of sentiment                   though a few open-source datasets for emotion and sentiment
+                                                                                                                                                                                 and emotion on software qualities, work environment, and                         analysis [5], [8], [9], [13] exist in the literature, most are
+                                                                                                                                                                                 team dynamics. Analyzing emotions and sentiments in commit                       annotated based on the lexicons and lack manual validation.
+                                                                                                                                                                                 messages may provide early indications of developers’ state                      The limitations of the methods and models in capturing
+                                                                                                                                                                                 of mind, which team leads and managers can leverage for                          the underlying interpretations from texts make it difficult to
+                                                                                                                                                                                 resource allocation.                                                             analyze sentiment and emotion.
+                                                                                                                                                                                    Software repositories, such as GitHub and GitLab, contain                        In this study, we developed an annotation guideline to
+                                                                                                                                                                                 a vast amount of unstructured data, and mining this data has                     facilitate emotion and sentiment analysis in commit messages.
+                                                                                                                                                                                 become inevitable for the software engineering community.                        Following this guideline, we created the largest manually an-
+                                                                                                                                                                                 Most developers’ working notes on their projects are doc-                        notated dataset. The dataset has undergone several iterations of
+                                                                                                                                                                                 umented in commit messages, code comments, and project                           pre-processing and validation to make it usable for qualitative
+                                                                                                                                                                                 documentation. Although analyzing and reviewing code has                         research and emotion and sentiment analysis tasks. We define
+                                                                                                                                                                                 received more attention from the software engineering research                   two research questions to examine the state-of-the-art models
+
+
+                                                                                                                                                                                 979-8-3315-9948-5/25/$31.00 ©2025 IEEE                                       429
+                                                                                                                                                                                 DOI 10.1109/CASCON66301.2025.00072
+                                                                                                                                                                                      Authorized licensed use limited to: University of New Brunswick. Downloaded on February 13,2026 at 02:39:02 UTC from IEEE Xplore. Restrictions apply.
+for automatic emotion and sentiment analysis of software                        and NLTK [23] have been adopted from general texts, where
+commit messages.                                                                some tools, i.e., SentiStrength-SE [8], Senti4SD [24], and
+   RQ1: How well do state-of-the-art machine learning and                       SentiSW [9] were designed for software engineering text.
+deep learning predict emotions and sentiments on commit
+                                                                                A. Sentiment Analysis
+messages?
+   RQ2: How does an ensemble of pretrained language models                         The simplest sentiment analysis task involves classifying
+perform on emotion and sentiment data?                                          a text into one of two categories (Positive or Negative) or
+   We present a comparative analysis using pretrained lan-                      three categories (Positive, Negative, or Neutral). To extract
+guage models (LMs), including classical and deep learning                       developer sentiment, the text must be from sources where de-
+models. The performance of the models shows that the pre-                       velopers communicate or update their daily tasks. As a result,
+trained language models outperform deep learning models,                        GitHub is one of the largest information repositories, contain-
+while classical models show a notable performance on this                       ing various software artifacts, such as commit messages, code
+dataset. Our contribution can be summarized as follows: (1)                     comments, and issues. Although most of the commit messages
+we built the largest manually annotated dataset for emotion                     collected from GitHub belong to neutral classes [25] due to
+analysis on commit messages; (2) we investigated the pre-                       open-source collaboration, it is still worthwhile to investigate
+trained LMs by fine-tuning the models with the data; (3)                        developer sentiment.
+we investigated ensemble learning using pretrained LMs to                          The early studies in this area rely on a lexicon-based
+compare and improve the performance of individual pretrained                    approach to extract sentiment, which involves developing lexi-
+LM; (4) we are the first to provide a comparative analysis                      cons, such as SentiStrength [22] and Senti4SD [24]. Although
+among the classical, deep learning, pretrained models, and                      the SentiStrength lexicon was mainly developed from social
+ensemble learning; and (5) we provided a comparison of the                      media texts, it gained popularity among researchers due to
+performances between emotion and sentiment tasks.                               its performance in software engineering. The use of lexi-
+   The summary of our findings includes (1) fine-tuned soft-                    cons involves analyzing the relationship between programming
+ware engineering domain-specific LMs provide better results                     languages and developer sentiments, as well as changes in
+compared to other models; (2) the pretrained model, Commit-                     sentiment across the days of a week and developer sentiment
+BART [14], trained on commit messages yields the best per-                      over a day [21].
+formance for emotion task while ensemble learning provides                      B. Emotion Analysis
+the best performance on sentiment task; (3) all the models                         Researchers have done a few studies, e.g., [1], [10], [13]
+except CommitBART and random forest struggled to predict                        to identify the emotions1 from commit messages and issue
+the surprise class, while XLM-RoBERTa [15] only predicted                       comments. Although emotions are categorized into eight types,
+neutral and trust classes for emotion analysis; and (4) all the                 researchers have used three, four, six, and eight types of
+models are performing better on sentiment tasks due to the                      emotions in the literature [1]. Lexicon-based approaches are
+dimensionality of the classes.                                                  also followed in extracting emotions, which include a few
+   For the rest of the paper, Section II discusses an overview of               emotion lexicons, i.e., NRC Word-Emotion Association Lex-
+related work. Section III presents our research method and the                  icon [10], DEVA [13], TensiStrength [26], etc. Using these
+implementation strategies employed. Section IV presents a de-                   lexicons results in different types of emotion over a single
+tailed performance analysis of the two experimental strategies,                 text. For example, the NRC word-emotion association lexicon,
+along with the proposed ensemble approaches, while Section                      DEVA, and TensiStrength have eight, four, and three types of
+V discusses the performance analysis and challenges. Finally,                   emotions, respectively. Although the emotions were extracted
+Section VI concludes the paper.                                                 using a lexicon, in most cases, only one word is used to
+                        II. R ELATED W ORK                                      identify the emotion of a text [10]. The study in [13] proposed
+                                                                                an automatic tool named DEVA to extract emotions from com-
+   Sentiment analysis enables one to identify the emotions
+                                                                                mit messages and issue comments using the valence-arousal
+from texts, which helps variously, i.e., quality of products [16],
+                                                                                model, which calculates four types of emotions. Although the
+identifying requirements from user feedback [17], relating
+                                                                                study provides an insightful tool for emotion extraction, the
+sentiment to the developer performance [18], and trust among
+                                                                                comparison with other tools was ambiguous.
+team members [19]. Developers express their emotions and                           Machine learning-based approaches have recently been
+sentiments during the software development process through                      studied to extract developer sentiments for software arti-
+commit messages, issue comments, and other software artifacts                   facts, e.g., [7]. Support vector machines, naive Bayes, ran-
+[1]. Therefore, researchers became interested in extracting                     dom forests, decision trees, and extreme gradient boosting
+emotions and sentiments from software artifacts.                                are among the most popular algorithms studied. A machine
+   Researchers have been attempting to extract emotions and                     learning-based sentiment extraction tool was created in the
+developing lexicon-based tools to identify both sentiment and                   study by Islam et al. [7], which outperforms existing lexicon-
+emotions in software artifacts since the early 2010s [6], [20],                 based sentiment extraction tools. Imran et al. [27] primarily
+[21]. As a result, researchers have developed several lexicon-
+based tools. Most of the lexicon tools, i.e., SentiStrength [22],                  1 anger, fear, anticipation, trust, surprise, sadness, joy, and disgust
+
+
+
+
+                                                                            430
+
+    Authorized licensed use limited to: University of New Brunswick. Downloaded on February 13,2026 at 02:39:02 UTC from IEEE Xplore. Restrictions apply.
+addressed the data scarcity problem in emotion analysis in                      duplicate commit messages to handle the duplicates and URLs
+SE text by automatically creating new training data using a                     from the commit messages without further preprocessing.
+data augmentation technique by analyzing the errors made by                     These filtering and removing duplicate steps resulted in 12,005
+popular SE-specific emotion classification tools. The authors                   commit messages.
+investigated the effectiveness of an emotion classifier, SEnti-
+Moji [28], in detecting emotions in GitHub comments.                            B. Filtering Commit Messages
+                                                                                   Commit messages contain URLs, commit IDs (i.e., hash
+C. Emotion Analysis using LLMs                                                  values), and invisible characters. As a part of the preprocess-
+   Among the very few studies that investigated large language                  ing steps, we first removed the noisy portion (commit IDs,
+models (LLMs) for emotions prediction in SE text, like issue                    invisible characters, and blank spaces) of the data. We then
+comments, include [29], [30]. In [29], the authors explored                     removed a specific word (git-svn-id) due to its high frequency
+zero-shot LLMs for detecting emotions in software devel-                        and lack of meaningful relevance to the emotion identification
+oper communication. Those LLMs are pre-trained on massive                       task. We also tokenized and performed case conversion (i.e.,
+datasets but not fine-tuned for detecting emotions in SE. The                   converting all characters to lowercase) before training.
+authors found that the LLMs perform well in the emotion clas-
+sification task compared to state-of-the-art models. However,                   C. Manual Annotation
+this comes with a significant cost in terms of computation                        Given a commit message, we want to categorize its intended
+required. Topal et al. [30] explored the performance of open-                   emotion, i.e., whether it is anger, fear, joy, neutral, sadness,
+source LLMs in sentiment analysis. The authors also explored                    surprise, or trust.
+the impact of various instruction methods and fine-tuning
+techniques on the models’ performance and analyzed their                        Data Annotation Scheme: As the data annotation scheme for
+sensitivity to different prompts. The authors considered BERT-                  emotions, we adopted six emotion classes, merging disgust
+based models as their baseline and found Llama3 and Mistral                     and anticipation with anger suggested by Shaver et al. [31]
+to be top-performing in sentiment analysis tasks.                               from the wheel of eight emotions [32]. For a significant
+   Existing studies mostly rely on a lexicon-based approach                     number of commit messages, it is challenging to find the
+to extract sentiment. Moreover, there is a scarcity of datasets                 appropriate emotion label from the six classes. As a result,
+available for evaluating emotion and sentiment from commit                      we also introduced a neutral class to tackle the annotation
+messages. In this study, we construct a manually annotated                      issue, resulting in seven emotion classes.
+dataset and employ machine learning and pre-trained language                       In the following, we discuss the taxonomy of emotions we
+models to analyze sentiment and emotion.                                        provide during the annotation.
+                                                                                   Anger is an intense emotion that intends to show irritability,
+ III. R ESEARCH M ETHODOLOGY AND I MPLEMENTATION                                disgust, envy, jealousy, and annoyance. It deliberately ex-
+  This section details the research methodology and imple-                      presses a strong, uncomfortable, and non-supportive response
+mentation as depicted in Figure 1.                                              to a statement.
+                                                                                   Fear is an unpleasant emotion expressed during a dangerous
+A. Data Collection                                                              or bad situation to show nervousness, anxiety, worry, panic,
+   To collect commit messages, we choose Apache Tomcat2 .                       and dread.
+During the data collection, we collected commit IDs, commit-                       Joy is a positive emotion to show happiness, satisfaction,
+ter usernames, dates, and messages. We selected the Tomcat                      pleasure, and amusement. The purpose of joy is to express
+open-source system because it is widely known, actively                         the well-being and success of an action.
+maintained, and used in the empirical Software Engineering                         Sadness is a negative emotion with a sense of depression,
+research community. Tomcat has a well-documented commit                         regret, embarrassment, rejection, and sympathy.
+history. Moreover, we also did not want to select a large or                       Surprise is an emotion that expresses positivity to show
+small system, opting instead for a moderate-sized dataset to                    amazement and astonishment.
+be annotated. Our primary focus was to select an open-source                       Trust is an emotion of a strong belief in reliability to show
+project with numerous commit messages from developers who                       confidence, admiration, and agreement with a statement.
+have contributed over a long period. We collected a total of                       Neutral is used for texts not representing emotions or the
+13,000 recent commit messages. We opted to use PyDriller3                       annotators are unable to understand the emotion from the text.
+to extract commit messages from GitHub since it is well-
+                                                                                Data Annotation Guideline: We asked annotators to read the
+documented and provides all the necessary information related
+                                                                                given commit message first to understand the context of the
+to commit messages. Although each commit is unique with its
+                                                                                text and the emotion expressed by the writer of the message.
+commit ID, the messages can be the same, and each message
+                                                                                Based on the Data Annotation Scheme, the annotator decides
+can be found in multiple commits; for example, we found
+                                                                                the appropriate emotion class once the annotator understands
+that fix typo occurs in multiple commits. We removed the
+                                                                                the expressed emotion. The detailed annotation guideline and
+ 2 https://github.com/apache/tomcat                                             the supplemental materials are available at https://doi.org/10.
+ 3 http://dl.acm.org/citation.cfm?doid=3236024.3264598                          5281/zenodo.14449706.
+
+
+                                                                            431
+
+    Authorized licensed use limited to: University of New Brunswick. Downloaded on February 13,2026 at 02:39:02 UTC from IEEE Xplore. Restrictions apply.
+                 Scraper
+                                                                                                 Emotion
+                 PyDriller                             Emotions Annotation                       Dataset
+                                                                 Guideline                                            First Strategy
+
+
+
+
+                                                                                                                     Second Strategy
+          GitHub        Commit                                                                                                            Evaluation
+         Repository    Messages
+                                                                                Preprocessing
+
+
+
+
+                                                                                                   Sentiment
+                                                                                                    Dataset            Third Strategy
+              Data Collection          Filtering            Manual                                                    Experimental
+                                                           Annotation                                                  Strategies
+
+                                               Fig. 1: The overview of the research methodology.
+
+
+                                                                                disagreement among the annotators, the curators organized a
+                                                                                discussion to select the final label. This method offers high
+                                                                                accuracy, which is critical for any annotation task. However,
+                                                                                this process is costly and time-consuming for larger datasets.
+                                                                                Annotation Quality: We calculated the Inter-Annotator
+                                                                                Agreement (IAA) to measure the annotation quality. First, we
+                                                                                calculated the Fleiss Kappa (κ) [33] score on the unconsoli-
+                                                                                dated labeled dataset, yielding a value of 0.14, indicating slight
+                                                                                agreement among the annotators. This annotation score indi-
+                                                                                cates the disagreement among annotators for a large number
+                                                                                of data points, i.e., there was no majority label for emotions
+                                                                                among the annotators. The curators consolidated the final
+Fig. 2: The distribution of sentence length associated with each                labels for the commit messages with disagreement. Afterward,
+emotion label.                                                                  we again calculated the κ score and obtained a value of 0.52,
+                                                                                indicating a moderate agreement among annotators with the
+                                                                                help of the curator’s group.
+
+Annotation Process: We used a pool of annotators con-                           D. Pre-processing
+sisting of 14 computer science undergraduate and graduate
+students. All of the annotators are divided into two groups:                       We pre-process the data by removing unnecessary text and
+annotators and curators. In the annotators group, we selected                   prepare it for training and evaluation.
+12 students; the rest (those with previous data annotation                         1) Data Analysis: We analyzed the sentence distributions
+experience) were used as curators. Students in the annotator                    by the number of words for each class label presented in Figure
+groups had low to moderate experience in data annotation and                    2. Based on the distribution, neutral and trust are the most
+sentiment/emotion analysis from text. In contrast, researchers                  common emotions developers express in commit messages,
+in the curators group were experienced in data annotation                       i.e., around 58% of the data falls within the trust and neutral
+and sentiment/emotion analysis in the software engineering                      classes. Surprise and fear are the least occurring emotions
+domain. The primary task of the annotator group was to                          in our dataset, comprising around 11% of the dataset. We
+annotate the commit messages, while the curators concentrated                   also incorporate different ranges of sentence length buckets
+on consolidating the final labels. Each commit message was                      to investigate the optimal sequence length for pretrained LMs.
+independently annotated by three annotators, following our                      We found that around 80% data belongs within the sentence
+annotation guidelines that describe the annotation steps. We                    length of 20 words.
+conducted a weekly review meeting to align and discuss                             2) Data Split: We divided the dataset into train, validation,
+specific annotation cases. The majority agreement for each                      and test splits, containing 70%, 10%, and 20% of the data,
+commit message selected the final label. However, in cases of                   respectively. We used stratified sampling to ensure a balanced
+
+
+                                                                             432
+
+    Authorized licensed use limited to: University of New Brunswick. Downloaded on February 13,2026 at 02:39:02 UTC from IEEE Xplore. Restrictions apply.
+  Class   Train Dev Test Total         Class    Train Dev Test Total
+  Anger    953    156   276 1,385 Sadness    929         124   273 1,326            CodeBERT
+                                                                                                       Hidden States
+
+   Fear    538     91   173   802 Surprise   365          51   111   527
+    Joy    740     89   204 1,033    Trust 2,678         367   739 3,784
+ Neutral 2,201    310   637 3,148
+                                                                                                       Encoder last
+                                                                                   CommitBERT          hidden state
+
+  TABLE I: Class label distribution across the data splits.
+
+                                                                                   T5-Commit-          Encoder last
+                                                                                                       hidden state
+                                                                                                                                Concatenation   Fusion Layer   Output Layer Softmax Layer
+                                                                                    Generator
+distribution of class labels across the data splits. We provided
+the detailed data distribution of the data splits in Table I.
+   3) Sentiment Data Preparation: Anger, Fear, and Sadness                         CodeReviewer        Encoder last
+                                                                                                       hidden state
+emotions are expressed in a negative situation while Joy
+and Trust show positivity. Moreover, Surprise emotion can                       Fig. 3: Concatenation of hidden outputs followed by fusion
+be expressed in positive and negative situations. However,                      and output layer.
+we chose Surprise emotion as a positive sentiment since we
+found positive textual representations in the commit messages.
+As a result, to consolidate the sentiment data, we combined                        CodeBERT
+                                                                                                  Hidden states
+
+{Anger, Fear, Sadness} emotions as Negative sentiments and
+{Joy, Surprise, Trust} emotions as Positive sentiments while
+considering neutral emotions as neutral sentiments.                               CommitBERT
+                                                                                                  Encoder last
+                                                                                                  hidden state
+
+
+
+
+E. Experimental Strategies                                                                                                                            Feed Forward     Output     Softmax
+                                                                                                                                                        Network        Layer       Layer
+                                                                                   T5-Commit-     Encoder last
+                                                                                                                       Concatenation   Fusion Layer
+                                                                                    Generator     hidden state
+   We employed two experimental strategies to investigate the
+two research questions.
+   1) First Strategy: As part of this strategy, we address RQ1
+                                                                                  CodeReviewer    Encoder last
+to compare the performance of traditional machine learning,                                       hidden state
+
+deep learning, and pretrained LMs using both emotion and                        Fig. 4: Concatenation of hidden outputs followed by fusion
+sentiment datasets. Indeed, we selected widely used models                      layer, feed-forward network, and output layer.
+effective for sentiment and emotion analysis.
+Baseline Model: We incorporate multinomial naive Bayes
+(MNB) as our baseline, as it has been widely considered                         erator4 , and CommitBART [14] pretrained models for our
+the standard model in the literature. We capture contextual                     study because transformer-based pretrained LMs have exhib-
+information for MNB by using a weighted n−gram (uni, bi,                        ited notable performance for various NLP downstream tasks.
+tri, and quadri-gram).                                                          We maintain the same hyper-parameters for fine-tuning for
+                                                                                fair evaluation across the models. We fine-tune our models
+Classical Models: In prior studies, classical machine learning                  for up to 3 epochs to mitigate overfitting, using an Adam
+models such as the support vector machine (SVM) and random                      optimizer with a learning rate of 2e−5 , a batch size of 16, and
+forest have been widely used due to limited computational re-                   a maximum sequence length of 256.
+sources [13].To investigate classical machine learning models,                     2) Second Strategy: To address RQ2, we explore three
+we selected SVM and RF to conduct our experiments. We                           different approaches for ensemble learning. We utilize four
+used the standard parameter settings and a weighted n−gram                      different pre-trained LMs, trained on software artifacts, in
+tf-idf representation to prepare the data.                                      all three approaches. In the first approach, we concatenate
+Deep Learning: Although deep learning models are exten-                         the output of the hidden state of CodeBERT and the output
+sively used for sentiment and emotion analysis on social                        of the encoder’s last hidden layer of the other three models
+media data, they have not been widely applied to sentiment                      (CommitBART, T5 Commit Generator, and CodeReviewer).
+or emotion identification for software artifacts to date. We                    Then, we feed the concatenated output to the fusion layer,
+incorporate bidirectional long short-term memory (LSTM) as                      followed by the output and softmax layer. For the second
+a deep learning algorithm to explore the performance of the                     approach, we maintain a similar architecture to the first
+deep learning model. The motivation for choosing LSTM is                        approach and incorporate a feed-forward network between the
+that it can capture a long sequence and extract meaningful                      fusion and output layers. The primary difference between the
+information. We use an embedding dimension of 128, as more                      first and second approaches lies in the softmax layer. For the
+than 95                                                                         third approach, we select the best logits based on the logits
+                                                                                confidence and feed the best logits to the softmax layer. We
+Pretrained Language Models: We choose XLM-RoBERTa
+[15], CodeBERT [2], CodeReviewer [3], T5 commit gen-                               4 https://huggingface.co/mamiksik/T5-commit-message-generation
+
+
+
+
+                                                                            433
+
+    Authorized licensed use limited to: University of New Brunswick. Downloaded on February 13,2026 at 02:39:02 UTC from IEEE Xplore. Restrictions apply.
+                                                                                            Model              Accuracy   Precision     Recall    F1-macro
+                          Logits                                                                                    Baseline
+   CodeBERT
+                                                                                      MNB                         39.66        35.74     39.66         21.43
+
+                          Logits                                                                                Classical Models
+  CommitBERT
+                                                   σ                                  SVM
+                                                                                      RF
+                                                                                                                  38.25
+                                                                                                                  42.27
+                                                                                                                               35.16
+                                                                                                                               40.00
+                                                                                                                                         38.25
+                                                                                                                                         42.27
+                                                                                                                                                       26.51
+                                                                                                                                                       28.65
+                          Logits
+   T5-Commit-                                 Select the best                                                 Deep Learning Model
+                                                                Softmax Layer
+    Generator                                 logits based on
+                                                conﬁdence                             Bidirectional LSTM          38.50        35.75     38.50         27.42
+                          Logits                                                                           Pretrained Language Models
+  CodeReviewer
+                                                                                      XLM-RoBERTa-large           37.05        21.34     37.05         13.56
+Fig. 5: Third ensemble approach: select the best logits based                         CodeBERT                    43.72        44.06     43.72         30.71
+on the logits’ confidence.                                                            CodeReviewer                42.40        41.48     42.40         29.97
+                                                                                      CommitBART                  43.72        42.96     43.72         32.70
+                                                                                      T5 Commit Generator         42.77        39.16     42.77         28.11
+
+provide a detailed architecture of the first, second, and third                             Model              Accuracy   Precision     Recall    F1-macro
+approaches in Figures 3, 4, and 5, respectively. We train all                                                       Baseline
+the ensemble models for up to 10 epochs with a learning rate                          MNB                         51.45        51.32     51.45         46.51
+of 2e−5 for the Adam optimizer, a batch size of 32, and a                                                       Classical Models
+maximum sequence length of 256. Moreover, we used the
+                                                                                      SVM                         51.20        50.65     51.20         49.06
+CrossEntropyLoss function to calculate the training and                               RF                          54.61        54.49     54.61         51.57
+validation loss.
+                                                                                                              Deep Learning Model
+   To evaluate and compare the models, we computed their
+accuracy, weighted precision, recall, and F1 macro score to                           Bidirectional LSTM          51.99        51.61     51.99         50.07
+measure all performance across the different experimental                                                  Pretrained Language Models
+settings. Considering the imbalanced data, we chose the macro                         XLM-RoBERTa-large           43.73        19.12     43.73         20.28
+version of the F1 score.                                                              CodeBERT                    55.52        55.19     55.52         53.36
+                                                                                      CodeReviewer                52.99        53.36     52.99         49.29
+                  IV. E XPERIMENTAL R ESULTS                                          CommitBART                  54.03        53.84     54.03         51.77
+                                                                                      T5 Commit Generator         52.49        52.14     52.49         49.89
+  This section details the results of the two strategies address-
+ing their corresponding research questions.                                       TABLE II: Performance on different models for the first ex-
+                                                                                  periment strategy to address RQ1 using emotion (top) and sen-
+A. RQ1: Performance of Machine and Deep Learning Models
+                                                                                  timent (bottom) datasets. Bold indicates models outperformed
+   In Table II (top), we present the results of our first ex-                     baseline; Underline indicates the best performing model.
+periment strategy with the original train set of the emotion
+dataset. In our first experiments, we found that all the models
+outperformed the baseline, except for the XLM-RoBERTa-                            LMs (CodeReviewer and T5-Commit-Generator) despite hav-
+large model. Classical models outperform the baseline and                         ing less model complexity and fewer trainable parameters.
+XLM-RoBERTa-large model, while the random forest outper-                          However, CodeBERT and CommitBART exhibit superior per-
+forms the bidirectional LSTM and T5 commit generator. While                       formance compared to the other models, with CodeBERT
+most pre-trained LMs outperform classical and deep learning                       being the best-performing model, achieving an F1-macro score
+models, XLM-RoBERTa-large failed to demonstrate superior                          of 53.36.
+performance on commit messages. The reason for performing                            Therefore, the current state-of-the-art machine learning,
+poorly on commit messages is that the model is trained on                         deep learning, and pre-trained LMs did not perform well
+newspapers, Wikipedia, and formal text, which differs from                        for emotion analysis, most likely due to the high number
+commit messages. Among the models trained on software                             of emotion classes (i.e., seven) and poor annotation quality.
+artifacts, CommitBART is the best-performing model, while                         However, the performance on the sentiment dataset (with only
+CodeBERT shows prominent performance over the test set.                           three classes) is comparable to state-of-the-art results.
+   We present the results on the sentiment dataset for the
+first strategy in Table II (bottom). This strategy used original                  B. RQ2: Performance of Ensemble Learning
+training data to train the model and test data for evaluation.                       Table III (top) presents the performance of the second strat-
+In our first experimental strategy, we found that all the                         egy using the emotion dataset. The performance of ensemble
+models outperformed the baseline except the XLM-RoBERTa-                          learning did not perform well on the emotion dataset. We
+large model. Classical models provided comparable perfor-                         achieved an F1-macro score of 20.26% for the first ensemble
+mances, while the random forest outperformed bidirectional                        approach, which could not surpass the baseline. Although the
+LSTM, CodeReviewer, and the T5 commit generator. More-                            other two ensemble approaches outperformed the baseline, the
+over, the bidirectional LSTM outperforms two pre-trained                          pretrained LMs (trained on software artifacts) and random
+
+
+                                                                                434
+
+    Authorized licensed use limited to: University of New Brunswick. Downloaded on February 13,2026 at 02:39:02 UTC from IEEE Xplore. Restrictions apply.
+        Model        Accuracy      Precision    Recall     F1-macro                                                                                  RF
+                                                                                                                                                     Bidirectional LSTM
+      Baseline            39.66        35.74      39.66         21.43                                       Joy                                      CommitBART
+                                                                                                                                                     CodeBERT
+      Approach 1          41.45        28.82      41.45         20.26                                                                  Fear          XLM-RoBERTa-large
+                                                                                                                                                     T5-Commit-Generator
+      Approach 2          37.75        36.29      37.75         27.62
+      Approach 3          39.45        36.88      39.45         28.30
+        Model        Accuracy      Precision    Recall     F1-macro                   Neutral
+
+      Baseline            51.45        51.32      51.45         46.51
+      Approach 1          56.15        56.16      56.15         54.67
+                                                                                                                        10   20   30     40     50      60Anger
+      Approach 2          54.82        54.52      54.82         52.85
+      Approach 3          54.98        55.05      54.98         52.35
+
+TABLE III: Performance on proposed ensemble techniques
+                                                                                     Sadness
+to address RQ2 for emotion (top) and sentiment (bottom)
+datasets.
+                                                                                                                                        Trust
+
+                                                                                                          Surprise
+
+                                                                                Fig. 7: Class-wise performances on selected models for the
+                                                                                first experiment strategy on the emotion dataset.
+
+
+                                                                                Surprise class was the most challenging for emotion analysis.
+                                                                                The XLM-RoBERTa-large model correctly predicted only the
+                                                                                Neutral and Trust classes, but failed to predict the other
+                                                                                classes correctly. Bidirectional LSTM performed poorly in
+                                                                                the Surprise class while struggling with the Sadness and Joy
+                                                                                classes. The pretrained model T5 Commit Generator could
+                                                                                not predict any Surprise class correctly while delivering the
+                                                                                best performance for the Neutral class and the second-best
+                                                                                performance for the Trust class. While CodeBERT performed
+     Fig. 6: Emotion class-wise best-performing models.                         inadequately in the Surprise class, it achieved the best per-
+                                                                                formance for the Sadness and Trust classes and the second-
+                                                                                best performance in the Fear class. Among all the models,
+forest exhibit superior performances in emotion analysis. We                    CommitBART outperformed the others in four classes: Anger,
+achieved F1-macro scores of 27.62% and 28.30% for the                           Fear, Joy, and Surprise. We provided the detailed class-wise
+second and third ensemble approaches, respectively.                             performances on selected models in Figure 7. We present
+   Table III (bottom) presents the performance of the third                     class-wise best-performing models for emotion analysis in
+strategy on the sentiment dataset. Despite the poor perfor-                     Figure 6.
+mance on the emotion dataset, the third strategy delivers                          Figure 8 and Table IV present the detailed class-wise
+good performance on the sentiment dataset. The first ensemble                   performance results for the selected models. We also ana-
+approach outperformed all the experiments with an F1-macro                      lyzed the class-wise performance for the first experimental
+score of 54.67%, while the other two ensemble approaches                        strategy on the sentiment dataset. We noticed that all the
+outperformed all the models except CodeBERT. We achieved                        models performed better, except for the XLM-RoBERTa-large
+F1-macro scores of 52.85% and 52.35% for the second and                         model, compared to the emotion dataset performance. The
+third ensemble approaches. Therefore, the performance on the                    XLM-RoBERTa-large model predicts only the positive class.
+emotion dataset after applying ensemble learning decreased                      However, the classical model and random forest show the best
+by 4% − 12%. However, ensemble learning provides the                            performance on the Negative and Neutral classes, whereas
+best performance on the sentiment dataset. The observed                         CodeBERT exhibits superior performance on the positive
+decrease in performance for the emotion dataset and the slight                  class. Moreover, the performance on the sentiment dataset
+improvement for the sentiment dataset suggest that ensemble                     is superior to that on the emotion dataset; specifically, the
+learning is not always beneficial, and its effectiveness may                    higher number of classes in the emotion dataset leads to
+vary depending on the chosen approach.                                          poorer performance. We expect that a well-balanced and better
+                                                                                human-annotated dataset will yield good performance for both
+                          V. D ISCUSSIONS                                       emotion and sentiment analysis, as evidenced by the results.
+  For the first strategy, all the models struggled to predict the                  We explored three different ensemble learning approaches to
+Fear, Joy, and Sadness classes, while the prediction for the                    understand the performance of emotion and sentiment analysis.
+
+
+                                                                            435
+
+    Authorized licensed use limited to: University of New Brunswick. Downloaded on February 13,2026 at 02:39:02 UTC from IEEE Xplore. Restrictions apply.
+TABLE IV: Class-wise performances on selected models for the first experiment strategy on the emotion dataset. Bold indicates
+the best performance for the class.
+                           Model Name               Class         F1 score      Model Name                 Class           F1 score
+                                                    Anger            35.60                                 Anger                 0.00
+                                                    Fear             21.93                                 Fear                  0.00
+                                                    Joy              12.55                                 Joy                   0.00
+                           Random Forest            Neutral          53.24      XLM-RoBERTa-large          Neutral              49.19
+                                                    Sadness          14.78                                 Sadness               0.00
+                                                    Surprise         12.41                                 Surprise              0.00
+                                                    Trust            50.03                                 Trust                45.71
+                                                    Anger            37.92                                 Anger                37.34
+                                                    Fear             25.53                                 Fear                 21.31
+                                                    Joy              15.75                                 Joy                  15.02
+                           Bidirectional LSTM       Neutral          47.85      T5 Commit Generator        Neutral              54.83
+                                                    Sadness          13.97                                 Sadness              17.78
+                                                    Surprise          4.72                                 Surprise              0.00
+                                                    Trust            46.21                                 Trust                50.51
+                                                    Anger            40.16                                 Anger                36.76
+                                                    Fear             27.89                                 Fear                 27.48
+                                                    Joy              24.85                                 Joy                  17.04
+                           CommitBART               Neutral          54.65      CodeBERT                   Neutral              53.41
+                                                    Sadness          16.82                                 Sadness              25.05
+                                                    Surprise         13.14                                 Surprise              3.48
+                                                    Trust            51.36                                 Trust                51.72
+
+
+
+TABLE V: Example of contradictory data annotation in the                                                                                       RF
+                                                                                                                                               Bidirectional LSTM
+training set.                                                                                                                                  CommitBART
+                                                                                                Neutral                                        CodeBERT
+                                                                                                                                               XLM-RoBERTa-large
+hash                                            Commit Message        Class                                                                    T5-Commit-Generator
+d4c330cfdc2610f86d1cbfda8244797461804577 Fix typos                    Trust
+a15025606e31db384d1ec23f5ac17c4a49bd9579 Fix typo                   Neutral
+cea7a21e61fe55220bda12ace665c33028ed2d02 Fix name typo              Sadness
+2704d89e3aa279bf791ef4a7c793a30d5d53e55c Correct a typo                 Joy
+
+                                                                                                                      10   20   30   40   50   60   70 Negative
+
+
+In our experiments, the ensemble learning approaches did
+not perform as expected on the emotion dataset, whereas
+they exhibited superior performance on the sentiment dataset.
+This demonstrates that ensemble learning is effective for
+performance improvement in sentiment analysis. For the emo-
+tion dataset, the first ensemble approach only predicts the                                     Positive
+Anger, Neutral, and Trust classes, while it provides the best
+performance on the sentiment dataset. The performance on                        Fig. 8: Class-wise performances on selected models for the
+the emotion dataset significantly decreased due to the large                    first experiment strategy on the sentiment dataset.
+number of emotion classes compared to the sentiment dataset.
+   Although deep learning and pre-trained LMs provide com-                         We identified that capturing human feelings is challenging
+parative results, their performances are below 33% for emotion                  if the text contains insufficient information. For example,
+analysis in our study. We investigated the data quality to get a                fixing an important bug or feature might lead to joy (posi-
+more insightful conclusion. We found that the manual annota-                    tive), whereas fixing some minor issues might lead to anger
+tion process yielded conflicting labels for similar kinds of data.              (negative). However, the commit messages for both cases
+Table V presents an example of contradictory annotation from                    are similar. We also noticed that most texts contain noise,
+our training data. Also, due to the biases among the annotators,                such as class names, method names, versions, and package
+the quality of data annotation is flawed. Furthermore, we                       information. These noises affect the overall performance of
+found that 15% of the training data consists of two or three                    the models because they occur in multiple emotion categories.
+words. Although capturing the emotions and sentiment from                       Removing such noises requires manual efforts because of the
+a sentence of two or three words is challenging, we did not                     unstructured representation of texts.
+remove those texts. We did not remove the two- or three-
+word texts to understand the performances across the models                     A. Comparison
+because a significant number of commit messages are of short                       Table VI shows a performance comparison among various
+text length.                                                                    studies in the literature. Some studies have not evaluated au-
+
+
+                                                                              436
+
+    Authorized licensed use limited to: University of New Brunswick. Downloaded on February 13,2026 at 02:39:02 UTC from IEEE Xplore. Restrictions apply.
+    Studies                                            Analysis                           Dataset                          Classes     Best F1 Score
+    (2014) Guzman et al. [21]                         Sentiment               GitHub commit comments                           2                   -
+    (2016) Sinha et al. [25]                          Sentiment               GitHub commit comments                           3                   -
+    (2017) Thelwall [26]                               Emotion                            Tweets                               2             54.45%
+    (2018) Islam and Zibran [12]                       Emotion                    Jira issue comments                          4             78.43%
+    (2019) Islam et al. [7]                            Emotion            Jira and stack overflow comments                     5             80.90%
+    (2021) Venigalla and Chimalakonda [10]             Emotion                 Github commit comments                          8                   -
+    (2022) Imran et al. [27]                           Emotion                     GitHub comments                             6                48%
+    (2024) Imran et al. [29]                           Emotion        GitHub, Jira, and Stack overflow comments                6             59.20%
+    (2024) Topal et al. [30]                           Emotion                            Tweets                               4        36.5%-56.3%
+    Our Study                                          Emotion                GitHub commit comments                           6             32.70%
+    Our Study                                         Sentiment               GitHub commit comments                           3             54.67%
+
+                      TABLE VI: Comparison of Existing Studies on Emotion and Sentiment Analysis in SE.
+
+
+tomated methods for identifying emotion and sentiment, e.g.,                    annotations are subjective, and the annotators base their an-
+[10], [21], [25]. Overall, studies considering fewer emotion                    notations on their understanding, which may introduce biases
+or sentiment classes performed well, e.g., [12]. Depending                      into our dataset. Therefore, it is crucial to account for annotator
+on the dataset, the performance of machine learning and                         bias when developing models utilizing curated datasets. The
+deep learning, as well as large language models, also varies                    hyper-parameters we used to train our models require fur-
+significantly. Thus, benchmarking is extremely challenging                      ther investigation and experiments for optimal performance.
+in emotion and sentiment analysis in the SE domain. Early                       Investigating optimal hyper-parameters was not within the
+studies (e.g., [7], [12]) used traditional machine learning                     scope of this study, i.e., we aimed to explore emotions and
+models, whereas more recent studies (e.g., [29], [30]) explored                 sentiments in the commit messages. Our experiments may
+the ability of computationally expensive large language models                  yield better results with optimal hyper-parameters. We have
+and fine-tuned them. However, researchers should consider the                   made model implementations and the curated dataset available
+trade-off between cost and benefits while analyzing emotion                     for replication.
+and sentiment in the software engineering domain.
+                                                                                             VI. C ONCLUSION AND F UTURE W ORK
+B. Implications for Researchers and Developers                                     This study presents the largest manually annotated dataset
+   The literature on emotion and sentiment analysis of commit                   for emotion and sentiment analysis on commit messages and
+messages lacks manually annotated data. As a result, studies                    reports the performance of pre-trained language models (LMs),
+on emotion and sentiment analysis using commit messages                         deep learning, traditional machine learning, and the ensemble
+have not attracted many researchers. Our study provided the                     of pre-trained LMs in predicting emotion and sentiment.
+largest human-annotated dataset for emotion and sentiment                       Our first experimental strategy to address RQ1 showed that
+analysis, which may attract the research community to explore                   state-of-the-art machine learning models perform better on
+this area. Moreover, our findings suggest that a good annota-                   the sentiment dataset than the emotion dataset. The RQ2
+tion guideline is required for constructing a better dataset using              demonstrated that the oversampling technique in our study did
+commit messages. This study aims to explore developers’                         not perform well. Furthermore, findings in RQ2 suggested that
+emotions and sentiments expressed in commit messages; thus,                     incorporating ensemble learning improves the performance of
+devising high-performing machine learning models was not                        the sentiment dataset while negatively impacting the perfor-
+the primary goal of this study.                                                 mance of the emotion dataset. We also provided a detailed
+   Our study shows that developers mostly use neutral and                       performance comparison among the models.
+trust emotions while writing commit messages. However, a                           We conducted all the experiments using the proposed dataset
+significant number of commit messages contain anger and                         and provided an in-depth analysis. Our results indicate that
+sadness, indicating that developers often write code with                       while the pre-trained LMs outperformed the classical and
+negative emotions, which can impact the project’s quality.                      deep learning algorithms, their performance was insufficient to
+Moreover, we found that developers do not write long text                       identify emotions accurately. Although the annotation of the
+(∼80% of commit messages are within 20 words) in commit                         dataset showed moderate agreement, the advancement of pre-
+messages. Thus, we strongly recommend that developers write                     trained LMs for commit messages has yet to be studied. More-
+more expressive and meaningful commit messages, which                           over, a detailed annotation guideline is required to construct a
+offer several benefits (e.g., issue tracking), during both soft-                new dataset for this area. We also identified the challenges
+ware development and maintenance and evolution phases. We                       of determining the underlying meaning of the text, which
+also found that developers express different emotions without                   caused low performance across the models. In addition, further
+significant changes in the commit messages. The manual                          study of the pre-trained model represents another promising
+annotation of the dataset is highly imbalanced, which may                       direction, and we will incorporate new pre-trained models
+significantly impact the model’s performance. Moreover, the                     for commit messages in our future studies. We also aim to
+
+
+                                                                            437
+
+    Authorized licensed use limited to: University of New Brunswick. Downloaded on February 13,2026 at 02:39:02 UTC from IEEE Xplore. Restrictions apply.
+develop a more diverse dataset that would better demonstrate                      [16] Mohammad Masudur Rahman, Chanchal K Roy, and Iman Keivanloo.
+the robustness of the proposed approach.                                               Recommending insightful comments for source code using crowd-
+                                                                                       sourced knowledge. In 2015 IEEE 15th International Working Confer-
+                    ACKNOWLEDGMENT                                                     ence on Source Code Analysis and Manipulation (SCAM), pages 81–90.
+                                                                                       IEEE, 2015.
+  This study is supported by the New Brunswick Innovation                         [17] Nazakat Ali, Sangwon Hwang, and Jang-Eui Hong. Your opinions let
+Foundation (NBIF) through the Grant TRF2023-003. The                                   us know: Mining social network sites to evolve software product lines.
+                                                                                       KSII Transactions on Internet & Information Systems, 13(8), 2019.
+authors would like to thank Md. Arid Hasan for initiating this                    [18] Ian Brooks and Kathleen Swigger. Using sentiment analysis to measure
+work and the annotators for labeling the dataset.                                      the effects of leaders in global software development. In 2012 Inter-
+                                                                                       national Conference on Collaboration Technologies and Systems (CTS),
+                              R EFERENCES                                              pages 517–524. IEEE, 2012.
+ [1] Bin Lin, Nathan Cassee, Alexander Serebrenik, Gabriele Bavota, Nicole        [19] Guilherme A. Maldonado da Cruz., Elisa Hatsue Moriya Huzita., and
+     Novielli, and Michele Lanza. Opinion mining for software develop-                 Valéria D. Feltrim. Estimating trust in virtual teams - a framework
+     ment: a systematic literature review. ACM Transactions on Software                based on sentiment analysis. In Proceedings of the 18th International
+     Engineering and Methodology (TOSEM), 31(3):1–41, 2022.                            Conference on Enterprise Information Systems - Volume 1: ICEIS, pages
+ [2] Zhangyin Feng, Daya Guo, Duyu Tang, Nan Duan, Xiaocheng Feng,                     464–471. INSTICC, SciTePress, 2016.
+     Ming Gong, Linjun Shou, Bing Qin, Ting Liu, Daxin Jiang, et al.              [20] Emitza Guzman and Bernd Bruegge. Towards emotional awareness
+     Codebert: A pre-trained model for programming and natural languages.              in software development teams. In Proceedings of the 2013 9th joint
+     arXiv preprint arXiv:2002.08155, 2020.                                            meeting on foundations of software engineering, pages 671–674, 2013.
+ [3] Zhiyu Li, Shuai Lu, Daya Guo, Nan Duan, Shailesh Jannu, Grant                [21] Emitza Guzman, David Azócar, and Yang Li. Sentiment analysis of
+     Jenks, Deep Majumder, Jared Green, Alexey Svyatkovskiy, Shengyu                   commit comments in github: an empirical study. In Proceedings of the
+     Fu, et al. Automating code review activities by large-scale pre-training.         11th working conference on mining software repositories, pages 352–
+     In Proceedings of the 30th ACM Joint European Software Engineering                355, 2014.
+     Conference and Symposium on the Foundations of Software Engineering,         [22] Mike Thelwall, Kevan Buckley, Georgios Paltoglou, Di Cai, and Arvid
+     pages 1035–1047, 2022.                                                            Kappas. Sentiment strength detection in short informal text. Jour-
+ [4] Yue Yang, Elisabetta Ronchieri, and Marco Canaparo. Natural language              nal of the American society for information science and technology,
+     processing application on commit messages: a case study on hep                    61(12):2544–2558, 2010.
+     software. Applied Sciences, 12(21):10773, 2022.                              [23] Clayton Hutto and Eric Gilbert. Vader: A parsimonious rule-based
+ [5] Fabio Calefato, Filippo Lanubile, and Nicole Novielli. Emotxt: a toolkit          model for sentiment analysis of social media text. In Proceedings of
+     for emotion recognition from text. In 2017 seventh international con-             the international AAAI conference on web and social media, volume 8,
+     ference on Affective Computing and Intelligent Interaction Workshops              pages 216–225, 2014.
+     and Demos (ACIIW), pages 79–80. IEEE, 2017.                                  [24] Fabio Calefato, Filippo Lanubile, Federico Maiorano, and Nicole
+ [6] Alessandro Murgia, Parastou Tourani, Bram Adams, and Marco Ortu.                  Novielli. Sentiment polarity detection for software development. In Pro-
+     Do developers feel emotions? an exploratory analysis of emotions in               ceedings of the 40th International Conference on Software Engineering,
+     software artifacts. In Proceedings of the 11th working conference on              pages 128–128, 2018.
+     mining software repositories, pages 262–271, 2014.                           [25] Vinayak Sinha, Alina Lazar, and Bonita Sharif. Analyzing developer
+ [7] Md Rakibul Islam, Md Kauser Ahmmed, and Minhaz F Zibran. Mar-                     sentiment in commit logs. In Proceedings of the 13th international
+     Valous: Machine Learning based Detection of Emotions in the Valence-              conference on mining software repositories, pages 520–523, 2016.
+     arousal Space in Software Engineering Text. In Proceedings of the 34th       [26] Mike Thelwall. Tensistrength: Stress and relaxation magnitude detec-
+     ACM/SIGAPP Symposium on Applied Computing, pages 1786–1793,                       tion for social media texts. Information Processing & Management,
+     2019.                                                                             53(1):106–121, 2017.
+ [8] Md Rakibul Islam and Minhaz F Zibran. Sentistrength-se: Exploiting           [27] Mia Mohammad Imran, Yashasvi Jain, Preetha Chatterjee, and Kostadin
+     domain specificity for improved sentiment analysis in software engineer-          Damevski. Data Augmentation for Improving Emotion Eecognition
+     ing text. Journal of Systems and Software, 145:125–146, 2018.                     in Software Engineering Communication. In Proceedings of the 37th
+ [9] Jin Ding, Hailong Sun, Xu Wang, and Xudong Liu. Entity-level                      IEEE/ACM International Conference on Automated Software Engineer-
+     sentiment analysis of issue comments. In Proceedings of the 3rd                   ing, pages 1–13, 2022.
+     International Workshop on Emotion Awareness in Software Engineering,         [28] Zhenpeng Chen, Yanbin Cao, Xuan Lu, Qiaozhu Mei, and Xuanzhe
+     pages 7–13, 2018.                                                                 Liu. SEntiMoji: An Emoji-powered Learning Approach for Sentiment
+[10] Akhila Sri Manasa Venigalla and Sridhar Chimalakonda. Understanding               Analysis in Software Engineering. In Proceedings of the 2019 27th
+     emotions of developer community towards software documentation. In                ACM joint meeting on european software engineering conference and
+     2021 IEEE/ACM 43rd International Conference on Software Engineer-                 symposium on the foundations of software engineering, pages 841–852,
+     ing: Software Engineering in Society (ICSE-SEIS), pages 87–91. IEEE,              2019.
+     2021.                                                                        [29] Mia Mohammad Imran, Preetha Chatterjee, and Kostadin Damevski.
+[11] Nasif Imtiaz, Justin Middleton, Peter Girouard, and Emerson Murphy-               Uncovering the Causes of Emotions in Software Developer Communi-
+     Hill. Sentiment and politeness analysis tools on developer discussions            cation using Zero-shot LLMs. In Proceedings of the IEEE/ACM 46th
+     are unreliable, but so are people. In Proceedings of the 3rd International        International Conference on Software Engineering, pages 1–13, 2024.
+     Workshop on Emotion Awareness in Software Engineering, pages 55–61,          [30] Mustafa Burak Topal, Aysun Bozanta, and Ayse Basar. Sentiment
+     2018.                                                                             Analysis with LLMs: Evaluating QLoRA Fine-tuning, Instruction Strate-
+[12] Md Rakibul Islam and Minhaz F Zibran. A comparison of software                    gies, and Prompt Sensitivity. In Proceedings of the 34th International
+     engineering domain specific sentiment analysis tools. In 2018 IEEE 25th           Conference on Collaborative Advances in Software and COmputiNg
+     international conference on software analysis, evolution and reengineer-          (CASCON), 2024.
+     ing (SANER), pages 487–491. IEEE, 2018.                                      [31] Phillip Shaver, Judith Schwartz, Donald Kirson, and Cary O’connor.
+[13] Md Rakibul Islam and Minhaz F Zibran. DEVA: Sensing Emotions in                   Emotion knowledge: Further exploration of a prototype approach. Jour-
+     the Valence Arousal Space in Software Engineering Text. In Proceedings            nal of personality and social psychology, 52(6):1061, 1987.
+     of the 33rd annual ACM symposium on applied computing, pages 1536–           [32] Robert Plutchik. A general psychoevolutionary theory of emotion. In
+     1543, 2018.                                                                       Theories of emotion, pages 3–33. Elsevier, 1980.
+[14] Shangqing Liu, Yanzhou Li, and Yang Liu. Commitbart: A large pre-            [33] Joseph L Fleiss and Jacob Cohen. The equivalence of weighted kappa
+     trained model for github commits. arXiv preprint arXiv:2208.08100,                and the intraclass correlation coefficient as measures of reliability.
+     2022.                                                                             Educational and psychological measurement, 33(3):613–619, 1973.
+[15] Alexis Conneau, Kartikay Khandelwal, Naman Goyal, Vishrav Chaud-
+     hary, Guillaume Wenzek, Francisco Guzmán, Edouard Grave, Myle Ott,
+     Luke Zettlemoyer, and Veselin Stoyanov. Unsupervised cross-lingual
+     representation learning at scale. arXiv preprint arXiv:1911.02116, 2019.
+
+
+
+                                                                              438
+
+     Authorized licensed use limited to: University of New Brunswick. Downloaded on February 13,2026 at 02:39:02 UTC from IEEE Xplore. Restrictions apply.
+

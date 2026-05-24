@@ -1,0 +1,457 @@
+         Smart prediction for refactorings in the software test code
+                                   Luana Martins                                                                           Heitor Costa
+                      Federal University of Bahia (UFBA)                                                       Federal University of Lavras (UFLA)
+                             Salvador, Bahia, BRA                                                                  Lavras, Minas Gerais, BRA
+                           martins.luana@ufba.br                                                                         heitor@ufla.br
+
+                                    Carla Bezerra                                                                         Ivan Machado
+                      Federal University of Ceara (UFC)                                                        Federal University of Bahia (UFBA)
+                            Quixadá, Ceara, BRA                                                                       Salvador, Bahia, BRA
+                              carlailane@ufc.br                                                                     ivan.machado@ufba.br
+ABSTRACT                                                                                            1   INTRODUCTION
+Test smells are bad practices to either design or implement a test                                  Software testing is a fundamental activity for software quality as-
+code. Their presence may reduce the test code quality, harming                                      surance. That activity comprises developing test cases helpful in
+the software testing activities, primarily from a maintenance per-                                  finding bugs and preventing software regressions [11, 19]. How-
+spective. Therefore, defining strategies and tools to handle test                                   ever, software companies often do not prioritize software testing
+smells and improve the test code quality is necessary. State-of-the-                                activities because they face difficulties selecting qualified personnel
+art strategies encompass automated support mainly based on hard                                     and allocating resources for testing activities [18]. Additionally, the
+thresholds of rules, static and dynamic metrics to identify the test                                testing activities consume much time and effort, especially when
+smells. Such thresholds are subjective to interpretation and may not                                done manually. The effort to perform testing activities depends on
+consider the complexity of the software projects. Moreover, they are                                the artifacts under test, e.g., a large and complex production class
+limited as they do not automate test refactoring but only count on                                  requires more effort to perform tests [27].
+developers’ expertise and intuition. In this context, a technique that                                 Developing tests for large and complex production classes are
+uses historical implicit or tacit data to generate knowledge could                                  not trivial, leading developers to use bad practices to design or
+assist the identification and refactoring of test smells. This study                                implement the test code [11, 26]. A particular category of bad prac-
+aims to establish a novel approach based on machine learning tech-                                  tices in the test code is known as test smells. Their presence can
+niques to suggest developers refactoring strategies for test smells.                                negatively affect the test code quality, harming the software test-
+As an expected result, we could understand the applicability of the                                 ing activities, primarily from a maintenance perspective [5, 19, 25].
+machine learning techniques to handle test smells and a framework                                   Several studies in the literature have proposed strategies with auto-
+proposal that helps developers in decision-making regarding the                                     mated support to handle test smells and improve test code quality.
+refactoring of test smells.                                                                         However, such strategies rely on hard thresholds of rules, static
+                                                                                                    and dynamic metrics to detect the test smells [5, 19–21, 23, 25, 28].
+CCS CONCEPTS                                                                                           Spadini et al. [25] pointed out that the current strategies are sim-
+                                                                                                    plistic and can impair the developers of perceiving the test smells as
+• Software and its engineering → Software testing and debugging;
+                                                                                                    problematic. The threshold values are subjective to interpretation,
+• Computing methodologies → Machine learning approaches.
+                                                                                                    depending on the developers’ knowledge about the software com-
+                                                                                                    plexity and test smells. Additionally, the strategies are limited as
+KEYWORDS                                                                                            they do not automate test refactoring but only count on developers’
+Test Smells, Machine Learning, Software Quality                                                     expertise and intuition. These limitations could harm patterns dis-
+                                                                                                    covering and insights that support the decision-making to handle
+ACM Reference Format:
+                                                                                                    test smells. Therefore, it is essential to investigate other methods,
+Luana Martins, Heitor Costa, Carla Bezerra, and Ivan Machado. 2021. Smart
+                                                                                                    techniques, and tools to prevent, detect, and remove test smells
+prediction for refactorings in the software test code. In Brazilian Symposium
+on Software Engineering (SBES ’21), September 27-October 1, 2021, Joinville,                        from the test code.
+Brazil. ACM, New York, NY, USA, 6 pages. https://doi.org/10.1145/3474624.                              This study proposes a novel approach that uses historical im-
+3477070                                                                                             plicit or tacit data to generate knowledge about test smells. We
+                                                                                                    presented an initial framework proposal based on machine learning
+                                                                                                    techniques to identify test smells and suggest refactoring strate-
+Permission to make digital or hard copies of all or part of this work for personal or               gies on test code to remove them. In this preliminary study, we
+classroom use is granted without fee provided that copies are not made or distributed
+for profit or commercial advantage and that copies bear this notice and the full citation           investigated the performance of seven machine learning algorithms
+on the first page. Copyrights for components of this work owned by others than ACM                  to detect test smells in terms of accuracy, precision, recall, and
+must be honored. Abstracting with credit is permitted. To copy otherwise, or republish,
+to post on servers or to redistribute to lists, requires prior specific permission and/or a
+                                                                                                    f1-score. Those algorithms presented an excellent overall accuracy.
+fee. Request permissions from permissions@acm.org.                                                  However, improvements should be made to increase the accuracy.
+SBES ’21, September 27-October 1, 2021, Joinville, Brazil                                           Furthermore, we propose a set of research questions to drive future
+© 2021 Association for Computing Machinery.                                                         investigations.
+ACM ISBN 978-1-4503-9061-3/21/09. . . $15.00
+https://doi.org/10.1145/3474624.3477070
+
+
+
+
+                                                                                              115
+SBES ’21, September 27-October 1, 2021, Joinville, Brazil                                                                                           Martins, et al.
+
+
+2 BACKGROUND                                                                          2.2     Structural metrics
+2.1 Test smells                                                                       Software metrics provide quantitative evidence on software quality
+                                                                                      characteristics (e.g., reusability, maintainability, and testability) [13].
+Test smells are anti-patterns adopted to implement or design the test
+                                                                                      Software engineers can use them to understand the code structure.
+code [19]. The insertion of test smells in the test code is due to the
+                                                                                      Such evidence supports the software planning, creating, and evalu-
+complexity of the software artifacts under test [26]. Furthermore,
+                                                                                      ation processes [27]. The literature proposes software metrics to
+the presence of the test smells can affect the test code quality, mainly
+                                                                                      different development contexts. In this study, we focused on object-
+its comprehension and readability [5, 25]. Consequently, test smells
+                                                                                      oriented metrics to assess Java open-source projects. Table 1 lists
+can reduce the effectiveness of the test cases to detect faults and
+                                                                                      our set of metrics [3, 9].
+the ability for developers to interact with them [5, 19]. Several
+studies have investigated anti-patterns in the test code, and their
+effects [5, 11, 23, 25, 28, 29]. The literature reports more than 139                 2.3     Machine learning algorithms
+test smells [11], but the available tools support only a subset of test               There are various machine learning (ML) algorithms that we can
+smells [21]. Initially, in our study, we analyzed 4 test smells, which                categorize as supervised, unsupervised, semi-supervised, and re-
+were validated through a survey with developers that either own or                    inforcement learning [14, 24]. Supervised learning is typically the
+contribute to open source systems that exhibited those smells [21]:                   task of ML to learn a function that maps an input to an output
+                                                                                      based on sample input-output pairs [12]. Unsupervised learning
+     • Assertion Roulette (AR). A test method that contains as-
+                                                                                      analyzes unlabeled datasets without the need for human interfer-
+       sertion statements without an explanation message. Non-
+                                                                                      ence, i.e., a data-driven process [12]. Semi-supervised learning can
+       documented assertions impact the test code readability and
+                                                                                      be defined as a hybridization of supervised and unsupervised meth-
+       understandability;
+                                                                                      ods, as it operates on both labeled and unlabeled data [24]. Finally,
+     • Conditional Test Logic (CTL). A test method that contains
+                                                                                      Reinforcement learning enables software agents and machines to
+       conditional and loop statements. Conditions within the test
+                                                                                      automatically evaluate the optimal behavior in a particular context
+       method can modify the test behavior and its expected output;
+                                                                                      or environment to improve its efficiency [14].
+     • Eager Test (ET). A test method calls multiple methods of the
+                                                                                         Initially, in our study, we focused on supervised learning to verify
+       production class. The test method has several responsibilities,
+                                                                                      the feasibility of using ML techniques to test smells detection. We
+       making it difficult to comprehend and maintain;
+                                                                                      used seven algorithms, grouped into five supervised ML techniques:
+     • Verbose Test (VT). A test method with more than 30 lines.
+       It may indicate that the method has several responsibilities,                        • Decision Trees (DT). DT approximates robust discrete func-
+       impacting the test method maintenance.                                                 tions in the presence of noise and is capable of expressing
+
+                 Table 1: Software metrics description according to Aniche et al. [3] and Chidamber and Kemerer [9].
+
+             Acronym                                Name                                                     Description
+       assignmentsQty               Quantity of assignments                  Counts the number of assignments in a class or method
+       CBO                          Coupling Between Objects                 Counts the number of afferent and efferent couplings of a class or method
+       DIT                          Depth Inheritance Tree                   Counts the number of parents for a class
+       LOC                          Lines of Code                            Counts the number of lines of a class or method
+       LCOM                         Lack of Cohesion of Methods              Counts the number of method pairs not using common variables
+       loopQty                      Quantity of loops                        Counts the number of loop structures in a class or method
+       maxNestedBlocksQty           Max nested blocks                        Counts the number of conditional statements in a class or method
+       methInvQty                   Quantity of directly invocations         Counts the number of directly invocations of a method
+       methInvLocalQty              Quantity of local invocations            Counts the number of local invocations of a method
+       methInvIndirectQty           Quantity of indirect local invocations   Counts the number of local indirectly invocations of a method
+       NOF                          Number of Fields                         Counts the number of fields (all modifiers) in a class
+       NOM                          Number of Methods                        Counts the number of methods (all modifiers) in a class
+       NPRIF                        Number of PRIvate Fields                 Counts the number of private fields of a class
+       NPRIM                        Number of PRIvate Methods                Counts the number of private methods of a class
+       NPROM                        Number of PROtected Methods              Counts the number of protected methods of a class
+       numbersQty                   Quantity of numeric literals             Counts the number of numeric literals in a class or method
+       RFC                          Response for a Class                     Counts the number of methods that respond to class or method
+       returnQty                    Quantity of returns                      Counts the number of return statements in a class or method
+       stringQty                    Quantity of String literals              Counts the number of string literals in a class or method
+       tryCatchQty                  Quantity of try/catches                  Counts the number of try/catches blocks in a class or method
+       uniqueWordsQty               Quantity of unique words                 Counts the number of unique words in a class or method
+       variablesQty                 Quantity of declared variables           Counts the number of variables declared in a class or method
+       WMC                          Weight Method Class                      Counts the number of paths of all methods in a class or method
+
+
+
+
+                                                                               116
+Smart prediction for refactorings in the software test code                                       SBES ’21, September 27-October 1, 2021, Joinville, Brazil
+
+
+       disjunctive learning. ID3 is an algorithm that classifies the       Control to understand the software context, identify the test smells,
+       instances by sorting them in the decision and leaves nodes          and suggest refactoring strategies for test smells in the given con-
+       of a tree [22];                                                     text. The context splits into (i) Project Level that uses the Software
+     • Instance-based Learning (IBL). IBL relies on statistically          Measurement data to reflect the project properties (size, complexity,
+       based and lazy-learning algorithms. Examples of IBL algo-           and maturity), and (ii) Environment Level that uses the Knowledge
+       rithms include K-Nearest Neighbors (KNN) and Distance-              Management to reflect the subjective factors influencing the adop-
+       Weighted Nearest Neighbors (DWNN) that calculate the                tion of refactoring strategies (e.g., business domain, expertise, and
+       (weighted) distance between the unobserved and observed             culture). This module can group the software projects into clusters
+       instances[1];                                                       representing different contexts to investigate whether the detec-
+     • Logistic Regression (LR). LR uses linear functions to es-           tion of test smells and refactoring strategies generalize to different
+       tablish a correlation between the unobserved and observed           contexts.
+       instances. Examples of LR algorithms include one-vs-rest                Application of Machine Learning Techniques. This module
+       (LRO) and multinomial logistic regression (LRM) [6];                provides ML algorithms for the Smart Prediction module. For the ap-
+     • Random Forest (RF). RF contains trees based on the values           plication of the algorithms, the module encompasses three phases:
+       of a random subset of instances experimented individually           (i) Pre-Processing analyzes the data stored in the Data Repository to
+       and with the same distribution for all trees in the forest [7];     threaten the outliers and remove unnecessary features (software
+     • Support Vector Machines (SVM). SVM computes a hyper-                metrics); (ii) training and testing uses one technique to split the
+       plane in high-dimensional space to classify data into pre-          dataset into training and testing data. It serves to evaluate the accu-
+       defined classes. The algorithm searches for the best hyper-         racy of the algorithms in each fold; and (iii) evaluation compares the
+       plane for error minimization and geometric margin maxi-             mean precision, recall, accuracy, and f1-score among the different
+       mization. SVM usually does not work well for highly imbal-          models after the validation.
+       anced data [10].                                                        Smart Prediction. This module identifies the goals established
+                                                                           for the software project in the Test Code Quality Planning, Monitor-
+3 FRAMEWORK                                                                ing and Control module and detects project context based on the
+                                                                           output of the Context Identification module. It also runs the Appli-
+3.1 Solution proposal
+                                                                           cation of Machine Learning Techniques module for the test smells
+Figure 1 shows a high-level overview of the framework proposal             identification. For each instance returned, it runs the same module
+that encompasses seven modules.                                            to identify the refactoring strategies useful for the context.
+   Test Code Quality Planning, Monitoring, and Control. This                   Suggestion for Test Smells Refactoring. This module provides
+module uses information from the Software Measurement and Knowl-           the developers a list of test smells instances and possible refactoring
+edge Management modules to plan, monitor, and control the soft-            strategies. The developers should analyze whether and which refac-
+ware testing activities. Besides, it provides management information       toring solution applies in the given development context. Therefore,
+and the test quality goals useful in the Context Identification and        the framework captures the context and feeds it back to improve
+Smart Prediction modules. As an output, the software engineer can          test smells detection and suggest refactoring strategies.
+check the quality goals against the measurement and knowledge                  Software Measurement. This module implements automated
+information to plan the allocation of resources and prioritize the         support to calculate metrics from the test and production code
+development and maintenance of testing artifacts that require more         necessary to provide useful information for identifying the test
+effort to achieve the expected quality level.                              smells. It stores all data collected from the software projects in the
+   Context Identification. This module uses the management in-             data repository.
+formation from the Test Code Quality Planning, Monitoring, and                 Knowledge Management. This module uses the knowledge
+                                                                           extracted from the user and the Data Repository by improving the
+                                                                           test code quality. It also captures, evaluates, and makes available
+                                                                           new knowledge produced when executing the modules. Finally, it
+                                                                           stores all data collected in the data repository.
+
+                                                                           3.2    Research questions
+                                                                           We aim to propose a framework to detect test smells and predict
+                                                                           refactoring strategies based on the software context and ML tech-
+                                                                           niques. We plan to advance on the research and add the produced
+                                                                           results to one framework, turning it into a more robust approach
+                                                                           to support. We derived four Research Questions (RQs):
+
+                                                                           RQ1 : How accurate are machine learning algorithms in detecting
+                                                                                 test smells?
+
+                                                                           RQ2 : How accurate are machine learning algorithms in predicting
+        Figure 1: Overview of the framework proposal.                            refactoring for test smells?
+
+
+
+
+                                                                     117
+SBES ’21, September 27-October 1, 2021, Joinville, Brazil                                                                                     Martins, et al.
+
+
+RQ3 : Are there predictive models carried over to different contexts to         Table 2: Descriptive statistics for the initial dataset contain-
+      detect test smells?                                                       ing 500 instances extracted from 57 software projects.
+RQ4 : Are there predictive models carried over to different contexts to
+      predict refactoring for test smells?                                                  Metric         Mean SD Min Q1 Q2 Q3 Max
+
+   ML algorithms perform differently depending on the task. Each                      CBO                     4.6 3.3    1.0 3.0 4.0 5.0        21.0
+RQ explores supervised ML algorithms in terms of precision, accu-                     WMC                     1.7 1.4    1.0 1.0 1.0 2.0        13.0
+                                                                                      RFC                     7.8 7.3    0.0 3.0 6.0 10.0       55.0
+racy, recall, and f1-score. To answer RQ1 , we intend to mine the
+                                                                                      LOC                    15.0 13.5   2.0 6.0 9.0 21.0       68.0
+GitHub repository to select Java open-source projects. We plan
+                                                                                      variablesQty            3.5 3.9    0.0 1.0 2.0 5.0        24.0
+to use automated support to calculate the software metrics and                        methInvQty              7.8 7.3    0.0 3.0 6.0 10.0       55.0
+detect the test smells instances, which we can validate manually.                     methInvLocalQty         0.5 0.6    0.0 0.0 0.0 1.0         3.0
+To answer RQ2 , we plan to mine the GitHub repository for the se-                     methInvIndirectQty      0.5 0.8    0.0 0.0 0.0 1.0         6.0
+lected projects and collect data regarding the refactoring strategies                 stringLiteralsQty       4.8 7.2    0.0 0.0 2.0 6.0        44.0
+applied to remove test smells from the test code. We will store the                   numbersQty              2.8 5.4    0.0 0.0 1.0 3.0        67.0
+data regarding the test smells detection and refactoring strategies                   assignmentsQty          4.1 4.6    0.0 1.0 2.0 6.0        26.0
+into a data repository to input ML algorithms. In addition to com-                    maxNestedBlocksQty      0.5 0.8    0.0 0.0 0.0 1.0         5.0
+paring the accuracy of the ML algorithms, we could also compare                       uniqueWordsQty         21.1 11.3   2.0 13.0 20.0 27.0     67.0
+them with the automated tools. To answer RQ3 and RQ4 , we in-
+tend to cluster the projects into groups to analyze whether the ML
+algorithms generalize to other contexts. We can create clusters to                 Table 2 presents the descriptive statistics of the initial dataset
+delimit the contexts considering the projects’ complexity, size, and            containing the software metrics. For example, the LOC metric shows
+business domain.                                                                that the number of lines of a test method ranged from 2 (Min) to 68
+                                                                                lines (Max). The Q1 represents 14 of the dataset, and it is composed
+4     PRELIMINARY RESULTS                                                       only by test methods until six lines. The Q3 represents 34 of the
+Mining the GitHub repository is a time-consuming activity because               dataset, and it is composed of test methods that contain between
+it has more than 8 million projects. Therefore, we used the 147,991             10 and 55 lines. The analyzed test methods presented nine lines on
+projects listed by Loriot et al. [17] to mine the GitHub and find               average (Q2), with a mean Mean value of 15 lines, and a standard
+projects that meet the following criteria: (i) non-forked projects,             deviation SD of 13.5, indicating high dispersion of values.
+(ii) projects using Java as the primary programming language, and                  Based on the descriptive statistics, we started classifying test
+(iii) projects with tests written with the JUnit framework. This                smells instances (Figure 1 - Application of Machine Learning Tech-
+preliminary study presents the results from 57 popular projects (i.e.,          niques module). In the pre-processing phase, we removed the met-
+projects sorted using two indexes: number of stars and forks).                  rics with values equal to zero for all instances because they are
+    Our initial objective was to investigate the feasibility of using ML        class-level metrics (e.g., LCOM, DIT, NOF, NOM, NPRIF, NPRIM,
+techniques for test smell detection. We designed the detection of test          and NPROM) or do not match the characteristics of the selected
+smells as a binary classification problem, which allowed us to check            method (e.g., assignmentsQty, loopQty, and returnQty). Addition-
+the output of the ML algorithms against the manual classification of            ally, we used the imputation method to deal with the outliers. For
+labeled instances extracted from 57 software projects. We selected              example, the LOC metrics present a Q3 of 21 LOC; however, the Max
+seven supervised learning algorithms that support classification                value is 68 LOC. Therefore, we substituted the outlier for a value in
+problems: DT, DWNN, KNN, LRM, LRO, RF, and SVM.                                 Q3, as it continues representing a long method. Additionally, we
+    We used the JNose Test tool1 to collect four test smells: AR, CTL,          normalized the values to the same range to avoid the ML algorithms
+ET, and VT. That tool returns the test smells instances in different            to learn with a scale of the data. After the pre-processing phase, 13
+granularities (line, block, method, and method, respectively) [28].             features remained. Next, we performed the training and test phase.
+To address the test smells detection as a classification problem, we            We used the 10-fold cross-validation to split the data into training
+converted the number of test smells in the methods to ‘true’ or                 and testing data, and we also applied the parameters tuning for the
+‘false’. While converting the values, we manually checked whether               ML algorithms: DT, DWNN, KNN, LRM, LRO, RF, and SVM. In the
+the results returned by JNose Test are not false positives. Besides,            evaluation phase, we calculated the accuracy, precision, recall, and
+we limited the dataset to 500 instances labeled with a specific test            f1-score using the mean of the 10-fold execution.
+smell (‘AR’, ‘CTL’, ‘ET’, ‘VT’), or no test smell at all (‘None’).                 Table 3 presents the evaluation of each algorithm grouped by
+    We also used the CK Metrics tool2 to collect the software met-              the dataset labels. The algorithms present high precision and recall
+rics at the method and class levels. As the method level is common              scores when classifying ET (f1-score > 90%) and CTL (f1-score > 80%)
+for detecting test smells and calculating software metrics, we estab-           instances. On the other hand, the algorithms have less precision
+lished a link between them at the method level (Figure 1 - Software             and recall scores to classify instances with AR, VT, or no test smells.
+Measurement module). The dataset has 23 features corresponding                  Mostly, the algorithms classify instances with no test smell and
+to the software metrics (Figure 1 - Data Repository).                           VT as an AR. Also, different algorithms perform better to detect
+                                                                                a specific test smell, e.g., the RF algorithm is good to classify AR,
+1 Available at: https://github.com/arieslab/jnose                               and no test smells instances. The DWNN and DT algorithms are
+2 Available at: https://github.com/mauricioaniche/ck                            suitable to classify ET, CTL, and VT instances.
+
+
+
+
+                                                                          118
+Smart prediction for refactorings in the software test code                                                         SBES ’21, September 27-October 1, 2021, Joinville, Brazil
+
+
+Table 3: Scores for the ML algorithms to classify the test
+smells instances.
+
+       Labels    Algorithms     Accuracy      Precision   Recall      F1-Score
+                 DT                    93.7        84.3        85.2       84.7
+                 DWNN                  93.2        82.4        85.2       83.8
+                 KNN                   94.1        46.5        53.1       49.6
+       No        LRM                   92.7        85.4        79.5       82.4
+                 LRO                   92.4        83.5        80.7       82.1
+                 RF                    95.3        88.6        88.6       88.6
+                 SVM                   97.3        87.8        81.8       84.7
+
+                 DT                    92.2        80.4        82.2       81.3
+                 DWNN                  93.0        81.9        85.6       83.7
+                 KNN                   90.5        73.1        87.8       79.8
+       AR        LRM                   93.4        83.2        87.8       85.4
+                 LRO                   92.2        83.7        80.0       81.8
+                 RF                    94.2        86.5        85.6       86.0
+                 SVM                   92.8        81.9        85.6       83.7
+
+                 DT                    99.0        97.8        97.8       97.8         Figure 2: Boxplot for the executions of the k-fold cross-
+                 DWNN                  99.5        97.8       100.0       98.9         validation using the ML algorithms.
+                 KNN                   96.2        90.3        93.3       91.8
+       ET        LRM                   95.5        87.5        93.3       90.3
+                 LRO                   95.9        89.4        93.3       91.3
+                 RF                    99.0        95.7       100.0       97.8         the code patterns with predefined thresholds to indicate the pres-
+                 SVM                   96.0        91.1        91.1       91.1         ence of test smells (e.g., JNose Test [28], tsDetect [21], and RAIDE3
+                 DT                    97.6        94.4        94.4       94.4         [23]; (iii) information-retrieval, which extracts textual components
+                 DWNN                  97.1        91.5        95.6       93.5         from the test code to apply the detection rules (e.g., DARTS3 [16]
+                 KNN                   94.1        85.1        88.9       87.0         and TASTE [20]). These tools often rely on hard thresholds to detect
+       CTL       LRM                   94.1        85.1        88.9       87.0
+                 LRO                   93.3        81.2        91.1       85.9         test smells, particularly the metrics and rules-based tools.
+                 RF                    96.4        90.3        93.3       91.8            For example, the tsDetects considers all test methods with more
+                 SVM                   94.4        85.3        90.0       87.6
+                                                                                       than one assertion without an explanation as a test smell. Spadini
+                 DT                    94.1        87.6        84.8       86.2         et al. [25] pointed out that such detection strategies are simplistic
+                 DWNN                  93.2        89.9        77.2       83.0         and may impair the developers of perceiving the test smells as
+                 KNN                   96.2        89.0        70.7       78.8
+       VT        LRM                   91.6        84.3        76.1       80.0         problematic. Besides that, the developers can perceive an unsettling
+                 LRO                   90.9        82.1        75.0       78.4         test smell as an acceptable trade-off when considering the domain
+                 RF                    94.0        88.4        82.6       85.4         context (e.g., the software complexity, environment, application
+                 SVM                   93.5        86.5        83.7       85.1
+                                                                                       type). Several studies point to the need for further research using ML
+                                                                                       techniques to predict test smells. Still, there is no study exploring
+                                                                                       these techniques to overcome the current limitations.
+    Figure 2 shows the mean of the metrics we used to evaluate the
+                                                                                          We can use ML techniques to detect, predict and recommend
+algorithms. The RF outperforms the other algorithms, presenting
+                                                                                       refactoring strategies to design and implement flaws in other soft-
+the mean values for all metrics greater than 90%. In contrast, the
+                                                                                       ware artifacts. Similar to test smells, the bad practices to design or
+linear classifiers LRO and LRM underperform the other algorithms,
+                                                                                       implement the source code are known as code smells. In this con-
+presenting the mean values for all metrics less than 84%. SVM is also
+                                                                                       text, Azeem et al. [4] reviewed the literature to provide an overview
+a linear classifier, which presents mean values slightly better than
+                                                                                       of ML techniques to predict code smells. They analyzed 15 stud-
+LRO and LRM when using the kernel trick. It emphasizes that our
+                                                                                       ies and provided a list with the most common code smells and
+data is not linearly separable. Considering the non-linear classifiers,
+                                                                                       ML algorithms used to predict them. As a result, they noticed that
+the lazy ones, KNN and DWNN, are more sensitive to the local
+                                                                                       the absence of metrics analysis could represent an opportunity to
+values. Due to the sparsity of our dataset, DT and RF classifiers
+                                                                                       reduce the subjectivity in the interpretation of code smells.
+perform well compared with the lazy algorithms.
+                                                                                          Similarly, Caram et al. [8] analyzed 26 studies to identify how
+                                                                                       ML algorithms support code smell detection. Results indicate that
+5    RELATED WORK
+                                                                                       the techniques perform close to each other; DT, RF, and KNN had
+Aljedaani et al. [2] mapped twenty-two state-of-the-art tools use-                     the best performance overall, and the NB algorithm had the worst
+ful to detect test smells, from which only five support refactoring                    performance. These results converge to our preliminary results,
+strategies. Although the tools support a common subset of test                         which indicates that the usage of ML algorithms is also promising
+smells, there is no consensus on detecting and refactoring them.                       for test smells detection. Lastly, Aniche et al. [3] presented a practi-
+Each tool implements a strategy to handle test smells, grouping                        cal application of ML techniques to identify and predict refactoring
+mainly them into: (i) metrics-based, which calculates structural and                   strategies to code smells. They analyzed software classes and meth-
+dynamic metrics and the interpretation of their values in front of                     ods to collect historical data of refactoring operations in practice
+predefined thresholds indicate the presence of test smells (TeReVis
+and TeReDetect [15]); (ii) rules-based, which identifies and matches                   3 Examples of tools that provide support for refactoring test smells.
+
+
+
+
+                                                                                 119
+SBES ’21, September 27-October 1, 2021, Joinville, Brazil                                                                                                           Martins, et al.
+
+
+and trained the ML algorithms to predict refactoring operations                                for code smells detection: a systematic mapping study. International Journal of
+to a given code. Results indicate that the ML models generalize                                Software Engineering and Knowledge Engineering 29, 02 (2019), 285–316.
+                                                                                           [9] S.R. Chidamber and C.F. Kemerer. 1994. A metrics suite for object oriented design.
+well in different contexts. More specifically, they consider as the                            IEEE Transactions on Software Engineering 20, 6 (1994), 476–493.
+context projects implementing libraries, frameworks, and mobile                           [10] Corinna Cortes and Vladimir Vapnik. 1995. Support-Vector Networks. Mach.
+                                                                                               Learn. 20, 3 (Sept. 1995), 273–297.
+apps. Therefore, we hypothesize that the ML models could fit better                       [11] Vahid Garousi and Barış Küçük. 2018. Smells in software test code: A survey of
+to a specific context when handling test smells.                                               knowledge in industry and academia. Journal of Systems and Software 138 (2018),
+                                                                                               52–81.
+                                                                                          [12] Jiawei Han, Micheline Kamber, and Jian Pei. 2011. Data mining concepts and
+6    FINAL REMARKS                                                                             techniques third edition. The Morgan Kaufmann Series in Data Management
+                                                                                               Systems 5, 4 (2011), 83–124.
+This paper presents a high-level overview of a framework proposal                         [13] ISO/IEC 25010. 2011. Systems and software engineering — Systems and software
+to provide developers with refactoring strategies for test smells.                             Quality Requirements and Evaluation (SQuaRE) — System and software quality
+This framework plans to collect historical implicit or tacit data from                         models. ISO - ISO/IEC 25010:2011.
+                                                                                          [14] Leslie Pack Kaelbling, Michael L Littman, and Andrew W Moore. 1996. Rein-
+the software projects and feed ML algorithms. The use of a large-                              forcement learning: A survey. Journal of artificial intelligence research 4 (1996),
+scale dataset makes the ML algorithms more susceptible to reach                                237–285.
+                                                                                          [15] Negar Koochakzadeh and Vahid Garousi. 2010. TeCReVis: A Tool for Test Cov-
+generalizable findings. Therefore, we intend to establish a novel                              erage and Test Redundancy Visualization. In Testing – Practice and Research
+approach that considers the development context to suggest more                                Techniques, Leonardo Bottaci and Gordon Fraser (Eds.). Springer Berlin Heidel-
+assertive information to developers, increasing their productivity                             berg, Berlin, Heidelberg, 129–136.
+                                                                                          [16] Stefano Lambiase, Andrea Cupito, Fabiano Pecorelli, Andrea De Lucia, and Fabio
+and effectiveness when handling test smells.                                                   Palomba. 2020. Just-In-Time Test Smell Detection and Refactoring: The DARTS
+   The framework proposal serves as a starting point for future                                Project. In Proceedings of the 28th International Conference on Program Compre-
+research. We identified some RQs to drive further investigations                               hension (Seoul, Republic of Korea). ACM, New York, NY, USA, 441–445.
+                                                                                          [17] Benjamin Loriot, Fernanda Madeiral, and Martin Monperrus. 2020.
+that will provide us results to improve the framework. More specif-                            Styler: Learning Formatting Conventions to Repair Checkstyle Errors.
+ically, we intend to detail the framework processes to gather and                              arXiv:1904.01754 [cs.SE]
+                                                                                          [18] Silvana Melo, Veronica Moreira, Leo Natan Paschoal, and Simone Souza. 2020.
+analyze the data from software projects to generate knowledge. As                              Testing Education: A Survey on a Global Scale. In In 34th Brazilian Symposium
+a preliminary work, we presented the GitHub repository mining                                  on Software Engineering (Natal, Brazil). ACM, New York, NY, USA, 554–563.
+to select Java projects and the overall idea of collecting software                       [19] Fabio Palomba, Dario Di Nucci, Annibale Panichella, Rocco Oliveto, and Andrea
+                                                                                               De Lucia. 2016. On the Diffusion of Test Smells in Automatically Generated Test
+metrics to detect test smell. We trained seven ML algorithms to                                Code: An Empirical Study. In Proceedings of the 9th International Workshop on
+investigate the feasibility of detecting test smells. As a result, we                          Search-Based Software Testing (Austin, Texas). ACM, New York, NY, USA, 5–14.
+could identify that the algorithms present a good performance for                         [20] Fabio Palomba, Andy Zaidman, and Andrea De Lucia. 2018. Automatic Test Smell
+                                                                                               Detection Using Information Retrieval Techniques. In 2018 IEEE International
+test smells detection. However, a further investigation is required                            Conference on Software Maintenance and Evolution. IEEE, New York, Ny, USA,
+to identify whether the good performance is due to: i) the projects’                           311–322.
+                                                                                          [21] Anthony Peruma, Khalid Almalki, Christian D. Newman, Mohamed Wiem
+characteristics, e.g., we can group the projects by size to investi-                           Mkaouer, Ali Ouni, and Fabio Palomba. 2020. TsDetect: An Open Source Test
+gate whether there is a difference between those groups; and ii)                               Smells Detection Tool. In Proceedings of the 28th ACM Joint Meeting on European
+the selection of instances that compose our dataset, e.g., a dataset                           Software Engineering Conference and Symposium on the Foundations of Software
+                                                                                               Engineering (Virtual Event, USA). ACM, New York, NY, USA, 1650–1654.
+containing more than one test smell per instance depicts a more                           [22] J. Ross Quinlan. 1993. C4.5: Programs for Machine Learning. Morgan Kaufmann
+realistic scenario of software testing code.                                                   Publishers Inc., San Francisco, CA, USA.
+                                                                                          [23] Railana Santana, Luana Martins, Larissa Rocha, Tássio Virgínio, Adriana Cruz,
+                                                                                               Heitor Costa, and Ivan Machado. 2020. RAIDE: A Tool for Assertion Roulette
+ACKNOWLEDGMENTS                                                                                and Duplicate Assert Identification and Refactoring. In Proceedings of the 34th
+                                                                                               Brazilian Symposium on Software Engineering (Natal, Brazil). ACM, New York,
+This research was partially funded by INES 2.0; CNPq grants 465614/                            NY, USA, 374–379.
+2014-0 and 408356/2018-9 and FAPESB grants JCB0060/2016 and                               [24] Iqbal H Sarker, ASM Kayes, Shahriar Badsha, Hamed Alqahtani, Paul Watters, and
+                                                                                               Alex Ng. 2020. Cybersecurity data science: an overview from machine learning
+BOL0188/2020.                                                                                  perspective. Journal of Big Data 7, 1 (2020), 1–29.
+                                                                                          [25] Davide Spadini, Martin Schvarcbacher, Ana-Maria Oprescu, Magiel Bruntink,
+                                                                                               and Alberto Bacchelli. 2020. Investigating Severity Thresholds for Test Smells. In
+REFERENCES                                                                                     Proceedings of the 17th International Conference on Mining Software Repositories
+ [1] David W Aha, Dennis Kibler, and Marc K Albert. 1991. Instance-based learning              (Seoul, Republic of Korea). ACM, New York, NY, USA, 311–321.
+     algorithms. Machine learning 6, 1 (1991), 37–66.                                     [26] Amjed Tahir, Steve Counsell, and Stephen G MacDonell. 2016. An empirical study
+ [2] Wajdi Aljedaani, Anthony Peruma, Ahmed Aljohani, Mazen Alotaibi, Mo-                      into the relationship between class features and test smells. In In 23rd Asia-Pacific
+     hamed Wiem Mkaouer, Ali Ouni, Christian D. Newman, Abdullatif Ghallab,                    Software Engineering Conference. IEEE, New York, Ny, USA, 137–144.
+     and Stephanie Ludi. 2021. Test Smell Detection Tools: A Systematic Mapping           [27] Valerio Terragni, Pasquale Salza, and Mauro Pezzè. 2020. Measuring Software
+     Study. arXiv:2104.14640 [cs.SE]                                                           Testability Modulo Test Quality. In Proceedings of the 28th International Conference
+ [3] Maurício Aniche, Erick Maziero, Rafael Durelli, and Vinicius Durelli. 2020. The           on Program Comprehension (Seoul, Republic of Korea). ACM, New York, NY, USA,
+     Effectiveness of Supervised Machine Learning Algorithms in Predicting Software            241–251.
+     Refactoring. arXiv:2001.03338 [cs.SE]                                                [28] Tássio Virgínio, Luana Martins, Larissa Rocha, Railana Santana, Adriana Cruz,
+ [4] Muhammad Ilyas Azeem, Fabio Palomba, Lin Shi, and Qing Wang. 2019. Machine                Heitor Costa, and Ivan Machado. 2020. JNose: Java Test Smell Detector. In
+     learning techniques for code smell detection: A systematic literature review and          Proceedings of the 34th Brazilian Symposium on Software Engineering (Natal,
+     meta-analysis. Information and Software Technology 108 (2019), 115–138.                   Brazil). ACM, New York, NY, USA, 564–569.
+ [5] Gabriele Bavota, Abdallah Qusef, Rocco Oliveto, Andrea De Lucia, and Dave            [29] Tássio Virgínio, Luana Almeida Martins, Larissa Rocha Soares, Railana Santana,
+     Binkley. 2015. Are test smells really harmful? an empirical study. Empirical              Heitor Costa, and Ivan Machado. 2020. An Empirical Study of Automatically-
+     Software Engineering 20, 4 (2015), 1052–1094.                                             Generated Tests from the Perspective of Test Smells. In Proceedings of the 34th
+ [6] Christopher M. Bishop. 2006. Pattern Recognition and Machine Learning (Infor-             Brazilian Symposium on Software Engineering (Natal, Brazil). ACM, New York,
+     mation Science and Statistics). Springer-Verlag, Berlin, Heidelberg.                      NY, USA, 92–96.
+ [7] Leo Breiman. 2001. Random Forests. Mach. Learn. 45, 1 (Oct. 2001), 5–32.
+ [8] Frederico Luiz Caram, Bruno Rafael De Oliveira Rodrigues, Amadeu Silveira
+     Campanelli, and Fernando Silva Parreiras. 2019. Machine learning techniques
+
+
+
+
+                                                                                    120
+
