@@ -1,0 +1,11 @@
+/home/tassio/Desenvolvimento/pessoal/jserd2026/pdf-to-markdown/target/release/deps/inflate-19238567e0984603.d: /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/lib.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/checksum.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/writer.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/utils.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/reader.rs
+
+/home/tassio/Desenvolvimento/pessoal/jserd2026/pdf-to-markdown/target/release/deps/libinflate-19238567e0984603.rlib: /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/lib.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/checksum.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/writer.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/utils.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/reader.rs
+
+/home/tassio/Desenvolvimento/pessoal/jserd2026/pdf-to-markdown/target/release/deps/libinflate-19238567e0984603.rmeta: /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/lib.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/checksum.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/writer.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/utils.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/reader.rs
+
+/home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/lib.rs:
+/home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/checksum.rs:
+/home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/writer.rs:
+/home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/utils.rs:
+/home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/inflate-0.4.5/src/reader.rs:

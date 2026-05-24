@@ -175,8 +175,8 @@ fn main() {
     let total_start = Instant::now();
 
     // Diretórios relativos à raiz do projeto
-    let pdfs_dir = Path::new("../pdfs");
-    let output_dir = Path::new("../markdown");
+    let pdfs_dir = Path::new("../artigos");
+    let output_dir = Path::new("../artigos_md");
 
     if !pdfs_dir.exists() {
         eprintln!(

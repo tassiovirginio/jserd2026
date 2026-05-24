@@ -1,0 +1,14 @@
+/home/tassio/Desenvolvimento/pessoal/jserd2026/pdf-to-markdown/target/release/deps/serde-f4fca4f8e8a7c4d6.d: /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /home/tassio/Desenvolvimento/pessoal/jserd2026/pdf-to-markdown/target/release/build/serde-83bd76a5d861502a/out/private.rs
+
+/home/tassio/Desenvolvimento/pessoal/jserd2026/pdf-to-markdown/target/release/deps/libserde-f4fca4f8e8a7c4d6.rlib: /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /home/tassio/Desenvolvimento/pessoal/jserd2026/pdf-to-markdown/target/release/build/serde-83bd76a5d861502a/out/private.rs
+
+/home/tassio/Desenvolvimento/pessoal/jserd2026/pdf-to-markdown/target/release/deps/libserde-f4fca4f8e8a7c4d6.rmeta: /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /home/tassio/Desenvolvimento/pessoal/jserd2026/pdf-to-markdown/target/release/build/serde-83bd76a5d861502a/out/private.rs
+
+/home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:
+/home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs:
+/home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs:
+/home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs:
+/home/tassio/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs:
+/home/tassio/Desenvolvimento/pessoal/jserd2026/pdf-to-markdown/target/release/build/serde-83bd76a5d861502a/out/private.rs:
+
+# env-dep:OUT_DIR=/home/tassio/Desenvolvimento/pessoal/jserd2026/pdf-to-markdown/target/release/build/serde-83bd76a5d861502a/out
