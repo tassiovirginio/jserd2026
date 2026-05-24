@@ -11,7 +11,17 @@
     },
     "mcp-science": {
       "type": "local",
-      "command": ["uvx", "mcp-science", "web-fetch"],
+      "command": ["mcp-science", "web-fetch"],
+      "enabled": true
+    },
+    "paper-search": {
+      "type": "local",
+      "command": ["paper-search-mcp-nodejs"],
+      "enabled": true
+    },
+    "cite-mcp": {
+      "type": "local",
+      "command": ["cite-mcp"],
       "enabled": true
     }
   }
